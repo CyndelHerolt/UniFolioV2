@@ -1,0 +1,22 @@
+#body {
+  background: $bg-color;
+
+  .card {
+
+  }
+
+  .help-text {
+    font-size: 12px;
+    opacity: .6;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+    color: $primary-color;
+    font-weight: bold;
+  }
+
+  .form-input-group {
+    margin: 10px 0;
+  }
+}

@@ -1,7 +1,3 @@
 /* assets/styles/app.scss */
-
-$bg-color: #FFFCF3;
-
-body {
-  background: $bg-color;
-}
+@import "_variables";
+@import "_layout";

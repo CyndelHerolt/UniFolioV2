@@ -1,19 +1,39 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}UniFolio - Inscription{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <section class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="row">
+            <div class="card flex-row">
+                <article class="p-5">
+                    <h2 class="form-title">Inscription</h2>
 
-    {{ form_errors(registrationForm) }}
+                    <p class="form-text">
+                        Une fois votre compte créé, un mail vous sera envoyé pour confirmer votre inscription. Vous ne
+                        pourrez accéder à votre compte qu'après avoir cliqué sur le lien de confirmation.
+                    </p>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+                    {{ form_errors(registrationForm) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                    {{ form_start(registrationForm) }}
+                    <div class="form-input-group">
+                        {{ form_row(registrationForm.username) }}
+                    </div>
+                    <div class="form-input-group">
+                        {{ form_row(registrationForm.plainPassword) }}
+                    </div>
+                    <div class="form-input-group">
+                        {{ form_row(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <button class="btn btn-primary" type="submit" class="btn">S'inscrire</button>
+                    {{ form_end(registrationForm) }}
+                </article>
+                <aside class="p-5">
+                    <img src="{{ asset('images/registration.png') }}" alt="illustration d'inscription">
+                </aside>
+            </div>
+        </div>
+    </section>
 {% endblock %}

@@ -1,6 +1,8 @@
 #body {
   background: $bg-color;
 
+  .card {
+    
   header {
     position: fixed;
     z-index: 1;
@@ -67,7 +69,12 @@
     opacity: .6;
   }
 
-  .form-header {
+
+  .form-title {
+    font-size: 1.5rem;
+    color: $primary-color;
+
+    .form-header {
     margin-bottom: 25px;
   }
 
@@ -82,6 +89,6 @@
   }
 
   .form-input-group {
-    margin: 15px 0;
+    margin: 10px 0;
   }
 }

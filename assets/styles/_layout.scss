@@ -2,7 +2,66 @@
   background: $bg-color;
 
   .card {
+    
+  header {
+    position: fixed;
+    z-index: 1;
+    width: 100%;
 
+    .navbar {
+      background-color: $white;
+
+    }
+  }
+  footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+    .navbar {
+      background-color: $black;
+      color: $text-light-color;
+
+      .nav-item, a {
+        color: $text-light-color;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .bg-banner-top {
+    background-color: $secondary-color;
+    width: 100%;
+    height: 250px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  .bg-banner-bottom {
+    background-color: $secondary-color;
+    width: 100%;
+    height: 250px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+  }
+
+  .card {
+    border: none;
+    //box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+    border-radius: 15px;
+
+    .corner-img {
+      position: absolute;
+      top: -75px;
+      left: -75px;
+
+      img {
+        width: 40%;
+      }
+    }
   }
 
   .help-text {
@@ -10,9 +69,22 @@
     opacity: .6;
   }
 
+
   .form-title {
     font-size: 1.5rem;
     color: $primary-color;
+
+    .form-header {
+    margin-bottom: 25px;
+  }
+
+  .form-footer {
+    margin: 15px 0;
+  }
+
+  .form-title {
+    font-size: 1.5rem;
+    color: $primary-color-dark;
     font-weight: bold;
   }
 

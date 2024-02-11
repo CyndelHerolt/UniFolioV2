@@ -1,8 +1,6 @@
 #body {
   background: $bg-color;
 
-  .card {
-    
   header {
     position: fixed;
     z-index: 1;
@@ -13,6 +11,7 @@
 
     }
   }
+
   footer {
     position: absolute;
     bottom: 0;
@@ -37,6 +36,7 @@
     top: 0;
     left: 0;
   }
+
   .bg-banner-bottom {
     background-color: $secondary-color;
     width: 100%;
@@ -75,20 +75,21 @@
     color: $primary-color;
 
     .form-header {
-    margin-bottom: 25px;
-  }
+      margin-bottom: 25px;
+    }
 
-  .form-footer {
-    margin: 15px 0;
-  }
+    .form-footer {
+      margin: 15px 0;
+    }
 
-  .form-title {
-    font-size: 1.5rem;
-    color: $primary-color-dark;
-    font-weight: bold;
-  }
+    .form-title {
+      font-size: 1.5rem;
+      color: $primary-color-dark;
+      font-weight: bold;
+    }
 
-  .form-input-group {
-    margin: 10px 0;
+    .form-input-group {
+      margin: 10px 0;
+    }
   }
 }

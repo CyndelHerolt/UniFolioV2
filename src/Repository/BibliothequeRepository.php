@@ -21,6 +21,15 @@ class BibliothequeRepository extends ServiceEntityRepository
         parent::__construct($registry, Bibliotheque::class);
     }
 
+    public function save(Bibliotheque $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Bibliotheque[] Returns an array of Bibliotheque objects
 //     */

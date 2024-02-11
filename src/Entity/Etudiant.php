@@ -36,7 +36,7 @@ class Etudiant
     private ?string $bio = null;
 
     #[ORM\Column]
-    private ?int $opt_alt_stage = null;
+    private ?int $opt_alt_stage = 0;
 
     #[ORM\Column(nullable: true)]
     private ?int $annee_sortie = null;

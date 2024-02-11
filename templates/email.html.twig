@@ -8,31 +8,31 @@
 {% endblock %}
 
 {% block body %}
-{#    <div id="emailBody" style="padding: 20px; text-align: left; color: black;">#}
-{#        {% if user is not null %}#}
-{#            <p>Bonjour {{ user.prenom }}</p>#}
-{#        {% endif %}#}
-{#        {{ email_message|raw }}#}
-{#        {% if email_button == 'reset_password' %}#}
+    <div id="emailBody" style="padding: 20px; text-align: left; color: black;">
+        {% if user is not null %}
+            <p>Bonjour {{ user.prenom }}</p>
+        {% endif %}
+        {{ email_message|raw }}
+        {% if email_button == 'reset_password' %}
 {#            <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">#}
-{#                <button>#}
-{#                    Réinitialiser mon mot de passe#}
-{#                </button>#}
+                <button>
+                    Réinitialiser mon mot de passe
+                </button>
 {#            </a>#}
-{#        {% elseif email_button == 'confirm_email' %}#}
-{#            <a href="{{ confirm_link }}">#}
-{#                <button>#}
-{#                    Activation du compte UniFolio#}
-{#                </button>#}
-{#            </a>#}
-{#        {% elseif email_button == 'inscription' %}#}
-{#            <a href="https://portfolio.iut-troyes.univ-reims.fr/users/inscription">#}
-{#                <button>#}
-{#                    Créer mon compte#}
-{#                </button>#}
-{#            </a>#}
-{#        {% endif %}#}
-{#    </div>#}
+        {% elseif email_button == 'confirm_email' %}
+            <a href="{{ confirm_link }}">
+                <button>
+                    Activation du compte UniFolio
+                </button>
+            </a>
+        {% elseif email_button == 'inscription' %}
+            <a href="https://portfolio.iut-troyes.univ-reims.fr/users/inscription">
+                <button>
+                    Créer mon compte
+                </button>
+            </a>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block footer %}

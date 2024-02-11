@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column]
-    private ?bool $is_verified = null;
+    private ?bool $is_verified = false;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Etudiant $etudiant = null;

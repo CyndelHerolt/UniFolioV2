@@ -35,12 +35,17 @@
                         </div>
                         <div class="form-input-group">
                             {{ form_row(registrationForm.plainPassword) }}
+                            {% if registrationForm.plainPassword.vars.errors|length > 0 %}
+                                <div class="invalid-feedback">
+                                    {{ registrationForm.plainPassword.vars.errors|first.message }}
+                                </div>
+                            {% endif %}
                         </div>
                         <div class="form-input-group">
                             <label for="pwd2">
                                 Saisir de nouveau le mot de passe
                             </label>
-                            <input class="form-control" type="text" name="pwd2" id="pwd2" placeholder="">
+                            <input class="form-control" type="password" name="pwd2" id="pwd2" placeholder="">
                         </div>
                         <div class="form-input-group">
                             {{ form_row(registrationForm.agreeTerms) }}
@@ -51,8 +56,6 @@
                             <p class="text-center form-text">Vous êtes déjà inscrit ? <a href="{{ path('app_login') }}">Connexion</a></p>
                         </div>
                     </div>
-
-
                 </article>
             </div>
         </div>

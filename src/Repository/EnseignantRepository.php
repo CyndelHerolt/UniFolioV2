@@ -21,6 +21,15 @@ class EnseignantRepository extends ServiceEntityRepository
         parent::__construct($registry, Enseignant::class);
     }
 
+    public function save(Enseignant $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Enseignant[] Returns an array of Enseignant objects
 //     */

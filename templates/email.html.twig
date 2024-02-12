@@ -1,0 +1,42 @@
+{% block header %}
+    <div id="emailHeader" style="background-color: #6F18AD26; padding: 20px; text-align: center; color: black;">
+        <img style="width: 150px; height: 150px" src="https://portfolio.iut-troyes.univ-reims.fr/logo.png"
+             alt="UniFolio Logo">
+        <h1>{{ 'UniFolio' }}</h1>
+        <h2>{{ email_subject }}</h2>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div id="emailBody" style="padding: 20px; text-align: left; color: black;">
+        {% if user is not null %}
+            <p>Bonjour {{ user.prenom }}</p>
+        {% endif %}
+        {{ email_message|raw }}
+        {% if email_button == 'reset_password' %}
+{#            <a href="{{ url('app_reset_password', {token: resetToken.token}) }}">#}
+                <button>
+                    Réinitialiser mon mot de passe
+                </button>
+{#            </a>#}
+        {% elseif email_button == 'confirm_email' %}
+            <a href="{{ confirm_link }}">
+                <button>
+                    Activation du compte UniFolio
+                </button>
+            </a>
+        {% elseif email_button == 'inscription' %}
+            <a href="https://portfolio.iut-troyes.univ-reims.fr/users/inscription">
+                <button>
+                    Créer mon compte
+                </button>
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <div id="emailFooter" style="background-color: #6F18AD26; padding: 20px; text-align: center; color: black;">
+        <p>En cas de problème, envoyez un mail à portfolio.iut-troyes.univ-reims.fr</p>
+    </div>
+{% endblock %}

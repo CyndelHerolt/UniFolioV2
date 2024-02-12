@@ -13,7 +13,32 @@
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
-<body>
-{% block body %}{% endblock %}
+
+<body id="body" class="vh-100">
+<header>
+    {% block header %}
+    {% endblock %}
+    {% include('partials/_menu_public.html.twig') %}
+</header>
+<main class="vh-100">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert {% if label is defined %}alert-{{ label }}{% else %}alert-warning{% endif %} alert-dismissible fade show alert-popup"
+                 role="alert"
+                style="z-index: 10">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% block main %}
+
+    {% endblock %}
+</main>
+<footer>
+    {% block footer %}
+    {% endblock %}
+    {% include('partials/_footer.html.twig') %}
+</footer>
 </body>
 </html>

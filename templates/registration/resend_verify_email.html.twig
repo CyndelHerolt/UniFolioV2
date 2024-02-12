@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Vérification de compte{% endblock %}
+
+{% block body %}
+    <div class="content-container account">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+{#                <li class="breadcrumb-item"><a href="{{ path('app_accueil') }}">Accueil</a></li>#}
+                <li class="breadcrumb-item active" aria-current="page">Vérification de compte</li>
+            </ol>
+        </nav>
+        <div class="row">
+            <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
+                <h1>Vérification de votre compte</h1>
+                <form action="{{ path('app_verify_resend_email') }}" method="post">
+                    <div class="form-group">
+                        <label for="email-univ" class="form-label">adresse mail</label>
+                        <input type="email" id="email-univ" name="mail-univ" class="form-control">
+                        <div>
+                            <small>
+                                Veuillez renseigner votre adresse mail universitaire.
+                            </small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Envoyer</button>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <div class="form-group">
+                        <p><a href="{{ path('app_login') }}">Retour au formulaire de Connexion</a></p>
+                        <p><a href="{{ path('app_register') }}">Retour au formulaire d'Inscription</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

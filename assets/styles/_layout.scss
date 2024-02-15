@@ -1,5 +1,13 @@
+* {
+  font-size: small;
+}
+
 #body {
   background: $bg-color;
+
+  .row {
+    width: 100%;
+  }
 
   header {
     position: fixed;
@@ -55,11 +63,11 @@
 
     .corner-img {
       position: absolute;
-      top: -75px;
-      left: -75px;
+      top: -60px;
+      left: -60px;
 
       img {
-        width: 40%;
+        width: 35%;
       }
     }
   }
@@ -90,6 +98,79 @@
 
     .form-input-group {
       margin: 10px 0;
+    }
+  }
+
+  .panel_link {
+    text-decoration: none;
+    color: $black;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  .panel {
+
+    .panel-btn-dashboard {
+      margin-bottom: 100px;
+    }
+
+    .illu_dashboard {
+      position: absolute;
+      bottom: -20px;
+      width: 150px;
+    }
+
+    .illu_panel {
+      width: 100px;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .panel_content {
+      margin: 20px 0 20px 20px;
+    }
+  }
+
+  .panel_primary {
+    background-color: $primary-color;
+    color: $white;
+  }
+
+  .panel_secondary {
+    background-color: $secondary-color;
+    color: $black;
+  }
+
+  .panel_tertiary {
+    background-color: $tertiary-color;
+    color: $black;
+  }
+
+  .btn-primary-color {
+    background-color: $primary-color;
+    color: $white;
+    border: none;
+    padding: 5px 15px;
+
+    &:hover {
+      background-color: darken($primary-color, 3%);
+    }
+  }
+
+  .btn-secondary-color {
+    background-color: $quartenary-color;
+    color: $text-dark-color;
+    border: none;
+    padding: 5px 15px;
+
+    &:hover {
+      background-color: darken($quartenary-color, 3%);
     }
   }
 }

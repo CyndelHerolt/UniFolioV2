@@ -8,25 +8,46 @@
 {% block main %}
 
     <section class="container d-flex justify-content-center align-items-center h-100">
-        <div class="bg-banner-top"></div>
         <div class="row justify-content-center">
-            <h1>Dashboard</h1>
-            <div class="card flex-row col-6">
-                DASHBOARD
+            <div class="card col-3 panel panel_secondary flex-column align-items-center justify-content-center p-5 m-2">
+                <h2 class="text-uppercase panel-title">dashboard</h2>
+                <ul>
+                    <li>Tes portfolios et traces</li>
+                    <li>Des retours pédagogiques</li>
+                    <li>Un suivi de l'évaluation</li>
+                </ul>
+                <a href="" class="panel-btn-dashboard">
+                    <button class="btn btn-primary btn-secondary-color text-uppercase">
+                        Accéder
+                    </button>
+                </a>
+                <img class="illu_dashboard" src="{{ asset('images/dashboard.png') }}" alt="">
             </div>
-            <div class="row">
-                <div class="card col-4">
-                    DASHBOARD
+            <div class="flex-column col-4">
+                <div class="row">
+                    <a class="card panel panel_primary g-2 p-3 m-2 col-5 panel_link d-flex flex-column align-items-center justify-content-between" href="">
+                        <img class="illu_panel" src="{{ asset('images/portfolio.png') }}" alt="">
+                        <h2 class="text-uppercase panel-title">créer un portfolio</h2>
+                    </a>
+                    <a class="card panel panel_secondary g-2 p-3 m-2 col-5 panel_link d-flex flex-column align-items-center justify-content-between" href="">
+                        <img class="illu_panel" src="{{ asset('images/trace.png') }}" alt="">
+                        <h2 class="text-uppercase panel-title">créer une trace</h2>
+                    </a>
                 </div>
-                <div class="card col-4">
-                    DASHBOARD
-                </div>
-                <div class="card col-4">
-                    DASHBOARD
+                <div class="row">
+                    <div class="card panel panel_tertiary g-2 p-3 m-2 col-12 d-flex flex-row align-items-center">
+                        <img class="illu_panel" src="{{ asset('images/documentation.png') }}" alt="">
+                        <div class="panel_content">
+                            <h2 class="text-uppercase panel-title">Comment ça marche ?</h2>
+                            <p>Explore la documentation</p>
+                            <button class="btn btn-primary btn-primary-color text-uppercase">
+                                Découvrir
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="bg-banner-bottom"></div>
 
     </section>
 {% endblock %}

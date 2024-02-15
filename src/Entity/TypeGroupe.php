@@ -19,7 +19,7 @@ class TypeGroupe
     private ?string $libelle = null;
 
     #[ORM\Column]
-    private ?bool $mutualise = null;
+    private ?bool $mutualise = false;
 
     #[ORM\Column]
     private ?int $ordreSemestre = null;

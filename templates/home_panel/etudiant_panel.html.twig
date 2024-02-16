@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Home{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+
+    <section class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <img src="{{ asset('images/unifolio_logo.png') }}" alt="logo unifolio" class="logo_panel">
+        <div class="row justify-content-center">
+            <div class="card col-lg-3 col-12 panel panel_secondary flex-column align-items-center justify-content-center p-5 m-2">
+                <h2 class="text-uppercase panel-title">dashboard</h2>
+                <ul>
+                    <li>Tes portfolios et traces</li>
+                    <li>Des retours pédagogiques</li>
+                    <li>Un suivi de l'évaluation</li>
+                </ul>
+                <a href="" class="panel-btn-dashboard">
+                    <button class="btn btn-primary btn-secondary-color text-uppercase">
+                        Accéder
+                    </button>
+                </a>
+                <img class="illu_dashboard" src="{{ asset('images/dashboard.png') }}" alt="">
+            </div>
+            <div class="flex-column col-lg-4 col-12">
+                <div class="row">
+                    <a class="card panel panel_primary g-2 p-3 m-2 col-lg-5 panel_link d-flex flex-column align-items-center justify-content-between"
+                       href="">
+                        <img class="illu_panel" src="{{ asset('images/portfolio.png') }}" alt="">
+                        <h2 class="text-uppercase panel-title">créer un portfolio</h2>
+                    </a>
+                    <a class="card panel panel_secondary g-2 p-3 m-2 col-lg-5 panel_link d-flex flex-column align-items-center justify-content-between"
+                       href="">
+                        <img class="illu_panel" src="{{ asset('images/trace.png') }}" alt="">
+                        <h2 class="text-uppercase panel-title">créer une trace</h2>
+                    </a>
+                </div>
+                <div class="row">
+                    <div class="card panel panel_tertiary g-2 p-3 m-2 col-lg-12 d-flex flex-row align-items-center">
+                        <img class="illu_panel" src="{{ asset('images/documentation.png') }}" alt="">
+                        <div class="panel_content">
+                            <h2 class="text-uppercase panel-title">Comment ça marche ?</h2>
+                            <p>Explore la documentation</p>
+                            <a class="nav-link" href="https://portfolio-doc.iut-troyes.univ-reims.fr" target="_blank">
+                                <button class="btn btn-primary btn-primary-color text-uppercase">
+                                    Découvrir
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+{% endblock %}

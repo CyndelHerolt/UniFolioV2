@@ -1,0 +1,24 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_content %}
+
+    <a href="{{ path('app_synchro_intranet_structure') }}">
+        <button type="button" class="btn btn-primary">Synchronisation Intranet - Structure</button>
+    </a>
+    <br>
+    <hr>
+    <a href="{{ path('app_synchro_intranet_referentiel') }}">
+        <button type="button" class="btn btn-primary">Synchronisation Intranet - Référentiel</button>
+    </a>
+    <br>
+    <hr>
+    <a href="{{ path('app_update_intranet_enseignant') }}">
+        <button type="button" class="btn btn-primary">Synchronisation Enseignants</button>
+    </a>
+    <br>
+    <hr>
+    <a href="{{ path('app_update_intranet_etudiant') }}">
+        <button type="button" class="btn btn-primary">Synchronisation Etudiants</button>
+    </a>
+
+{% endblock %}

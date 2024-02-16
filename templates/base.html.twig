@@ -13,7 +13,39 @@
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
-<body>
-{% block body %}{% endblock %}
+
+<body id="body">
+<header>
+    {% block header %}
+    {% endblock %}
+
+    {% if app.user == null %}
+    {% include('partials/menu/_menu_public.html.twig') %}
+    {% elseif app.user.etudiant != null %}
+    {% include('partials/menu/_menu_etudiant.html.twig') %}
+    {% elseif app.user.enseignant != null %}
+    {% include('partials/menu/_menu_enseignant.html.twig') %}
+    {% endif %}
+</header>
+<main class="min-vh-100">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert {% if label is defined %}alert-{{ label }}{% else %}alert-warning{% endif %} alert-dismissible fade show alert-popup"
+                 role="alert"
+                style="z-index: 10">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% block main %}
+
+    {% endblock %}
+</main>
+<footer>
+    {% block footer %}
+    {% endblock %}
+    {% include('partials/_footer.html.twig') %}
+</footer>
 </body>
 </html>

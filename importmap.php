@@ -27,4 +27,17 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    '@popperjs/core' => [
+        'version' => '2.11.8',
+    ],
+    'bootstrap/dist/css/bootstrap.min.css' => [
+        'version' => '5.3.2',
+        'type' => 'css',
+    ],
+    'bootstrap' => [
+        'version' => '5.3.2',
+    ],
+    'bootstrap/dist/js/bootstrap.bundle.min.js' => [
+        'version' => '5.3.2',
+    ],
 ];

@@ -15,21 +15,6 @@ class ApcNiveau
     #[ORM\Column]
     private ?int $id = null;
 
-    public function setId(?int $id): void
-    {
-        $this->id = $id;
-    }
-
-    public function setApcParcours(Collection $apcParcours): void
-    {
-        $this->apcParcours = $apcParcours;
-    }
-
-    public function setApcApprentissageCritiques(Collection $apcApprentissageCritiques): void
-    {
-        $this->apcApprentissageCritiques = $apcApprentissageCritiques;
-    }
-
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
@@ -37,7 +22,7 @@ class ApcNiveau
     private ?int $ordre = null;
 
     #[ORM\ManyToOne(inversedBy: 'apcNiveaux')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Annee $annee = null;
 
     #[ORM\ManyToMany(targetEntity: ApcParcours::class, inversedBy: 'apcNiveaux')]
@@ -59,6 +44,21 @@ class ApcNiveau
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function setApcParcours(Collection $apcParcours): void
+    {
+        $this->apcParcours = $apcParcours;
+    }
+
+    public function setApcApprentissageCritiques(Collection $apcApprentissageCritiques): void
+    {
+        $this->apcApprentissageCritiques = $apcApprentissageCritiques;
     }
 
     public function getLibelle(): ?string

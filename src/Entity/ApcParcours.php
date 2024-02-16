@@ -44,7 +44,7 @@ class ApcParcours
     #[ORM\Column]
     private ?bool $actif = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $formationContinue = null;
 
     #[ORM\ManyToOne(inversedBy: 'apcParcours')]

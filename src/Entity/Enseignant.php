@@ -37,7 +37,7 @@
 
 
         #[ORM\Column(length: 75)]
-        private ?string $userame = null;
+        private ?string $username = null;
 
         #[ORM\OneToOne(mappedBy: 'enseignant', cascade: ['persist', 'remove'])]
         private ?User $user= null;
@@ -139,9 +139,9 @@
             return $this->username;
         }
 
-        public function setUsername(string $userame): static
+        public function setUsername(string $username): static
         {
-            $this->username = $userame;
+            $this->username = $username;
 
             return $this;
         }

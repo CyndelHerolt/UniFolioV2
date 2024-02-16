@@ -18,14 +18,14 @@ class Groupe
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(length: 50, nullable: true)]
     private ?string $codeApogee = null;
 
     #[ORM\Column]
     private ?int $ordre = null;
 
     #[ORM\ManyToOne(inversedBy: 'groupes')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?TypeGroupe $typeGroupe = null;
 
     #[ORM\ManyToOne(inversedBy: 'groupes')]

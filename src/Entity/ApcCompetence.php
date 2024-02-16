@@ -34,14 +34,14 @@ class ApcCompetence
     #[ORM\Column(length: 20)]
     private ?string $couleur = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $code = null;
 
-    #[ORM\Column(length: 20)]
+    #[ORM\Column(length: 20, nullable: true)]
     private ?string $ue = null;
 
     #[ORM\ManyToOne(inversedBy: 'apcCompetences')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ApcReferentiel $apcReferentiel = null;
 
     #[ORM\OneToMany(targetEntity: ApcNiveau::class, mappedBy: 'apcCompetence')]

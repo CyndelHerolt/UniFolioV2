@@ -21,7 +21,7 @@ class TypeGroupe
     #[ORM\Column]
     private ?bool $mutualise = false;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $ordreSemestre = null;
 
     #[ORM\Column(length: 2)]

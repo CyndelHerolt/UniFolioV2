@@ -21,7 +21,6 @@
             </small>
             <br>
             <small>Publié le : {{ this.portfolio.dateCreation|date('d-m-Y') }}</small>
-            <hr>
             <p>{{ this.portfolio.description|slice(0, 50) }}
                 {% if this.portfolio.description|length > 50 %}
                     ...

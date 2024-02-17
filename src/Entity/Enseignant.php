@@ -42,10 +42,18 @@
         #[ORM\OneToOne(mappedBy: 'enseignant', cascade: ['persist', 'remove'])]
         private ?User $user= null;
 
+        #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'enseignant')]
+        private Collection $validations;
+
+        #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'enseignant', orphanRemoval: true)]
+        private Collection $commentaires;
+
         public function __construct()
         {
             $this->departementEnseignants = new ArrayCollection();
 //            $this->departements = new ArrayCollection();
+$this->validations = new ArrayCollection();
+$this->commentaires = new ArrayCollection();
         }
 
 
@@ -164,6 +172,66 @@
             }
 
             $this->user = $user;
+
+            return $this;
+        }
+
+        /**
+         * @return Collection<int, Validation>
+         */
+        public function getValidations(): Collection
+        {
+            return $this->validations;
+        }
+
+        public function addValidation(Validation $validation): static
+        {
+            if (!$this->validations->contains($validation)) {
+                $this->validations->add($validation);
+                $validation->setEnseignant($this);
+            }
+
+            return $this;
+        }
+
+        public function removeValidation(Validation $validation): static
+        {
+            if ($this->validations->removeElement($validation)) {
+                // set the owning side to null (unless already changed)
+                if ($validation->getEnseignant() === $this) {
+                    $validation->setEnseignant(null);
+                }
+            }
+
+            return $this;
+        }
+
+        /**
+         * @return Collection<int, Commentaire>
+         */
+        public function getCommentaires(): Collection
+        {
+            return $this->commentaires;
+        }
+
+        public function addCommentaire(Commentaire $commentaire): static
+        {
+            if (!$this->commentaires->contains($commentaire)) {
+                $this->commentaires->add($commentaire);
+                $commentaire->setEnseignant($this);
+            }
+
+            return $this;
+        }
+
+        public function removeCommentaire(Commentaire $commentaire): static
+        {
+            if ($this->commentaires->removeElement($commentaire)) {
+                // set the owning side to null (unless already changed)
+                if ($commentaire->getEnseignant() === $this) {
+                    $commentaire->setEnseignant(null);
+                }
+            }
 
             return $this;
         }

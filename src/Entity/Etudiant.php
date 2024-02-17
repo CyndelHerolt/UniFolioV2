@@ -57,10 +57,18 @@ class Etudiant
     #[ORM\OneToMany(targetEntity: Bibliotheque::class, mappedBy: 'etudiant')]
     private Collection $bibliotheques;
 
+    #[ORM\OneToMany(targetEntity: PortfolioUniv::class, mappedBy: 'etudiant', orphanRemoval: true)]
+    private Collection $portfolioUnivs;
+
+    #[ORM\OneToMany(targetEntity: PortfolioPerso::class, mappedBy: 'etudiant', orphanRemoval: true)]
+    private Collection $portfolioPersos;
+
     public function __construct()
     {
         $this->groupe = new ArrayCollection();
         $this->bibliotheques = new ArrayCollection();
+        $this->portfolioUnivs = new ArrayCollection();
+        $this->portfolioPersos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -255,6 +263,66 @@ class Etudiant
             // set the owning side to null (unless already changed)
             if ($bibliotheque->getEtudiant() === $this) {
                 $bibliotheque->setEtudiant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PortfolioUniv>
+     */
+    public function getPortfolioUnivs(): Collection
+    {
+        return $this->portfolioUnivs;
+    }
+
+    public function addPortfolioUniv(PortfolioUniv $portfolioUniv): static
+    {
+        if (!$this->portfolioUnivs->contains($portfolioUniv)) {
+            $this->portfolioUnivs->add($portfolioUniv);
+            $portfolioUniv->setEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioUniv(PortfolioUniv $portfolioUniv): static
+    {
+        if ($this->portfolioUnivs->removeElement($portfolioUniv)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioUniv->getEtudiant() === $this) {
+                $portfolioUniv->setEtudiant(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PortfolioPerso>
+     */
+    public function getPortfolioPersos(): Collection
+    {
+        return $this->portfolioPersos;
+    }
+
+    public function addPortfolioPerso(PortfolioPerso $portfolioPerso): static
+    {
+        if (!$this->portfolioPersos->contains($portfolioPerso)) {
+            $this->portfolioPersos->add($portfolioPerso);
+            $portfolioPerso->setEtudiant($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioPerso(PortfolioPerso $portfolioPerso): static
+    {
+        if ($this->portfolioPersos->removeElement($portfolioPerso)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioPerso->getEtudiant() === $this) {
+                $portfolioPerso->setEtudiant(null);
             }
         }
 

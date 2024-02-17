@@ -35,7 +35,7 @@ class RegistrationFormType extends AbstractType
                 'attr' => [
                     'class' => 'form-check-input'
                 ],
-                'label' => 'J\'accepte les conditions d\'utilisation'
+                'label' => false
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
@@ -57,7 +57,7 @@ class RegistrationFormType extends AbstractType
                     ]),
                 ],
                 'label' => 'Mot de passe',
-                'help' => 'Votre mot de passe doit contenir au moins 8 caractères.'
+                'help' => 'Votre mot de passe doit contenir au minimum 6 caractères dont au moins un chiffre et un caractère spécial de la liste [#?!@$%^&*-].'
             ]);
     }
 

@@ -6,13 +6,65 @@
     {% endblock %}
 
 {% block main %}
-
-    <section class="container d-flex justify-content-center align-items-center h-100">
-        <div class="bg-banner-top"></div>
-        <div class="row justify-content-center">
-            <h1>Dashboard</h1>
+    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+        </ol>
+    </nav>
+    <section class="container min-vh-100 section-pt section_banner">
+        <div class="row">
+            <div class="col-lg-4 col-12">
+                {#                <div class="card p-4 p-4 col-lg-10 col-12 h-100"> #}
+                <a class="card p-4 col-lg-10 col-12 h-100 panel_link"
+                   href="">
+                    <div class="card-header">
+                        <div class="corner-img-card">
+                            <img src="{{ asset('images/portfolio.png') }}" alt="illustration d'inscription">
+                        </div>
+                        <h2 class="card-title text-uppercase text-center pl-3">Créer un portfolio universitaire</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Créez votre portfolio universitaire articulé autour des compétences de votre formation.</p>
+                    </div>
+                </a>
+                {#                </div> #}
+            </div>
+            <div class="col-lg-4 col-12">
+                {#                <div class="card p-4 col-lg-10 col-12 h-100"> #}
+                <a class="card p-4 col-lg-10 col-12 h-100 panel_link"
+                   href="">
+                    <div class="card-header">
+                        <div class="corner-img-card">
+                            <img src="{{ asset('images/trace.png') }}" alt="illustration d'inscription">
+                        </div>
+                        <h2 class="card-title text-uppercase text-center">Créer une trace</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Rédigez de brèves traces qui illustreront l'acquisition de vos compétences universitaires au
+                            sein de votre portfolio universitaire.</p>
+                    </div>
+                </a>
+                {#                </div> #}
+            </div>
+            <div class="col-lg-4 col-12">
+                {#                <div class="card p-4 col-lg-10 col-12 h-100"> #}
+                <a class="card p-4 col-lg-10 col-12 h-100 panel_link"
+                   href="">
+                    <div class="card-header">
+                        <div class="corner-img-card">
+                            <img src="{{ asset('images/portfolio_perso.png') }}" alt="illustration d'inscription">
+                        </div>
+                        <h2 class="card-title text-uppercase text-center">Créer un portfolio de présentation</h2>
+                    </div>
+                    <div class="card-body">
+                        <p>Construisez un portfolio à votre image à l’aide de l’éditeur. Ici, pas de compétences ni
+                            d’évaluation.</p>
+                    </div>
+                </a>
+                {#                </div> #}
+            </div>
         </div>
-        <div class="bg-banner-bottom"></div>
 
     </section>
 {% endblock %}

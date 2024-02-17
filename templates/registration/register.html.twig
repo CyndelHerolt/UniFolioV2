@@ -7,8 +7,7 @@
 
 {% block main %}
 
-    <section class="container d-flex justify-content-center align-items-center min-vh-100">
-        <div class="bg-banner-top"></div>
+    <section class="container d-flex justify-content-center align-items-center min-vh-100 pt-5 section_banner">
         <div class="row justify-content-center">
             <div class="card flex-row w-50">
                 <article class="p-5">
@@ -48,7 +47,8 @@
                             <input class="form-control" type="password" name="pwd2" id="pwd2" placeholder="">
                         </div>
                         <div class="form-input-group">
-                            {{ form_row(registrationForm.agreeTerms) }}
+                            <label for="registration_form_agreeTerms" class="required">J'accepte les <a href="">conditions d'utilisation</a></label>
+                            {{ form_widget(registrationForm.agreeTerms) }}
                         </div>
                         <button class="btn btn-primary align-self-center" type="submit">S'inscrire</button>
                         {{ form_end(registrationForm) }}
@@ -59,6 +59,5 @@
                 </article>
             </div>
         </div>
-        <div class="bg-banner-bottom"></div>
     </section>
 {% endblock %}

@@ -124,6 +124,13 @@
                     </div>
                 </div>
             </div>
+            <ul>
+                {% for trace in typesTrace %}
+                    <li>
+                        <a href=""><i class="{{ constant('ICON', trace) }}"></i>{{ trace.display }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </article>
     </section>
 {% endblock %}

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Components\Trace\TraceRegistry;
 use App\Repository\BibliothequeRepository;
 use App\Repository\PortfolioPersoRepository;
 use App\Repository\PortfolioUnivRepository;
@@ -18,7 +19,8 @@ class DashboardEtudiantController extends AbstractController
         private BibliothequeRepository $bibliothequeRepository,
         private TraceRepository $traceRepository,
         private PortfolioUnivRepository $portfolioUnivRepository,
-        private PortfolioPersoRepository $portfolioPersoRepository
+        private PortfolioPersoRepository $portfolioPersoRepository,
+        private TraceRegistry $traceRegistry,
     )
     {
 
@@ -70,10 +72,13 @@ class DashboardEtudiantController extends AbstractController
         $traces = array_slice($traces, 0, 4);
         $portfolios = array_slice($portfolios, 0, 4);
 
+        $typesTrace = $this->traceRegistry->getTypeTraces();
+
         return $this->render('dashboard_etudiant/index.html.twig', [
             'retourPedagogiques' => $retourPedagogiques,
             'traces' => $traces,
             'portfolios' => $portfolios,
+            'typesTrace' => $typesTrace,
         ]);
     }
 }

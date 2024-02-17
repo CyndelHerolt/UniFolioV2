@@ -43,11 +43,15 @@ class Annee
     #[ORM\OneToMany(targetEntity: Bibliotheque::class, mappedBy: 'annee')]
     private Collection $bibliotheques;
 
+    #[ORM\OneToMany(targetEntity: PortfolioUniv::class, mappedBy: 'annee')]
+    private Collection $portfolioUnivs;
+
     public function __construct()
     {
         $this->semestres = new ArrayCollection();
         $this->apcNiveaux = new ArrayCollection();
         $this->bibliotheques = new ArrayCollection();
+        $this->portfolioUnivs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -231,6 +235,36 @@ class Annee
             // set the owning side to null (unless already changed)
             if ($bibliotheque->getAnnee() === $this) {
                 $bibliotheque->setAnnee(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PortfolioUniv>
+     */
+    public function getPortfolioUnivs(): Collection
+    {
+        return $this->portfolioUnivs;
+    }
+
+    public function addPortfolioUniv(PortfolioUniv $portfolioUniv): static
+    {
+        if (!$this->portfolioUnivs->contains($portfolioUniv)) {
+            $this->portfolioUnivs->add($portfolioUniv);
+            $portfolioUniv->setAnnee($this);
+        }
+
+        return $this;
+    }
+
+    public function removePortfolioUniv(PortfolioUniv $portfolioUniv): static
+    {
+        if ($this->portfolioUnivs->removeElement($portfolioUniv)) {
+            // set the owning side to null (unless already changed)
+            if ($portfolioUniv->getAnnee() === $this) {
+                $portfolioUniv->setAnnee(null);
             }
         }
 

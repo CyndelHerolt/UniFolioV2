@@ -1,0 +1,35 @@
+<div{{ attributes }}>
+    <div class="my_card">
+        <div class="card_header">
+            <h3 class="card-title">{{ this.portfolio.libelle }}</h3>
+        </div>
+        <div class="card_body">
+            <small>
+                {% if this.portfolio.annee %}
+                    Portfolio universitaire
+                {% else %}
+                    Portfolio personnel
+                {% endif %}
+            </small>
+            •
+            <small>
+                {% if this.portfolio.visibilite == 1 %}
+                    Public
+                {% else %}
+                    Privé
+                {% endif %}
+            </small>
+            <br>
+            <small>Publié le : {{ this.portfolio.dateCreation|date('d-m-Y') }}</small>
+            <hr>
+            <p>{{ this.portfolio.description|slice(0, 50) }}
+                {% if this.portfolio.description|length > 50 %}
+                    ...
+                {% endif %}
+            </p>
+            <a href="">
+                <button class="btn btn-primary-color">Voir</button>
+            </a>
+        </div>
+    </div>
+</div>

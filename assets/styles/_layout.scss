@@ -36,6 +36,10 @@
     width: 100%;
   }
 
+  .content-article {
+    margin-bottom: 50px;
+  }
+
   header {
     position: fixed;
     z-index: 1;
@@ -44,6 +48,9 @@
     .navbar {
       background-color: $white;
 
+      .navbar-brand {
+        width: 25px;
+      }
     }
   }
 
@@ -72,6 +79,7 @@
 
   .section-pt {
     padding-top: 150px;
+    padding-bottom: 75px;
   }
 
   .bg-banner-top {
@@ -91,6 +99,21 @@
     bottom: 0;
     left: 0;
     z-index: -1;
+  }
+
+  .my_card {
+    border: solid 1px #e0e0e0;
+    border-radius: 15px;
+
+    .card_header {
+        background-color: lighten($primary-color, 20%);
+        border-radius: 15px 15px 0 0;
+        padding: 10px 25px;
+    }
+
+    .card_body {
+        padding: 10px 25px;
+    }
   }
 
   .card {

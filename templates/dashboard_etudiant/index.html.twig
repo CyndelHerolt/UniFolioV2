@@ -12,13 +12,12 @@
             <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
         </ol>
     </nav>
-    <section class="container min-vh-100 section-pt section_banner">
-        <div class="row">
-            <div class="col-lg-4 col-12">
-                {#                <div class="card p-4 p-4 col-lg-10 col-12 h-100"> #}
-                <a class="card p-4 col-lg-10 col-12 h-100 panel_link"
+    <section class="container min-vh-100 section-pt">
+        <article class="row content-article">
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <a class="card p-4 col-lg-11 col-12 h-100 panel_link"
                    href="">
-                    <div class="card-header">
+                    <div class="card-header ps-5">
                         <div class="corner-img-card">
                             <img src="{{ asset('images/portfolio.png') }}" alt="illustration d'inscription">
                         </div>
@@ -28,13 +27,11 @@
                         <p>Créez votre portfolio universitaire articulé autour des compétences de votre formation.</p>
                     </div>
                 </a>
-                {#                </div> #}
             </div>
-            <div class="col-lg-4 col-12">
-                {#                <div class="card p-4 col-lg-10 col-12 h-100"> #}
-                <a class="card p-4 col-lg-10 col-12 h-100 panel_link"
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <a class="card p-4 col-lg-11 col-12 h-100 panel_link"
                    href="">
-                    <div class="card-header">
+                    <div class="card-header ps-5">
                         <div class="corner-img-card">
                             <img src="{{ asset('images/trace.png') }}" alt="illustration d'inscription">
                         </div>
@@ -45,26 +42,88 @@
                             sein de votre portfolio universitaire.</p>
                     </div>
                 </a>
-                {#                </div> #}
             </div>
-            <div class="col-lg-4 col-12">
-                {#                <div class="card p-4 col-lg-10 col-12 h-100"> #}
-                <a class="card p-4 col-lg-10 col-12 h-100 panel_link"
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <a class="card p-4 col-lg-11 col-12 h-100 panel_link"
                    href="">
-                    <div class="card-header">
+                    <div class="card-header ps-5">
                         <div class="corner-img-card">
                             <img src="{{ asset('images/portfolio_perso.png') }}" alt="illustration d'inscription">
                         </div>
-                        <h2 class="card-title text-uppercase text-center">Créer un portfolio de présentation</h2>
+                        <h2 class="card-title text-uppercase text-center w-100">Créer un portfolio de présentation</h2>
                     </div>
                     <div class="card-body">
                         <p>Construisez un portfolio à votre image à l’aide de l’éditeur. Ici, pas de compétences ni
                             d’évaluation.</p>
                     </div>
                 </a>
-                {#                </div> #}
             </div>
-        </div>
+        </article>
 
+        <article class="row content-article">
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-11 h-100"
+                     href="">
+                    <div class="card-header">
+                        <h2 class="card-title text-center text-uppercase">Derniers retours pédagogiques</h2>
+                        <em>Les derniers commentaires et dernières validations de compétences.</em>
+                    </div>
+                    <div class="card-body d-flex justify-content-center">
+                        {% if retourPedagogiques is not empty %}
+                            {% for retour in retourPedagogiques %}
+                                <twig:RetourPedagogiqueCard/>
+                            {% endfor %}
+                        {% else %}
+                            <div class="d-flex justify-content-center align-items-center">
+                                {#                                <img src="{{ asset('images/loupe.png') }}" alt="" style="width: 25px"> #}
+                                <small class="text-center">Aucun retour pédagogique pour le moment.</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-11 h-100"
+                     href="">
+                    <div class="card-header">
+                        <h2 class="card-title text-center text-uppercase">Dernières traces créées</h2>
+                        <em>Les dernières traces que vous avez créées et les compétences associée.</em>
+                    </div>
+                    <div class="card-body d-flex justify-content-center">
+                        {% if traces is not empty %}
+                            {% for trace in traces %}
+                                <twig:TraceCard/>
+                            {% endfor %}
+                        {% else %}
+                            <div class="d-flex justify-content-center align-items-center">
+                                <small class="text-center">Aucune trace créée pour le moment.</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-11 h-100"
+                     href="">
+                    <div class="card-header">
+                        <h2 class="card-title text-center text-uppercase">Derniers portfolios créés</h2>
+                        <em>Vos derniers porfolios créés, universitaires et personnels.</em>
+                    </div>
+                    <div class="card-body d-flex justify-content-center">
+                        {% if portfolios is not empty %}
+                            {% for portfolio in portfolios %}
+                                <div class="col-12">
+                                    <twig:PortfolioCard id="{{ portfolio.id }}"/>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="d-flex justify-content-center align-items-center">
+                                <small class="text-center">Aucun portfolio créé pour le moment.</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </article>
     </section>
 {% endblock %}

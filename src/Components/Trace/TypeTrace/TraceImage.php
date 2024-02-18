@@ -14,9 +14,12 @@ class TraceImage extends AbstractTrace
 
     public const FORM = TraceImageType::class;
 
+    public const FORM_TEMPLATE = 'trace/form_types/_form_image.html.twig';
     public const ICON = 'bi bi-image';
 
     public const CONSTRAINT = 'Formats acceptés : jpg, jpeg, png, gif, svg, webp';
+
+    public const CLASS_NAME = self::class;
 
     public ?string $name = 'image';
 

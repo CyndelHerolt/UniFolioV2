@@ -1,0 +1,16 @@
+<turbo-frame id="trace-form-content">
+    {% if 'Image' in type %}
+        {% include('trace/form_types/_form_image.html.twig') %}
+    {% elseif 'Lien' in type %}
+        {% include('trace/form_types/_form_lien.html.twig') %}
+    {% elseif 'Video' in type %}
+        {% include('trace/form_types/_form_video.html.twig') %}
+    {% elseif 'Pdf' in type %}
+        {% include('trace/form_types/_form_pdf.html.twig') %}
+    {% endif %}
+</turbo-frame>
+
+
+{#{{ form_start(form) }}#}
+{#{{ form_widget(form) }}#}
+{#{{ form_end(form) }}#}

@@ -125,7 +125,7 @@ class TraceAbstractType extends AbstractType
                 ],
                 'label' => 'Commentaire',
                 'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => 'tinymce', 'placeholder' => '...', 'rows' => 10],
+                'attr' => ['class' => 'tinymce form-control', 'placeholder' => '...', 'rows' => 10],
                 'help' => 'Commentez votre trace pour justifier sa pertinence',
                 'mapped' => true,
                 'required' => true,

@@ -8,17 +8,16 @@
 
 namespace App\Components\Trace\Form;
 
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\Count;
 
-class TraceLienType extends TraceAbstractType
+class TraceLienType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        parent::buildForm($builder, $options);
-
         $builder
             ->add('contenu', CollectionType::class, [
                 'entry_type' => TextType::class,

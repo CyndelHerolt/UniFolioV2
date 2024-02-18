@@ -39,6 +39,14 @@ security:
 
 when@test:
     security:
+        access_control:
+            - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/inscription, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: /, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+            - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        firewalls:
+            main:
+                access_denied_handler: App\Security\AccessDeniedHandler
         password_hashers:
             # By default, password hashers are resource intensive and take time. This is
             # important to generate secure password hashes. In tests however, secure hashes

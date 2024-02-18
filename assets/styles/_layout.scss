@@ -2,12 +2,41 @@
   font-size: small;
 }
 
+.flatpickr-monthSelect-months {
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.flatpickr-rContainer {
+  width: 100%;
+}
+
+.flatpickr-monthSelect-month {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    border-radius: 5px;
+  cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: $secondary-color;
+    }
+
+}
+
 #body {
   //background: $bg-color;
   background-image: url("../images/gradient2.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 
   //.section_banner {
   //  &:before {
@@ -106,13 +135,13 @@
     border-radius: 15px;
 
     .card_header {
-        background-color: lighten($primary-color, 20%);
-        border-radius: 15px 15px 0 0;
-        padding: 10px 25px;
+      background-color: lighten($primary-color, 20%);
+      border-radius: 15px 15px 0 0;
+      padding: 10px 25px;
     }
 
     .card_body {
-        padding: 10px 25px;
+      padding: 10px 25px;
     }
   }
 
@@ -256,6 +285,43 @@
 
     &:hover {
       background-color: darken($secondary-color, 3%);
+    }
+  }
+
+  .types {
+    display: flex;
+    flex-wrap: nowrap; // Changez cette ligne
+    justify-content: space-evenly;
+    gap: 10px;
+    margin: 20px 0;
+
+    a {
+      flex-grow: 1; // Ajoutez cette ligne
+      text-decoration: none;
+      color: $black;
+      background-color: rgba(239, 239, 239, 0.5);
+      border: solid 2px #e0e0e0;
+      border-radius: 5px;
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+        justify-content: space-between;
+      align-items: start;
+
+      &:hover {
+        border: solid 2px $primary-color;
+        background-color: lighten($primary-color, 24%);
+
+        i {
+          color: $primary-color;
+        }
+      }
+
+      i {
+        background-color: $white;
+        padding: 5px;
+        border-radius: 5px;
+      }
     }
   }
 }

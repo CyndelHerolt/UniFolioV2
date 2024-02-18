@@ -10,6 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -86,7 +87,7 @@ class TraceAbstractType extends AbstractType
                 'required' => true,
             ])
             //----------------------------------------------------------------
-            ->add('dateRealisation', DateTimeType::class, [
+            ->add('dateRealisation', DateType::class, [
                 'data' => new \DateTimeImmutable(),
                 'constraints' => [
                     new NotBlank([
@@ -97,7 +98,7 @@ class TraceAbstractType extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Date de réalisation',
                 'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => "form-control"],
+                'attr' => ['class' => "form-control", 'id' => 'dateRealisation'],
                 'help' => 'Date à laquelle vous avez réalisé cette trace. A saisir au format mm-YYYY',
                 'required' => true,
                 'html5' => false,
@@ -124,7 +125,7 @@ class TraceAbstractType extends AbstractType
                 ],
                 'label' => 'Commentaire',
                 'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => 'tinymce', 'placeholder' => '...', 'rows' => 10],
+                'attr' => ['class' => 'tinymce form-control', 'placeholder' => '...', 'rows' => 10],
                 'help' => 'Commentez votre trace pour justifier sa pertinence',
                 'mapped' => true,
                 'required' => true,

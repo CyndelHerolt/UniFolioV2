@@ -41,4 +41,9 @@ class TraceRegistry
         $formInstance = new $formClass();
         return $formInstance;
     }
+
+//    public function getFormType($name): mixed
+//    {
+//        return $this->typesTrace[$name]::FORM;
+//    }
 }

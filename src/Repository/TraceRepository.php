@@ -21,6 +21,15 @@ class TraceRepository extends ServiceEntityRepository
         parent::__construct($registry, Trace::class);
     }
 
+    public function save(Trace $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Trace[] Returns an array of Trace objects
 //     */

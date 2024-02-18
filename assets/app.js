@@ -1,21 +1,17 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * This file will be included onto the page via the importmap() Twig function,
- * which should already be in your base.html.twig.
- */
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './styles/app.css'; // Assurez-vous que ce chemin est correct pour votre fichier CSS local
+import './styles/app.css';
 import './bootstrap.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import tinymce from 'tinymce/tinymce';
-import 'tinymce/themes/silver';
+import 'fontawesome';
 
-tinymce.init({
-    selector: 'textarea',  // change this value according to your HTML
-    theme: 'silver',
-    plugins: 'advlist autolink',
-    // etc.
+// import monthSelectPlugin from "flatpickr/dist/plugins/monthSelect";
+
+// Initialisation de flatpickr sur l'élément dateRealisation
+flatpickr("#trace_abstract_dateRealisation", {
+    plugins: [monthSelectPlugin({
+        shorthand: true, // true for 12/2020, false for December 2020
+        dateFormat: "m-Y", // see https://flatpickr.js.org/formatting/
+        altFormat: "F Y",
+    })],
+    locale: "fr",
 });
-
-// console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');

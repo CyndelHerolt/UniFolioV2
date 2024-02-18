@@ -15,7 +15,13 @@ class TraceVideo extends AbstractTrace
 
     public const FORM = TraceVideoType::class;
 
+    public const FORM_TEMPLATE = 'trace/form_types/_form_video.html.twig';
+
     public const ICON = 'fa-solid fa-3x fa-youtube';
+
+    public const CONSTRAINT = 'La vidéo doit être hébergée sur YouTube';
+
+    public const CLASS_NAME = self::class;
 
     public ?string $name = 'video';
 

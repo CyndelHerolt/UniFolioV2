@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Home{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+
+    <section class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <img src="{{ asset('images/unifolio_logo.png') }}" alt="logo unifolio" class="logo_panel">
+
+        {#    page d'erreur 403    #}
+        <div class="d-flex flex-column justify-content-center align-items-center">
+            <h1 class="text-center">Erreur 403</h1>
+            <p class="text-center">Vous n'avez pas les droits pour accéder à cette page</p>
+            <a href="{{ path('app_login') }}">Connexion</a>
+            <hr>
+            <a href="{{ path('app_home') }}" class="btn btn-primary-color">Retour à l'accueil</a>
+
+        </div>
+
+    </section>
+{% endblock %}

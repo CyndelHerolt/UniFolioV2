@@ -6,14 +6,65 @@
     {% endblock %}
 
 {% block main %}
-<nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
-        <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Trace</li>
-    </ol>
-</nav>
-<section class="container min-vh-100 section-pt">
-    {{ form(form) }}
-</section>
+    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Trace</li>
+        </ol>
+    </nav>
+    <section class="container min-vh-100 section-pt">
+        <article class="row">
+            <div class="card col-12 p-5">
+                <div class="card-header">
+                    <h2>Création d'une trace</h2>
+                </div>
+                {{ form_start(form) }}
+                <div class="visually-hidden">
+                    {{ form_row(form.date_creation) }}
+                    {{ form_row(form.date_modification) }}
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(form.libelle) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.contexte) }}
+                    </div>
+                    <div class="col-6">
+                        {{ form_row(form.dateRealisation) }}
+                    </div>
+                    <div class="types row">
+                        {% for type in typesTrace %}
+                            {#             todo: à revoir               #}
+                            <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
+                               data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                               class="col-12 col-lg-2 p-3 h-100">
+                                <i class="{{ constant('ICON', type) }}">ICON</i>
+                                <div>
+                                    <strong>{{ type.display }}</strong>
+                                    <br>
+                                    <small>{{ constant('CONSTRAINT', type) }}</small>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                    <turbo-frame id="trace-form-content">
+                        {% if formType is defined %}
+                                {{ form_start(formType) }}
+                                {{ form_widget(formType) }}
+                                {{ form_end(formType) }}
+                        {% endif %}
+                    </turbo-frame>
+
+                    <div class="col-12">
+                        {{ form_row(form.description) }}
+                    </div>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </article>
+    </section>
 {% endblock %}

@@ -1,0 +1,23 @@
+<turbo-frame id="trace-form-content">
+    <label class="form-label required">Pdf</label> <br>
+    {% if '/edit' in app.request.uri %}
+        {% for data in trace.contenu %}
+            <div class="pdf_trace_div">
+                <p>Pdf déjà dans la DB</p>
+                <input type="hidden" name="pdf[{{ loop.index }}]" value="{{ data }}">
+                <iframe src="{{ asset(data) }}" style="width: 50%"></iframe>
+                <button type="button" class="btn btn-danger delete-pdf">
+                    <i class="fa-solid fa-square-minus"></i>
+                </button>
+                <hr>
+            </div>
+        {% endfor %}
+    {% endif %}
+    {{ form_widget(formType.contenu) }}
+    {% if error is defined %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <button type="button" class="btn btn-primary add-pdf">
+        Ajouter un PDF <i class="fa fa-square-plus"></i>
+    </button>
+</turbo-frame>

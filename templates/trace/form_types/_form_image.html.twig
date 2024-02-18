@@ -1,0 +1,24 @@
+<turbo-frame id="trace-form-content">
+    <label class="form-label required">Image.s</label>
+    {% if '/edit' in app.request.uri %}
+        <div class="galerie">
+            {% for data in trace.contenu %}
+                <div class="image_trace_div">
+                    <input type="hidden" name="img[{{ loop.index }}]" value="{{ data }}">
+                    <div class="trace-img"
+                         style="background-image: url('{{ asset(data) }}')">
+
+                    </div>
+                    <button type="button" class="btn btn-danger delete-image">
+                        <i class="fa-solid fa-square-minus"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <br>
+    {{ form_widget(formType.contenu) }}
+    <button type="button" class="btn btn-primary add-image">
+        Ajouter une image <i class="fa fa-square-plus"></i>
+    </button>
+</turbo-frame>

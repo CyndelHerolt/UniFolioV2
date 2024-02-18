@@ -40,4 +40,7 @@ return [
     'bootstrap/dist/js/bootstrap.bundle.min.js' => [
         'version' => '5.3.2',
     ],
+    'fontawesome' => [
+        'version' => '5.6.3',
+    ],
 ];

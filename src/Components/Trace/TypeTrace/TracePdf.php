@@ -16,6 +16,8 @@ class TracePdf extends AbstractTrace
 
     public const ICON = 'fa-solid fa-3x fa-file-pdf';
 
+    public const CONSTRAINT = 'Poids maximum : 8 Mo';
+
     public ?string $name = 'pdf';
 
     public array $options = [];

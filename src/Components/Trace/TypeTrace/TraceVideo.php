@@ -17,6 +17,9 @@ class TraceVideo extends AbstractTrace
 
     public const ICON = 'fa-solid fa-3x fa-youtube';
 
+    public const CONSTRAINT = 'La vidéo doit être hébergée sur YouTube';
+
+
     public ?string $name = 'video';
 
     public array $options = [];

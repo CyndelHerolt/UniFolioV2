@@ -16,6 +16,8 @@ class TraceLien extends AbstractTrace
 
     public const ICON = 'fa-solid fa-3x fa-link';
 
+    public const CONSTRAINT = 'Format : https://www.exemple.com';
+
     public ?string $name = 'lien';
 
     public array $options = [];

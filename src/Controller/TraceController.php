@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Components\Trace\Form\TraceAbstractType;
+use App\Components\Trace\TraceRegistry;
 use App\Entity\Trace;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
@@ -15,7 +16,8 @@ class TraceController extends AbstractController
 {
     public function __construct(
         private readonly ApcCompetenceRepository $competenceRepository,
-        private readonly ApcNiveauRepository $apcNiveauRepository
+        private readonly ApcNiveauRepository $apcNiveauRepository,
+        private readonly TraceRegistry $traceRegistry,
     )
     {
 
@@ -32,6 +34,7 @@ class TraceController extends AbstractController
     #[Route('/trace/new', name: 'app_trace_new')]
     public function new(): Response
     {
+        $typesTrace = $this->traceRegistry->getTypeTraces();
         $user = $this->getUser()->getEtudiant();
 
         $semestre = $user->getSemestre();
@@ -70,6 +73,7 @@ class TraceController extends AbstractController
 
         return $this->render('trace/form.html.twig', [
             'form' => $form->createView(),
+            'typesTrace' => $typesTrace,
         ]);
     }
 

@@ -29,6 +29,11 @@ class DashboardEtudiantController extends AbstractController
     #[Route('/dashboard/etudiant', name: 'app_dashboard_etudiant')]
     public function index(): Response
     {
+        // Vérifier que l'utilisateur est connecté sinon on le redirige vers la page d'erreur
+        if (!$this->security->getUser()) {
+            return $this->render('security/accessDenied.html.twig');
+        }
+        
         // Récupérer la bibliothèque de l'utilisateur connecté
         $etudiant = $this->security->getUser()->getEtudiant();
         $biblio = $this->bibliothequeRepository->findOneBy(['etudiant' => $etudiant]);

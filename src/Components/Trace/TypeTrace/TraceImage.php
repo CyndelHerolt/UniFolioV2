@@ -14,7 +14,9 @@ class TraceImage extends AbstractTrace
 
     public const FORM = TraceImageType::class;
 
-    public const ICON = 'fa-solid fa-3x fa-image';
+    public const ICON = 'bi bi-image';
+
+    public const CONSTRAINT = 'Formats acceptés : jpg, jpeg, png, gif, svg, webp';
 
     public ?string $name = 'image';
 

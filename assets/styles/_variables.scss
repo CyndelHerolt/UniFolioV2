@@ -1,3 +1,4 @@
+// COLORS
 
 $primary-color: #B68AEE;
 $secondary-color: #FFE483;
@@ -14,3 +15,93 @@ $text-dark-color: #3a3a3a;
 
 $bg-color: #FFFCF3;
 
+$c1: rgb(156, 43, 38);
+$c2: rgb(208, 119, 64);
+$c3: rgb(229, 185, 77);
+$c4: rgb(65, 108, 63);
+$c5: rgb(43, 76, 118);
+$c6: rgb(127, 31, 83);
+
+$c1Light: rgba(156, 43, 38, 0.2);
+$c2Light: rgba(208, 119, 64, 0.2);
+$c3Light: rgba(229, 185, 77, 0.2);
+$c4Light: rgba(65, 108, 63, 0.2);
+$c5Light: rgba(43, 76, 118, 0.2);
+$c6Light: rgba(127, 31, 83, 0.2);
+
+$c1Medium: rgba(156, 43, 38, 0.6);
+$c2Medium: rgba(208, 119, 64, 0.6);
+$c3Medium: rgba(229, 185, 77, 0.6);
+$c4Medium: rgba(65, 108, 63, 0.6);
+$c5Medium: rgba(43, 76, 118, 0.6);
+$c6Medium: rgba(127, 31, 83, 0.6);
+
+$c1Text: rgb(255, 255, 255);
+$c2Text: rgb(43, 38, 38);
+$c3Text: rgb(43, 38, 38);
+$c4Text: rgb(255, 255, 255);
+$c5Text: rgb(255, 255, 255);
+$c6Text: rgb(77, 82, 89);
+
+$c1TextLight:rgb(77, 82, 89);
+$c2TextLight: rgb(77, 82, 89);
+$c3TextLight: rgb(77, 82, 89);
+$c4TextLight: rgb(77, 82, 89);
+$c5TextLight: rgb(77, 82, 89);
+$c6TextLight: rgb(77, 82, 89);
+
+$c1TextMedium:rgb(255, 255, 255);
+$c2TextMedium: rgb(77, 82, 89);
+$c3TextMedium: rgb(77, 82, 89);
+$c4TextMedium: rgb(255, 255, 255);
+$c5TextMedium: rgb(255, 255, 255);
+$c6TextMedium: rgb(77, 82, 89);
+
+// TEXT SIZES
+
+$small-text: 0.8rem;
+$medium-text: 1rem;
+$large-text: 1.2rem;
+$extra-large-text: 1.5rem;
+
+$h1-size: 2.5rem;
+$h2-size: 2rem;
+$h3-size: 1.5rem;
+$h4-size: 1.2rem;
+$h5-size: 1rem;
+$h6-size: 0.8rem;
+
+// FONT WEIGHTS
+
+$light: 300;
+$regular: 400;
+$medium: 500;
+$bold: 700;
+
+// MARGINS
+
+$small-margin: 5px;
+$medium-margin: 10px;
+$large-margin: 20px;
+$extra-large-margin: 40px;
+
+// PADDINGS
+
+$small-padding: 5px;
+$medium-padding: 10px;
+$large-padding: 20px;
+$extra-large-padding: 40px;
+
+// BORDER RADIUS
+
+$small-radius: 5px;
+$medium-radius: 10px;
+$large-radius: 20px;
+$extra-large-radius: 40px;
+
+// SHADOWS
+
+$small-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+$medium-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+$large-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
+$extra-large-shadow: 0px 0px 40px 0px rgba(0,0,0,0.75);

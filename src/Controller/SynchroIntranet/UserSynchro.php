@@ -172,7 +172,7 @@ class UserSynchro extends AbstractController
                 return $etudiant['username'] === $login;
             });
             foreach ($etudiant as $data) {
-                $semestre = $semestreRepository->findOneBy(['libelle' => $data['semestre']]);
+                $semestre = $semestreRepository->findOneBy(['id' => $data['semestre']]);
                 // Créer un nouvel etudiant dans la base de données avec les données de $etudiant
                 $newEtudiant = new Etudiant();
                 $newEtudiant->setUser($user);
@@ -390,7 +390,7 @@ class UserSynchro extends AbstractController
                         return $etudiantSelected['username'] === $login;
                     });
                     foreach ($etudiantSelected as $data) {
-                        $semestre = $semestreRepository->findOneBy(['libelle' => $data['semestre']]);
+                        $semestre = $semestreRepository->findOneBy(['id' => $data['semestre']]);
                         // update etudiant dans la base de données avec les données de $etudiantSelected
                         $etudiant->setNom($data['nom']);
                         $etudiant->setPrenom($data['prenom']);

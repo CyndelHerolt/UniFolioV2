@@ -38,6 +38,9 @@ class ApcNiveau
     #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'apcNiveau', orphanRemoval: true)]
     private Collection $validations;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $actif = null;
+
     public function __construct()
     {
         $this->apcParcours = new ArrayCollection();
@@ -193,6 +196,18 @@ class ApcNiveau
                 $validation->setApcNiveau(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(?bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

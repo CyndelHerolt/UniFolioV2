@@ -91,7 +91,8 @@
                         <em>Cliquez sur une compétence pour afficher les apprentissages critiques</em>
                     </div>
                     <div class="card-body apc-card">
-                        {% for niveau in competencesNiveau %}
+                        {% if apcNiveaux is not null %}
+                        {% for niveau in apcNiveaux %}
                             <div class="apc-accordion" id="accordionFlush{{ niveau.id }}">
                                 <div class="apc-bloc">
                                     <div class="collapsed {{ niveau.apcCompetence.couleur }} apc-element" type="button"
@@ -116,6 +117,46 @@
                                 </div>
                             </div>
                         {% endfor %}
+                        {% else %}
+{#                            {% for ac in apcApprentissageCritiques %}#}
+{#                                <div class="apc-bloc">#}
+{#                                    <div class="collapsed {{ ac.apcNiveau.apcCompetence.couleur }} apc-element" type="button"#}
+{#                                         data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ ac.id }}"#}
+{#                                         aria-expanded="false"#}
+{#                                         aria-controls="flush-collapse{{ ac.id }}">#}
+{#                                        <p class="m-0">{{ ac.apcNiveau.apcCompetence.nomCourt }}#}
+{#                                            <br>#}
+{#                                            <em>{{ ac.libelle }}</em></p>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            {% endfor %}#}
+
+                            {% for niveauId, data in groupedApprentissageCritiques %}
+    <div class="apc-accordion" id="accordionFlush{{ niveauId }}">
+        <div class="apc-bloc">
+            <div class="collapsed {{ data.niveau.apcCompetence.couleur }} apc-element" type="button"
+                 data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveauId }}"
+                 aria-expanded="false"
+                 aria-controls="flush-collapse{{ niveauId }}">
+                <p class="m-0">{{ data.niveau.apcCompetence.nomCourt }}
+                    <br>
+                    <em>{{ data.niveau.libelle }}</em></p>
+            </div>
+            <div id="flush-collapse{{ niveauId }}" class="accordion-collapse collapse"
+                 data-bs-parent="#accordionFlush{{ niveauId }}">
+                <div class="{{ data.niveau.apcCompetence.couleur }}bg apc-element">
+                    <ul>
+                        {% for ac in data.critiques %}
+                            <li>{{ ac.code }} | {{ ac.libelle }}</li>
+                            <hr>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </aside>

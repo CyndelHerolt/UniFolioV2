@@ -1,0 +1,87 @@
+.c1bg {
+  background-color: $c1Light;
+  //padding: 5px 15px;
+}
+
+.c1 {
+  background-color: $c1;
+  //padding: 5px 15px;
+  color: $text-light-color;
+}
+
+.c2bg {
+  background-color: $c2Light;
+  //padding: 5px 15px;
+}
+
+.c2 {
+  background-color: $c2;
+  //padding: 5px 15px;
+  color: $text-light-color;
+}
+
+.c3bg {
+  background-color: $c3Light;
+  //padding: 5px 15px;
+}
+
+.c3 {
+  background-color: $c3;
+  //padding: 5px 15px;
+  color: $text-light-color;
+}
+
+.c4bg {
+  background-color: $c4Light;
+  //padding: 5px 15px;
+}
+
+.c4 {
+  background-color: $c4;
+  //padding: 5px 15px;
+  color: $text-light-color;
+}
+
+.c5bg {
+  background-color: $c5Light;
+  //padding: 5px 15px;
+}
+
+.c5 {
+  background-color: $c5;
+  //padding: 5px 15px;
+  color: $text-light-color;
+}
+
+.c6bg {
+  background-color: $c6Light;
+  //padding: 5px 15px;
+}
+
+.c6 {
+  background-color: $c6;
+  //padding: 5px 15px;
+  color: $text-light-color;
+}
+
+article {
+  height: max-content;
+}
+
+aside {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+.apc-card {
+  max-height: 140vh;
+  overflow-y: auto;
+
+}
+
+.apc-bloc {
+
+  .apc-element {
+    padding: 15px;
+  }
+}

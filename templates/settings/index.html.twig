@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Dashboard{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Paramètres</li>
+        </ol>
+    </nav>
+    <section class="container-custom min-vh-100 section-pt">
+        <article class="row content-article g-5">
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-12 h-100">
+                    <h2>Barèmes</h2>
+                    <em>
+                        Importer vos propres barèmes pour l'évaluation des étudiants.
+                    </em>
+                    <hr>
+                    <div class="alert alert-warning">
+                            <span>Attention, le barème doit être au format .csv et respecter <a
+                                        href="">ce modèle</a>.</span>
+                    </div>
+                    <turbo-frame>
+                        <h4>Barème portfolio</h4>
+                        <p>
+                            Aucun barème n'a été importé pour le moment.
+                        </p>
+                        {#                        <a href=""> #}
+                        {#                            <button class="btn btn-primary-color">Voir</button> #}
+                        {#                        </a> #}
+                        <a href="">
+                            <button class="btn btn-primary-color">Importer</button>
+                        </a>
+                        <hr>
+                        <h4>Barème stage/alternance</h4>
+                        <p>
+                            Aucun barème n'a été importé pour le moment.
+                        </p>
+                        {#                        <a href=""> #}
+                        {#                            <button class="btn btn-primary-color">Voir</button> #}
+                        {#                        </a> #}
+                        <a href="">
+                            <button class="btn btn-primary-color">Importer</button>
+                        </a>
+                    </turbo-frame>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-12 h-100">
+                    <h2>Approche compétences</h2>
+                    <em>Choisissez entre l'approche par UE ou par AC</em>
+                    <hr>
+                    <div class="alert alert-warning">
+                        <span>Le changement d'approche ne supprimera pas pour autant les liens traces-compétences initialisés par les étudiants.</span>
+                    </div>
+                    <turbo-frame>
+                        <h4>Approche par compétences</h4>
+                        <div class="form-check form-switch">
+                            <a href="" type="checkbox">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="flexSwitchCheckChecked" checked>
+                            </a>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
+                        </div>
+                        <hr>
+                        <h4>Approche par apprentissages critiques</h4>
+                        <div class="form-check form-switch">
+                            <a href="" type="checkbox">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="flexSwitchCheckDefault">
+                            </a>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
+                        </div>
+
+                    </turbo-frame>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-12 h-100">
+                    <h2>Bascule semestres</h2>
+                    <em>Faites basculer les étudiants dans le nouveau semestre</em>
+                    <hr>
+                    <div class="alert alert-warning">
+                        <span>Le changement de semestre se fait en récupérant les données depuis l'intranet. <strong>La bascule fonctionnera uniquement si elle a déjà été effectuée sur l'Intranet</strong></span>
+                    </div>
+                    <turbo-frame>
+                        <h4>Semestre actuel : pair</h4>
+                        <p>S2 - S4 - S6</p>
+                        <a href="">
+                            <button class="btn btn-primary-color">Basculer</button>
+                        </a>
+                    </turbo-frame>
+                </div>
+            </div>
+            <div class="col-lg-4 col-12 d-flex justify-content-center">
+                <div class="card p-4 col-12 h-100">
+                    <h2>Options</h2>
+                    <em>Activer ou désactiver certaines fonctionnalités</em>
+                    <hr>
+                    <turbo-frame>
+                        <h4>Option stage/alternance</h4>
+                        <p>Permet aux étudiants de créer leur rapport de stage ou d'alternance et de le soumettre à évaluation.</p>
+                        <div class="form-check form-switch">
+                            <a href="" type="checkbox">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="flexSwitchCheckDefault">
+                            </a>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
+                        </div>
+                        <hr>
+                        <h4>Consignes</h4>
+                        <h5>Etudiants</h5>
+                        <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p>
+                        <div class="form-check form-switch">
+                            <a href="" type="checkbox">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="flexSwitchCheckChecked" checked>
+                            </a>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
+                        </div>
+
+                        <form action="">
+                            <label for="consignes">Message</label>
+                            <textarea class="form-control" id="consignes" rows="3"></textarea>
+                            <button class="btn btn-primary-color">Enregistrer</button>
+                        </form>
+                        <hr>
+                        <h5>Enseignants</h5>
+                        <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p>
+                        <div class="form-check form-switch">
+                            <a href="" type="checkbox">
+                                <input class="form-check-input" type="checkbox" role="switch"
+                                       id="flexSwitchCheckChecked" checked>
+                            </a>
+                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
+                        </div>
+
+                        <form action="">
+                            <label for="consignes">Message</label>
+                            <textarea class="form-control" id="consignes" rows="3"></textarea>
+                            <button class="btn btn-primary-color">Enregistrer</button>
+                        </form>
+                    </turbo-frame>
+                </div>
+            </div>
+        </article>
+    </section>
+{% endblock %}
+

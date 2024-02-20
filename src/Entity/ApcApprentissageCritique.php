@@ -28,6 +28,9 @@ class ApcApprentissageCritique
     #[ORM\ManyToOne(inversedBy: 'apcApprentissageCritiques')]
     private ?ApcNiveau $apcNiveau = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $actif = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -65,6 +68,18 @@ class ApcApprentissageCritique
     public function setApcNiveau(?ApcNiveau $apcNiveau): static
     {
         $this->apcNiveau = $apcNiveau;
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(?bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

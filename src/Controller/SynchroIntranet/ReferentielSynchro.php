@@ -297,8 +297,10 @@ class ReferentielSynchro extends AbstractController
 
         $apprentissagesCritiques = $apprentissagesCritiques->toArray();
         foreach ($apprentissagesCritiques as $apprentissageCritique) {
+//            dd($apprentissageCritique['niveau']);
             $niveau = $niveauRepository->findOneBy(['id' => $apprentissageCritique['niveau']]);
-            $existingApprentissageCritique = $apprentissageCritiqueRepository->findOneBy(['id' => $apprentissageCritique['id']]);
+
+                $existingApprentissageCritique = $apprentissageCritiqueRepository->findOneBy(['id' => $apprentissageCritique['id']]);
             //Vérifier si le libelle du département existe déjà en base de données
             if ($existingApprentissageCritique) {
                 $existingApprentissageCritique->setId($apprentissageCritique['id']);

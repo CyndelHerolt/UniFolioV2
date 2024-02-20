@@ -13,58 +13,112 @@
             <li class="breadcrumb-item active" aria-current="page">Trace</li>
         </ol>
     </nav>
-    <section class="container min-vh-100 section-pt">
-        <article class="row">
-            <div class="card col-12 p-5">
-                <div class="card-header">
-                    <h2>Création d'une trace</h2>
-                </div>
-                {{ form_start(form) }}
-                <div class="visually-hidden">
-                    {{ form_row(form.date_creation) }}
-                    {{ form_row(form.date_modification) }}
-                </div>
+    <section class="container-custom min-vh-100 section-pt">
+        <div class="row d-flex">
+            <article class="col-lg-8 col-12">
+                <div class="card p-5">
+                    <div class="card-header">
+                        <h2>Création d'une trace</h2>
+                    </div>
+                    {{ form_start(form) }}
+                    <div class="visually-hidden">
+                        {{ form_row(form.date_creation) }}
+                        {{ form_row(form.date_modification) }}
+                    </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(form.libelle) }}
-                    </div>
-                    <div class="col-6">
-                        {{ form_row(form.contexte) }}
-                    </div>
-                    <div class="col-6">
-                        {{ form_row(form.dateRealisation) }}
-                    </div>
-                    <div class="types row">
-                        {% for type in typesTrace %}
-                            {#             todo: à revoir               #}
-                            <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
-                               data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                               class="col-12 col-lg-2 p-3 h-100">
-                                <i class="{{ constant('ICON', type) }}">ICON</i>
-                                <div>
-                                    <strong>{{ type.display }}</strong>
-                                    <br>
-                                    <small>{{ constant('CONSTRAINT', type) }}</small>
+                    <div class="row">
+                        <div class="col-12 p-2">
+                            {{ form_row(form.libelle) }}
+                        </div>
+                        <div class="col-6 p-2">
+                            {{ form_row(form.contexte) }}
+                        </div>
+                        <div class="col-6 p-2">
+                            {{ form_row(form.dateRealisation) }}
+                        </div>
+
+                        <turbo-frame id="trace-form-content">
+                            {% if formType is null %}
+                                <div class="types row p-2">
+                                    {% for type in typesTrace %}
+                                        <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
+                                           data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                                           class="col-12 col-lg-2 p-3"
+                                                {% if selectedTraceType == constant('CLASS_NAME', type) %}
+                                                    style="background-color: #f8f9fa;"
+                                                {% endif %}
+                                        >
+                                            <i class="{{ constant('ICON', type) }}">ICON</i>
+                                            <div>
+                                                <strong>{{ type.display }}</strong>
+                                                <br>
+                                                <small>{{ constant('CONSTRAINT', type) }}</small>
+                                            </div>
+                                        </a>
+                                    {% endfor %}
                                 </div>
-                            </a>
+                            {% else %}
+                                {% include('trace/form_types/_form_'~type~'.html.twig') %}
+                            {% endif %}
+                            <hr>
+                        </turbo-frame>
+
+                        <div class="col-12 p-2">
+                            {{ form_row(form.legende) }}
+                        </div>
+                        <div class="col-12 p-2">
+                            {{ form_row(form.description) }}
+                        </div>
+                        <div class="col-12 p-2">
+                            <h5>Compétences relatives à cette trace <span style="color: red">*</span></h5>
+                            {% block choice_widget_expanded %}
+                                {% for child in form.competences %}
+                                    <div class="competence-choice">
+                                        {{ form_widget(child) }}
+                                        {{ form_label(child) }}
+                                    </div>
+                                {% endfor %}
+                            {% endblock %}
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </article>
+            <aside class="col-lg-4 col-12">
+                <div class="card p-5 h-100">
+                    <div class="card-header">
+                        <h2>Référentiel</h2>
+                        <em>Cliquez sur une compétence pour afficher les apprentissages critiques</em>
+                    </div>
+                    <div class="card-body apc-card">
+                        {% for niveau in competencesNiveau %}
+                            <div class="apc-accordion" id="accordionFlush{{ niveau.id }}">
+                                <div class="apc-bloc">
+                                    <div class="collapsed {{ niveau.apcCompetence.couleur }} apc-element" type="button"
+                                         data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveau.id }}"
+                                         aria-expanded="false"
+                                         aria-controls="flush-collapse{{ niveau.id }}">
+                                        <p class="m-0">{{ niveau.apcCompetence.nomCourt }}
+                                            <br>
+                                            <em>{{ niveau.libelle }}</em></p>
+                                    </div>
+                                    <div id="flush-collapse{{ niveau.id }}" class="accordion-collapse collapse"
+                                         data-bs-parent="#accordionFlush{{ niveau.id }}">
+                                        <div class="{{ niveau.apcCompetence.couleur }}bg apc-element">
+                                            <ul>
+                                                {% for ac in niveau.apcApprentissageCritiques %}
+                                                    <li>{{ ac.code }} | {{ ac.libelle }}</li>
+                                                    <hr>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         {% endfor %}
                     </div>
-
-                    <turbo-frame id="trace-form-content">
-                        {% if formType is defined %}
-                                {{ form_start(formType) }}
-                                {{ form_widget(formType) }}
-                                {{ form_end(formType) }}
-                        {% endif %}
-                    </turbo-frame>
-
-                    <div class="col-12">
-                        {{ form_row(form.description) }}
-                    </div>
                 </div>
-                {{ form_end(form) }}
-            </div>
-        </article>
+            </aside>
+        </div>
     </section>
 {% endblock %}

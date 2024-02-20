@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Etudiant;
 
 use App\Components\Trace\TraceRegistry;
 use App\Repository\BibliothequeRepository;

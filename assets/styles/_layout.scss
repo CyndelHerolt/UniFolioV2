@@ -1,65 +1,12 @@
 * {
-  font-size: small;
-}
-
-.flatpickr-monthSelect-months {
-  width: auto;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-}
-
-.flatpickr-rContainer {
-  width: 100%;
-}
-
-.flatpickr-monthSelect-month {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 5px;
-    border-radius: 5px;
-  cursor: pointer;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-        background-color: $secondary-color;
-    }
-
+  //font-size: small;
 }
 
 #body {
-  //background: $bg-color;
   background-image: url("../images/gradient2.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
-
-  //.section_banner {
-  //  &:before {
-  //    content: "";
-  //    position: absolute;
-  //    top: 0;
-  //    left: 0;
-  //    width: 100%;
-  //    height: 200px;
-  //    z-index: -1;
-  //    background: $secondary-color;
-  //  }
-  //  &:after {
-  //    content: "";
-  //    position: absolute;
-  //    bottom: 0;
-  //    left: 0;
-  //    width: 100%;
-  //    height: 150px;
-  //    z-index: -1;
-  //    background: $secondary-color;
-  //  }
-  //}
 
   .row {
     width: 100%;
@@ -106,49 +53,20 @@
     }
   }
 
+  .container-custom {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
   .section-pt {
     padding-top: 150px;
     padding-bottom: 75px;
   }
 
-  .bg-banner-top {
-    background-color: $secondary-color;
-    width: 100%;
-    height: 250px;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  .bg-banner-bottom {
-    background-color: $secondary-color;
-    width: 100%;
-    height: 250px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-  }
-
-  .my_card {
-    border: solid 1px #e0e0e0;
-    border-radius: 15px;
-
-    .card_header {
-      background-color: lighten($primary-color, 20%);
-      border-radius: 15px 15px 0 0;
-      padding: 10px 25px;
-    }
-
-    .card_body {
-      padding: 10px 25px;
-    }
-  }
-
   .card {
     border: none;
     box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
-    border-radius: 15px;
+    border-radius: 5px;
 
     .corner-img {
       position: absolute;
@@ -178,6 +96,76 @@
       img {
         width: 20%;
       }
+    }
+  }
+
+  .btn-primary-color {
+    background-color: $primary-color;
+    color: $white;
+    border: none;
+    padding: 5px 15px;
+
+    &:hover {
+      background-color: darken($primary-color, 3%);
+    }
+  }
+
+  .btn-secondary-color {
+    background-color: $secondary-color;
+    color: $text-dark-color;
+    border: none;
+    padding: 5px 15px;
+
+    &:hover {
+      background-color: darken($secondary-color, 3%);
+    }
+  }
+}
+
+
+.flatpickr-monthSelect-months {
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.flatpickr-rContainer {
+  width: 100%;
+}
+
+.flatpickr-monthSelect-month {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
+
+}
+
+#body {
+
+  .my_card {
+    border: solid 1px #e0e0e0;
+    border-radius: 15px;
+
+    .card_header {
+      background-color: lighten($primary-color, 20%);
+      border-radius: 15px 15px 0 0;
+      padding: 10px 25px;
+    }
+
+    .card_body {
+      padding: 10px 25px;
     }
   }
 
@@ -251,46 +239,10 @@
     }
   }
 
-  //.panel_primary {
-  //  background-color: $primary-color;
-  //  color: $white;
-  //}
-  //
-  //.panel_secondary {
-  //  background-color: $secondary-color;
-  //  color: $black;
-  //}
-  //
-  //.panel_tertiary {
-  //  background-color: $tertiary-color;
-  //  color: $black;
-  //}
-  //
-  .btn-primary-color {
-    background-color: $primary-color;
-    color: $white;
-    border: none;
-    padding: 5px 15px;
-
-    &:hover {
-      background-color: darken($primary-color, 3%);
-    }
-  }
-
-  .btn-secondary-color {
-    background-color: $secondary-color;
-    color: $text-dark-color;
-    border: none;
-    padding: 5px 15px;
-
-    &:hover {
-      background-color: darken($secondary-color, 3%);
-    }
-  }
-
   .types {
+
     display: flex;
-    flex-wrap: nowrap; // Changez cette ligne
+    flex-wrap: wrap;
     justify-content: space-evenly;
     gap: 10px;
     margin: 20px 0;
@@ -305,7 +257,7 @@
       transition: transform 0.3s ease;
       display: flex;
       flex-direction: column;
-        justify-content: space-between;
+      justify-content: space-between;
       align-items: start;
 
       &:hover {
@@ -321,6 +273,15 @@
         background-color: $white;
         padding: 5px;
         border-radius: 5px;
+      }
+    }
+
+    .active {
+      border: solid 2px $primary-color;
+      background-color: lighten($primary-color, 24%);
+
+      i {
+        color: $primary-color;
       }
     }
   }

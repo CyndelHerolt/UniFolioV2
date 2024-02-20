@@ -34,7 +34,11 @@ class TraceAbstractType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $competences = $options['competences'];
-
+        // récupérer les libelle des compétences
+        $competences = array_map(function ($competence) {
+            return $competence->getLibelle();
+        }, $competences);
+//        dd($competences);
         $builder
             ->add('date_creation', DateTimeType::class, [
                 'data' => new \DateTimeImmutable(),
@@ -99,7 +103,7 @@ class TraceAbstractType extends AbstractType
                 'label' => 'Date de réalisation',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'id' => 'dateRealisation'],
-                'help' => 'Date à laquelle vous avez réalisé cette trace. A saisir au format mm-YYYY',
+                'help' => 'Date à laquelle vous avez réalisé le travail présenté ici',
                 'required' => true,
                 'html5' => false,
             ])
@@ -113,7 +117,7 @@ class TraceAbstractType extends AbstractType
                 'label' => 'Contexte',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'placeholder' => '...'],
-                'help' => 'Le contexte dans lequel vous avez réalisé cette trace (SAE, projet personnel, en groupe, en solo ...)',
+                'help' => 'Le contexte dans lequel vous avez réalisé le travail présenté ici (SAE, projet personnel, en groupe, en solo ...)',
                 'required' => true,
             ])
             //----------------------------------------------------------------
@@ -139,6 +143,10 @@ class TraceAbstractType extends AbstractType
                     ]),
                 ],
                 'choices' => array_combine($competences, $competences),
+                'label_attr' => ['class' => 'form-check-label'],
+                'choice_attr' => function ($choice, $key, $value) {
+                    return ['class' => 'form-check-input'];
+                },
                 'label' => false,
                 'multiple' => true,
                 'required' => true,

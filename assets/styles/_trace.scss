@@ -1,0 +1,32 @@
+.trace-content-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .image_trace_div, .pdf_trace_div {
+    width: 200px;
+    height: 200px;
+    margin: 10px 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+
+    .dropzone-preview {
+      width: max-content;
+    }
+  }
+
+  .image-trace-div {
+
+    .dropzone-preview-filename {
+      display: none;
+    }
+  }
+
+  .new_lien, .new_video {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px 20px 0;
+  }
+}

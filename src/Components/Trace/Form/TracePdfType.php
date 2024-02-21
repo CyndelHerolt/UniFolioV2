@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\UX\Dropzone\Form\DropzoneType;
 
 class TracePdfType extends AbstractType
 {
@@ -13,7 +14,7 @@ class TracePdfType extends AbstractType
     {
         $builder
             ->add('contenu', CollectionType::class, [
-                'entry_type' => FileType::class,
+                'entry_type' => DropzoneType::class,
                 'entry_options' => [
                     'attr' => [
                         'class' => "form-control pdf-trace",

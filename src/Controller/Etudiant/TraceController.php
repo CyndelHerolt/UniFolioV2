@@ -51,22 +51,51 @@ class TraceController extends AbstractController
         }
 
         if ($parcours === null) {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
             $referentiel = $dept->getApcReferentiels();
             $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
             $niveaux = [];
             foreach ($competences as $competence) {
                 $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
             }
-            $competencesNiveau = $niveaux;
+            // si les apcNiveaux dans niveaux ont pour actif = true
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+            }
+            // -----------------------------------------------------------------------------
+
+
         } else {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
             $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
             foreach ($niveaux as $niveau) {
-                $competencesNiveau[] = $niveau;
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
             }
+            // -----------------------------------------------------------------------------
         }
 
+
+
         $trace = new Trace();
-        $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competencesNiveau]);
+        if (isset($apcNiveaux)) {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcNiveaux]);
+        } else {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcApprentissageCritiques]);
+        }
         // Vérifier si un type de trace est stocké dans la session
         //  $selectedTraceType = $request->getSession()->get('selected_trace_type');
         $selectedTraceType = $request->query->get('type', null);
@@ -79,6 +108,18 @@ class TraceController extends AbstractController
             $formType = null;
         }
 
+        $groupedApprentissageCritiques = [];
+foreach ($apcApprentissageCritiques as $ac) {
+    $niveauId = $ac->getApcNiveau()->getId();
+    if (!isset($groupedApprentissageCritiques[$niveauId])) {
+        $groupedApprentissageCritiques[$niveauId] = [
+            'niveau' => $ac->getApcNiveau(),
+            'critiques' => [],
+        ];
+    }
+    $groupedApprentissageCritiques[$niveauId]['critiques'][] = $ac;
+}
+
 
         return $this->render('trace/form.html.twig', [
             'form' => $form->createView(),
@@ -87,7 +128,10 @@ class TraceController extends AbstractController
             'type' => $typeTrace ?? null,
             'formType' => $formType ?? null,
             'selectedTraceType' => $selectedTraceType ?? null,
-            'competencesNiveau' => $competencesNiveau ?? null,
+            'apcNiveaux' => $apcNiveaux ?? null,
+            'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
+            'groupedApprentissageCritiques' => $groupedApprentissageCritiques,
+
         ]);
     }
 

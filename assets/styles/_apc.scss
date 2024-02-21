@@ -76,12 +76,25 @@ aside {
 .apc-card {
   max-height: 140vh;
   overflow-y: auto;
-
 }
 
 .apc-bloc {
 
   .apc-element {
     padding: 15px;
+  }
+}
+
+.competence-bloc {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.competence-choice {
+  display: flex;
+  margin: 10px 0;
+
+  input {
+    margin-right: 10px;
   }
 }

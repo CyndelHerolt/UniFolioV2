@@ -266,6 +266,9 @@
             "ref": "0df5844274d871b37fc3816c57a768ffc60a43a5"
         }
     },
+    "symfony/ux-dropzone": {
+        "version": "v2.15.0"
+    },
     "symfony/ux-turbo": {
         "version": "v2.14.2"
     },

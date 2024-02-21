@@ -1,7 +1,7 @@
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-import './styles/app.css';
 import './bootstrap.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './styles/app.css';
 import 'fontawesome';
 
 // import monthSelectPlugin from "flatpickr/dist/plugins/monthSelect";

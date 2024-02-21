@@ -49,6 +49,15 @@ class ApcApprentissageCritiqueRepository extends ServiceEntityRepository
         $this->getEntityManager()->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=1');
     }
 
+    public function findByApcNiveau($niveau): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.apcNiveau = :niveau')
+            ->setParameter('niveau', $niveau)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return ApcApprentissageCritique[] Returns an array of ApcApprentissageCritique objects
 //     */

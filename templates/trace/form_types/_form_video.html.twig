@@ -1,27 +1,28 @@
 <turbo-frame id="trace-form-content">
-    <div class="types row p-2">
-        {% for typeTrace in typesTrace %}
-            <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
-               data-turbo-action="replace" data-turbo-frame="trace-form-content"
-               class="col-12 col-lg-2 p-3
+    <div {{ stimulus_controller('typeCollection') }}>
+        <div class="types row p-2">
+            {% for typeTrace in typesTrace %}
+                <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
+                   data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                   class="col-12 col-lg-2 p-3
                 {% if selectedTraceType == constant('CLASS_NAME', typeTrace) %}
                    active
                 {% endif %}">
-                <i class="{{ constant('ICON', typeTrace) }}">ICON</i>
-                <div>
-                    <strong>{{ typeTrace.display }}</strong>
-                    <br>
-                    <small>{{ constant('CONSTRAINT', typeTrace) }}</small>
-                </div>
-            </a>
-        {% endfor %}
+                    <i class="{{ constant('ICON', typeTrace) }}">ICON</i>
+                    <div>
+                        <strong>{{ typeTrace.display }}</strong>
+                        <br>
+                        <small>{{ constant('CONSTRAINT', typeTrace) }}</small>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+            <label class="form-label required">Vidéo.s</label>
+            {{ form_widget(formType.contenu) }}
+        <div data-typeCollection-target="input" class="trace-content-input">
+        </div>
+        <button type="button" class="btn btn-primary add-video" data-action="typeCollection#addVideo">
+            Ajouter une vidéo <i class="fa fa-square-plus"></i>
+        </button>
     </div>
-
-    <div>
-        <label class="form-label required">Vidéo.s</label>
-        {{ form_widget(formType.contenu) }}
-    </div>
-    <button type="button" class="btn btn-primary add-video">
-        Ajouter une vidéo <i class="fa fa-square-plus"></i>
-    </button>
 </turbo-frame>

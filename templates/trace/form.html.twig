@@ -37,31 +37,31 @@
                             {{ form_row(form.dateRealisation) }}
                         </div>
 
-                        <turbo-frame id="trace-form-content">
-                            {% if formType is null %}
-                                <div class="types row p-2">
-                                    {% for type in typesTrace %}
-                                        <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
-                                           data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                           class="col-12 col-lg-2 p-3"
-                                                {% if selectedTraceType == constant('CLASS_NAME', type) %}
-                                                    style="background-color: #f8f9fa;"
-                                                {% endif %}
-                                        >
-                                            <i class="{{ constant('ICON', type) }}">ICON</i>
-                                            <div>
-                                                <strong>{{ type.display }}</strong>
-                                                <br>
-                                                <small>{{ constant('CONSTRAINT', type) }}</small>
-                                            </div>
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {% include('trace/form_types/_form_'~type~'.html.twig') %}
-                            {% endif %}
-                            <hr>
-                        </turbo-frame>
+                            <turbo-frame id="trace-form-content">
+                                {% if formType is null %}
+                                    <div class="types row p-2">
+                                        {% for type in typesTrace %}
+                                            <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
+                                               data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                                               class="col-12 col-lg-2 p-3"
+                                                    {% if selectedTraceType == constant('CLASS_NAME', type) %}
+                                                        style="background-color: #f8f9fa;"
+                                                    {% endif %}
+                                            >
+                                                <i class="{{ constant('ICON', type) }}">ICON</i>
+                                                <div>
+                                                    <strong>{{ type.display }}</strong>
+                                                    <br>
+                                                    <small>{{ constant('CONSTRAINT', type) }}</small>
+                                                </div>
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {% include('trace/form_types/_form_'~type~'.html.twig') %}
+                                {% endif %}
+                                <hr>
+                            </turbo-frame>
 
                         <div class="col-12 p-2">
                             {{ form_row(form.legende) }}
@@ -72,12 +72,14 @@
                         <div class="col-12 p-2">
                             <h5>Compétences relatives à cette trace <span style="color: red">*</span></h5>
                             {% block choice_widget_expanded %}
-                                {% for child in form.competences %}
-                                    <div class="competence-choice">
-                                        {{ form_widget(child) }}
-                                        {{ form_label(child) }}
-                                    </div>
-                                {% endfor %}
+                                <div class="competence-bloc">
+                                    {% for child in form.competences %}
+                                        <div class="competence-choice">
+                                            {{ form_widget(child) }}
+                                            {{ form_label(child) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             {% endblock %}
                         </div>
                     </div>
@@ -92,70 +94,59 @@
                     </div>
                     <div class="card-body apc-card">
                         {% if apcNiveaux is not null %}
-                        {% for niveau in apcNiveaux %}
-                            <div class="apc-accordion" id="accordionFlush{{ niveau.id }}">
-                                <div class="apc-bloc">
-                                    <div class="collapsed {{ niveau.apcCompetence.couleur }} apc-element" type="button"
-                                         data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveau.id }}"
-                                         aria-expanded="false"
-                                         aria-controls="flush-collapse{{ niveau.id }}">
-                                        <p class="m-0">{{ niveau.apcCompetence.nomCourt }}
-                                            <br>
-                                            <em>{{ niveau.libelle }}</em></p>
-                                    </div>
-                                    <div id="flush-collapse{{ niveau.id }}" class="accordion-collapse collapse"
-                                         data-bs-parent="#accordionFlush{{ niveau.id }}">
-                                        <div class="{{ niveau.apcCompetence.couleur }}bg apc-element">
-                                            <ul>
-                                                {% for ac in niveau.apcApprentissageCritiques %}
-                                                    <li>{{ ac.code }} | {{ ac.libelle }}</li>
-                                                    <hr>
-                                                {% endfor %}
-                                            </ul>
+                            {% for niveau in apcNiveaux %}
+                                <div class="apc-accordion" id="accordionFlush{{ niveau.id }}">
+                                    <div class="apc-bloc">
+                                        <div class="collapsed {{ niveau.apcCompetence.couleur }} apc-element"
+                                             type="button"
+                                             data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveau.id }}"
+                                             aria-expanded="false"
+                                             aria-controls="flush-collapse{{ niveau.id }}">
+                                            <p class="m-0">{{ niveau.apcCompetence.nomCourt }}
+                                                <br>
+                                                <em>{{ niveau.libelle }}</em></p>
+                                        </div>
+                                        <div id="flush-collapse{{ niveau.id }}" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush{{ niveau.id }}">
+                                            <div class="{{ niveau.apcCompetence.couleur }}bg apc-element">
+                                                <ul>
+                                                    {% for ac in niveau.apcApprentissageCritiques %}
+                                                        <li>{{ ac.code }} | {{ ac.libelle }}</li>
+                                                        <hr>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
+                            {% endfor %}
                         {% else %}
-{#                            {% for ac in apcApprentissageCritiques %}#}
-{#                                <div class="apc-bloc">#}
-{#                                    <div class="collapsed {{ ac.apcNiveau.apcCompetence.couleur }} apc-element" type="button"#}
-{#                                         data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ ac.id }}"#}
-{#                                         aria-expanded="false"#}
-{#                                         aria-controls="flush-collapse{{ ac.id }}">#}
-{#                                        <p class="m-0">{{ ac.apcNiveau.apcCompetence.nomCourt }}#}
-{#                                            <br>#}
-{#                                            <em>{{ ac.libelle }}</em></p>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            {% endfor %}#}
-
                             {% for niveauId, data in groupedApprentissageCritiques %}
-    <div class="apc-accordion" id="accordionFlush{{ niveauId }}">
-        <div class="apc-bloc">
-            <div class="collapsed {{ data.niveau.apcCompetence.couleur }} apc-element" type="button"
-                 data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveauId }}"
-                 aria-expanded="false"
-                 aria-controls="flush-collapse{{ niveauId }}">
-                <p class="m-0">{{ data.niveau.apcCompetence.nomCourt }}
-                    <br>
-                    <em>{{ data.niveau.libelle }}</em></p>
-            </div>
-            <div id="flush-collapse{{ niveauId }}" class="accordion-collapse collapse"
-                 data-bs-parent="#accordionFlush{{ niveauId }}">
-                <div class="{{ data.niveau.apcCompetence.couleur }}bg apc-element">
-                    <ul>
-                        {% for ac in data.critiques %}
-                            <li>{{ ac.code }} | {{ ac.libelle }}</li>
-                            <hr>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endfor %}
+                                <div class="apc-accordion" id="accordionFlush{{ niveauId }}">
+                                    <div class="apc-bloc">
+                                        <div class="collapsed {{ data.niveau.apcCompetence.couleur }} apc-element"
+                                             type="button"
+                                             data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveauId }}"
+                                             aria-expanded="false"
+                                             aria-controls="flush-collapse{{ niveauId }}">
+                                            <p class="m-0">{{ data.niveau.apcCompetence.nomCourt }}
+                                                <br>
+                                                <em>{{ data.niveau.libelle }}</em></p>
+                                        </div>
+                                        <div id="flush-collapse{{ niveauId }}" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush{{ niveauId }}">
+                                            <div class="{{ data.niveau.apcCompetence.couleur }}bg apc-element">
+                                                <ul>
+                                                    {% for ac in data.critiques %}
+                                                        <li>{{ ac.code }} | {{ ac.libelle }}</li>
+                                                        <hr>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>

@@ -20,7 +20,9 @@
                     <div class="card-header">
                         <h2>Création d'une trace</h2>
                     </div>
-                    {{ form_start(form) }}
+
+                    {{ form_start(form, {'action': path('app_trace_sauvegarde')}) }}
+{#                    {{ form_start(form) }}#}
                     <div class="visually-hidden">
                         {{ form_row(form.date_creation) }}
                         {{ form_row(form.date_modification) }}
@@ -37,31 +39,31 @@
                             {{ form_row(form.dateRealisation) }}
                         </div>
 
-                            <turbo-frame id="trace-form-content">
-                                {% if formType is null %}
-                                    <div class="types row p-2">
-                                        {% for type in typesTrace %}
-                                            <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
-                                               data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                               class="col-12 col-lg-2 p-3"
-                                                    {% if selectedTraceType == constant('CLASS_NAME', type) %}
-                                                        style="background-color: #f8f9fa;"
-                                                    {% endif %}
-                                            >
-                                                <i class="{{ constant('ICON', type) }}">ICON</i>
-                                                <div>
-                                                    <strong>{{ type.display }}</strong>
-                                                    <br>
-                                                    <small>{{ constant('CONSTRAINT', type) }}</small>
-                                                </div>
-                                            </a>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    {% include('trace/form_types/_form_'~type~'.html.twig') %}
-                                {% endif %}
-                                <hr>
-                            </turbo-frame>
+                        <turbo-frame id="trace-form-content" class="form-control p-4">
+                            <label>Contenu média</label>
+                            {% if formType is null %}
+                                <div class="types row p-2">
+                                    {% for type in typesTrace %}
+                                        <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
+                                           data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                                           class="col-12 col-lg-2 p-3"
+                                                {% if selectedTraceType == constant('CLASS_NAME', type) %}
+                                                    style="background-color: #f8f9fa;"
+                                                {% endif %}
+                                        >
+                                            <i class="{{ constant('ICON', type) }}">ICON</i>
+                                            <div>
+                                                <strong>{{ type.display }}</strong>
+                                                <br>
+                                                <small>{{ constant('CONSTRAINT', type) }}</small>
+                                            </div>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {% include('trace/form_types/_form_'~type~'.html.twig') %}
+                            {% endif %}
+                        </turbo-frame>
 
                         <div class="col-12 p-2">
                             {{ form_row(form.legende) }}
@@ -83,6 +85,8 @@
                             {% endblock %}
                         </div>
                     </div>
+                    <hr>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
                     {{ form_end(form) }}
                 </div>
             </article>

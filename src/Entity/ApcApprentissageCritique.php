@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ApcApprentissageCritiqueRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -30,6 +32,14 @@ class ApcApprentissageCritique
 
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
+
+    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'apc_apprentissage_critique')]
+    private Collection $validations;
+
+    public function __construct()
+    {
+        $this->validations = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -80,6 +90,36 @@ class ApcApprentissageCritique
     public function setActif(?bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Validation>
+     */
+    public function getValidations(): Collection
+    {
+        return $this->validations;
+    }
+
+    public function addValidation(Validation $validation): static
+    {
+        if (!$this->validations->contains($validation)) {
+            $this->validations->add($validation);
+            $validation->setApcApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValidation(Validation $validation): static
+    {
+        if ($this->validations->removeElement($validation)) {
+            // set the owning side to null (unless already changed)
+            if ($validation->getApcApprentissageCritique() === $this) {
+                $validation->setApcApprentissageCritique(null);
+            }
+        }
 
         return $this;
     }

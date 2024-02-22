@@ -29,6 +29,9 @@ class Bibliotheque
     #[ORM\OneToMany(targetEntity: Trace::class, mappedBy: 'bibliotheque', orphanRemoval: true)]
     private Collection $traces;
 
+    #[ORM\Column]
+    private ?bool $actif = null;
+
     public function __construct()
     {
         $this->traces = new ArrayCollection();
@@ -101,6 +104,18 @@ class Bibliotheque
                 $trace->setBibliotheque(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

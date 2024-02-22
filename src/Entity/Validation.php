@@ -30,11 +30,14 @@ class Validation
     private ?Trace $trace = null;
 
     #[ORM\ManyToOne(inversedBy: 'validations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?ApcNiveau $apcNiveau = null;
 
     #[ORM\ManyToOne(inversedBy: 'validations')]
     private ?Enseignant $enseignant = null;
+
+    #[ORM\ManyToOne(inversedBy: 'validations')]
+    private ?ApcApprentissageCritique $apc_apprentissage_critique = null;
 
     public function getId(): ?int
     {
@@ -109,6 +112,18 @@ class Validation
     public function setEnseignant(?Enseignant $enseignant): static
     {
         $this->enseignant = $enseignant;
+
+        return $this;
+    }
+
+    public function getApcApprentissageCritique(): ?ApcApprentissageCritique
+    {
+        return $this->apc_apprentissage_critique;
+    }
+
+    public function setApcApprentissageCritique(?ApcApprentissageCritique $apc_apprentissage_critique): static
+    {
+        $this->apc_apprentissage_critique = $apc_apprentissage_critique;
 
         return $this;
     }

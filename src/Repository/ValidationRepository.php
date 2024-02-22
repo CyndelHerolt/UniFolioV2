@@ -21,6 +21,15 @@ class ValidationRepository extends ServiceEntityRepository
         parent::__construct($registry, Validation::class);
     }
 
+    public function save(Validation $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Validation[] Returns an array of Validation objects
 //     */

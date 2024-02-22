@@ -17,8 +17,7 @@
                 </a>
             {% endfor %}
         </div>
-            <label class="form-label required">Vidéo.s</label>
-            {{ form_widget(formType.contenu) }}
+        {{ form_widget(formType.contenu) }}
         <div data-typeCollection-target="input" class="trace-content-input">
         </div>
         <button type="button" class="btn btn-primary add-video" data-action="typeCollection#addVideo">

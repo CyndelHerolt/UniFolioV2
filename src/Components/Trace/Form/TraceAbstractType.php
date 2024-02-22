@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
 use Symfony\Component\Validator\Constraints\Length;
@@ -26,19 +27,29 @@ class TraceAbstractType extends AbstractType
     public function __construct(
         protected TraceRepository     $traceRepository,
         public BibliothequeRepository $bibliothequeRepository,
-        #[Required] public Security   $security
+        #[Required] public Security   $security,
+        private RequestStack $requestStack,
     )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $competences = $options['competences'];
-        // récupérer les libelle des compétences
-        $competences = array_map(function ($competence) {
-            return $competence->getLibelle();
-        }, $competences);
-//        dd($competences);
+//        $competences = $options['competences'];
+//        // récupérer les libelle des compétences
+//        $competences = array_map(function ($competence) {
+//            return $competence->getLibelle();
+//        }, $competences);
+
+        // Create an array with libelle as keys and ids as values
+        $competences = [];
+        foreach ($options['competences'] as $competence) {
+            $competences[$competence->getLibelle()] = $competence->getId();
+        }
+
+        $session = $this->requestStack->getSession();
+        $session->set('competences', $competences);
+
         $builder
             ->add('date_creation', DateTimeType::class, [
                 'data' => new \DateTimeImmutable(),
@@ -134,7 +145,6 @@ class TraceAbstractType extends AbstractType
                 'mapped' => true,
                 'required' => true,
             ])
-            //----------------------------------------------------------------
             ->add('competences', ChoiceType::class, [
                 'constraints' => [
                     new Count([
@@ -142,7 +152,7 @@ class TraceAbstractType extends AbstractType
                         'minMessage' => 'Veuillez sélectionner au moins une compétence',
                     ]),
                 ],
-                'choices' => array_combine($competences, $competences),
+                'choices' => $competences, // Use the array with libelle as keys
                 'label_attr' => ['class' => 'form-check-label'],
                 'choice_attr' => function ($choice, $key, $value) {
                     return ['class' => 'form-check-input'];

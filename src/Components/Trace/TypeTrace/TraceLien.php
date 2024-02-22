@@ -3,9 +3,7 @@
 namespace App\Components\Trace\TypeTrace;
 
 use App\Components\Trace\Form\TraceLienType;
-use App\Components\Trace\TypeTrace\AbstractTrace;
-use App\Repository\TraceRepository;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use App\Entity\Trace;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TraceLien extends AbstractTrace
@@ -36,5 +34,26 @@ class TraceLien extends AbstractTrace
     public function display(): string
     {
         return self::TYPE;
+    }
+
+    public function sauvegarde(?array $contenu,
+                               ?array $existingContenu
+    ): array
+    {
+        if ($existingContenu) {
+            $contenu = array_merge($contenu, $existingContenu);
+        }
+
+        if ($contenu) {
+            foreach ($contenu as $lien) {
+                if (!filter_var($lien, FILTER_VALIDATE_URL)) {
+                    return ['success' => false, 'error' => 'Le contenu n\'est pas un lien valide'];
+                }
+            }
+        } else {
+            return ['success' => false, 'error' => 'Le contenu est vide'];
+        }
+
+        return ['success' => true, 'contenu' => $contenu];
     }
 }

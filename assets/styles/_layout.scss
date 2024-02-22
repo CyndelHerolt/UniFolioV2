@@ -21,11 +21,24 @@
     z-index: 1;
     width: 100%;
 
+
     .navbar {
       background-color: $white;
 
+      .menu-brand {
+        margin-right: 50px;
+
+        a {
+          color: $primary-color-dark;
+          text-decoration: none;
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
+      }
+
       .navbar-brand {
-        width: 25px;
+        width: 30px;
+        margin-right: 5px;
       }
     }
   }
@@ -158,14 +171,30 @@
     border: solid 1px #e0e0e0;
     border-radius: 15px;
 
-    .card_header {
+    .card-header {
       background-color: lighten($primary-color, 20%);
       border-radius: 15px 15px 0 0;
       padding: 10px 25px;
+
+      .card-title {
+        font-size: 1rem;
+        margin: 0;
+      }
     }
 
-    .card_body {
-      padding: 10px 25px;
+    .card-body {
+      padding: 0;
+
+      .card-infos-min {
+        padding: 10px 25px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .card-competences {
+        padding: 10px 25px;
+      }
     }
   }
 
@@ -284,5 +313,9 @@
         color: $primary-color;
       }
     }
+  }
+
+  .ue {
+    font-weight: bold;
   }
 }

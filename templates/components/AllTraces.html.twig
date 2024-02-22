@@ -41,7 +41,6 @@
 
 
         <div class="col-lg-4 col-12 g-4">
-            <img src="{{ asset('images/fiole.png') }}" alt="illustration fiole" class="fiole">
             <div class="accordion accordion-flush filter-drop" id="accordionTri">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="flush-headingTri">
@@ -110,15 +109,52 @@
                 </div>
             </div>
         </div>
+        <div class="d-flex">
+            <button class="btn btn-primary-color text-uppercase m-4" data-bs-toggle="modal"
+                    data-bs-target="#staticBackdropDelete">
+                Supprimer les traces sélectionnées
+            </button>
+            <!-- Modal Delete -->
+            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
+                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment supprimer ces traces
+                                ?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Les traces sélectionnées seront supprimées.</p>
+                            <p style="color: red">Attention, cette action est irréversible !</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler</button>
+                            <button class="btn btn-primary-color"
+                                    data-action="live#action"
+                                    data-action-name="deleteSelectedTraces"
+                                    data-bs-dismiss="modal">
+                                Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="{{ path('app_trace_new') }}" class="m-4">
+                <button class="btn btn-secondary-color text-uppercase">
+                    Créer une trace
+                </button>
+            </a>
+        </div>
     </div>
     <div class="card p-4 col-12">
-            <div class="card-body row g-3 d-flex">
-        {% for trace in this.allTraces %}
+        <div class="card-body row g-4 d-flex">
+            {% for trace in this.allTraces %}
                 <div class="col-lg-4 col-12">
-                <twig:TraceBiblioCard id="{{ trace.id }}"/>
+                    <twig:TraceBiblioCard id="{{ trace.id }}"/>
                 </div>
-        {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
     </div>
 
 </div>

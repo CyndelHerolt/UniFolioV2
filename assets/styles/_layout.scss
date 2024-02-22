@@ -3,10 +3,22 @@
 }
 
 #body {
-  background-image: url("../images/gradient2.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  //background-image: url("../images/gradient.png");
+  //background-size: cover;
+  //background-repeat: no-repeat;
+  //background-attachment: fixed;
+
+&::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 400px;
+    width: 100%;
+    z-index: -1;
+  //background-color: $secondary-color;
+  background-color: rebeccapurple;
+    }
 
   //.row {
   //  width: 100%;
@@ -18,12 +30,13 @@
 
   header {
     position: fixed;
-    z-index: 1;
+    z-index: 10;
     width: 100%;
 
 
     .navbar {
       background-color: $white;
+      padding: 1rem 50px !important;
 
       .menu-brand {
         margin-right: 50px;
@@ -57,13 +70,18 @@
   }
 
   .link {
-    color: $primary-color-dark;
+    //color: $primary-color-dark;
+    color: $secondary-color;
     text-decoration: none;
 
     &:hover {
-      color: $primary-color;
+      color: $quartenary-color;
       text-decoration: none;
     }
+  }
+
+  .breadcrumb-item.active, .breadcrumb-item+.breadcrumb-item::before {
+    color: $text-light-color;
   }
 
   .container-custom {
@@ -79,7 +97,7 @@
   .card {
     border: none;
     box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
-    border-radius: 5px;
+    border-radius: 25px;
 
     .corner-img {
       position: absolute;
@@ -325,7 +343,6 @@
 
 
   .filtres-input {
-    margin-bottom: 75px;
 
     .accordion {
       padding: 15px 25px;
@@ -347,7 +364,7 @@
       position: absolute;
       width: 45px;
       left: 5.25vw;
-      z-index: 10;
+      z-index: 5;
     }
   }
 
@@ -362,4 +379,16 @@
   .accordion-item {
     border: solid 1px #e0e0e0
   }
+
+  //.btn_group {
+  //  margin: 25px 0;
+  //
+  //  .btn {
+  //    margin-right: 25px;
+  //  }
+  //
+  //  a {
+  //    text-decoration: none;
+  //  }
+  //}
 }

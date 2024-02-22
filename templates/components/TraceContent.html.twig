@@ -57,6 +57,40 @@
                 </div>
             </div>
         </div>
+        <hr>
+
+        <div class="row justify-content-center">
+            <div class="col-10 m-2">
+                <h5 class="text-start">Validation des compétences</h5>
+                {% for validation in this.trace.validations %}
+                    {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
+                        <div class="d-flex justify-content-between {{ validation.apcNiveau.apcCompetence.couleur }}bg p-3">
+                        <small><span
+                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
+                        </small><br>
+                    {% else %}
+                        <small><span
+                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
+                        </small>
+                    {% endif %}
+                    <span>
+                                        {% if validation.etat == 0 %} 0
+                                        {% elseif validation.etat == 1 %} 1
+                                        {% elseif validation.etat == 2 %} 2
+                                        {% elseif validation.etat == 3 %} 3
+                                        {% endif %}
+                                        </span>
+                    </div>
+                    {% if validation.etat == 0 %}
+                        <p class="text-end">En attente de validation</p>
+                    {% else %}
+                        <p class="text-end">Evaluation saisie
+                            par {{ validation.enseignant.prenom }} {{ validation.enseignant.nom }}
+                            le {{ validation.dateModification|date('d-m-Y') }}</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
 
     </div>
 </div>

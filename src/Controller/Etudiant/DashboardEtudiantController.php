@@ -50,7 +50,7 @@ class DashboardEtudiantController extends AbstractController
         foreach ($traces as $trace) {
             foreach ($trace->getValidations() as $validation) {
                 // si l'éval n'est pas en attente on l'ajoute
-                if ($validation->isEtat() !== 0) {
+                if ($validation->getEtat() !== 0) {
                     $retourPedagogiques[] = $validation;
                 }
             }

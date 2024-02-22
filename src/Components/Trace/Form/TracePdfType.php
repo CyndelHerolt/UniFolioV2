@@ -2,10 +2,12 @@
 
 namespace App\Components\Trace\Form;
 
+use App\Entity\Trace;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
 class TracePdfType extends AbstractType
@@ -17,9 +19,10 @@ class TracePdfType extends AbstractType
                 'entry_type' => DropzoneType::class,
                 'entry_options' => [
                     'attr' => [
-                        'class' => "form-control pdf-trace",
+                        'class' => "form-control pdf_trace",
                         'accept' => 'pdf',
                     ],
+                    'data_class' => null,
                     'by_reference' => false,
                     'label' => false,
                     'help' => 'format accepté : pdf',
@@ -30,10 +33,17 @@ class TracePdfType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'required' => false,
-                'mapped' => true,
                 'by_reference' => false,
                 'empty_data' => [],
+                'mapped' => true,
                 'data' => [],
             ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Trace::class,
+        ]);
     }
 }

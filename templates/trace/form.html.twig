@@ -21,8 +21,12 @@
                         <h2>Création d'une trace</h2>
                     </div>
 
-                    {{ form_start(form, {'action': path('app_trace_sauvegarde')}) }}
-{#                    {{ form_start(form) }}#}
+{#                    {% if 'TraceImage' in selectedTraceType or 'TracePdf' in selectedTraceType %}#}
+                        {{ form_start(form, {'action': path('app_trace_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
+{#                    {% else %}#}
+{#                        {{ form_start(form, {'action': path('app_trace_sauvegarde')}) }}#}
+{#                    {% endif %}#}
+
                     <div class="visually-hidden">
                         {{ form_row(form.date_creation) }}
                         {{ form_row(form.date_modification) }}
@@ -86,7 +90,7 @@
                         </div>
                     </div>
                     <hr>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
                     {{ form_end(form) }}
                 </div>
             </article>

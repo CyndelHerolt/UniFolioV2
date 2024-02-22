@@ -37,4 +37,32 @@ class TracePdf extends AbstractTrace
     {
         return self::TYPE;
     }
+
+    public function sauvegarde(?array $contenu,
+                               ?array $existingContenu
+    ): array
+    {
+        $max_size = 8 * 1024 * 1024; // 8 Mo en octets
+
+        if ($existingContenu) {
+            $contenu = array_merge($contenu, $existingContenu);
+        }
+
+        if ($contenu) {
+            foreach ($contenu as $pdf) {
+                if ($pdf->getSize() > $max_size) {
+                    return ['success' => false, 'error' => 'Le fichier doit faire 8mo maximum'];
+                } elseif (!in_array($pdf->guessExtension(), ['pdf'])) {
+                    return ['success' => false, 'error' => 'Le contenu n\'est pas un pdf valide'];
+                }
+                $fileName = uniqid() . '.' . $pdf->guessExtension();
+                $pdf->move($_ENV['PATH_FILES'], $fileName);
+                $contenu[] = $_ENV['SRC_FILES'] . '/' . $fileName;
+            }
+        } else {
+            return ['success' => false, 'error' => 'Le contenu est vide'];
+        }
+
+        return ['success' => true, 'contenu' => $contenu];
+    }
 }

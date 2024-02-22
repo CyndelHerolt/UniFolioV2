@@ -67,6 +67,9 @@ class TraceController extends AbstractController
             }
         }
 
+        $apcApprentissageCritiques = [];
+        $apcNiveaux = [];
+
         if ($parcours === null) {
             // ------------récupère tous les apcNiveau de l'année -------------------------
             $referentiel = $dept->getApcReferentiels();
@@ -158,6 +161,7 @@ class TraceController extends AbstractController
     public function sauvegardeNewTrace(Request $request): Response
     {
         $data = $request->request->all();
+        $files = $request->files->all();
         $formDatas = $request->request->all()['trace_abstract'];
 
         $etudiant = $this->getUser()->getEtudiant();
@@ -167,19 +171,25 @@ class TraceController extends AbstractController
 
         if (isset($data['trace_lien'])) {
             $contenu = $data['trace_lien']['contenu'];
-            $contenu = $this->traceLien->sauvegarde($contenu);
+            $contenu = $this->traceLien->sauvegarde($contenu, null);
             $trace->setType($this->traceLien::TYPE);
-        } elseif (isset($data['trace_image'])) {
-            $contenu = $data['trace_image']['contenu'];
-//            $contenu = $this->traceImage->sauvegarde($contenu, null);
+        } elseif (isset($files['trace_image'])) {
+            $contenu = $files['trace_image']['contenu'];
+            $contenu = $this->traceImage->sauvegarde($contenu, null);
+            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                return is_string($item);
+            });
             $trace->setType($this->traceImage::TYPE);
         } elseif (isset($data['trace_video'])) {
             $contenu = $data['trace_video']['contenu'];
-//            $contenu = $this->traceVideo->sauvegarde($contenu, null);
+            $contenu = $this->traceVideo->sauvegarde($contenu, null);
             $trace->setType($this->traceVideo::TYPE);
-        } elseif (isset($data['trace_pdf'])) {
-            $contenu = $data['trace_pdf']['contenu'];
-//            $contenu = $this->tracePdf->sauvegarde($contenu, null);
+        } elseif (isset($files['trace_pdf'])) {
+            $contenu = $files['trace_pdf']['contenu'];
+            $contenu = $this->tracePdf->sauvegarde($contenu, null);
+            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                return is_string($item);
+            });
             $trace->setType($this->tracePdf::TYPE);
         } else {
             $this->addFlash('danger', 'Type de trace inconnu');
@@ -231,7 +241,7 @@ class TraceController extends AbstractController
                     $validation->setTrace($trace);
                     $validation->setEtat(0);
                     $validation->setDateCreation(new \DateTime());
-                    $this->validationRepository->save($validation);
+                    $this->validationRepository->save($validation, true);
                 } else {
                     // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
                     $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);

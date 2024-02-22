@@ -37,12 +37,12 @@ class TraceLien extends AbstractTrace
     }
 
     public function sauvegarde(?array $contenu,
-//                               ?array $existingContenu
+                               ?array $existingContenu
     ): array
     {
-//        if ($existingContenu) {
-//            $contenu = array_merge($contenu, $existingContenu);
-//        }
+        if ($existingContenu) {
+            $contenu = array_merge($contenu, $existingContenu);
+        }
 
         if ($contenu) {
             foreach ($contenu as $lien) {

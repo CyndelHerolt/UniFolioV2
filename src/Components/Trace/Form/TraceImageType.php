@@ -2,10 +2,12 @@
 
 namespace App\Components\Trace\Form;
 
+use App\Entity\Trace;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\UX\Dropzone\Form\DropzoneType;
 
 class TraceImageType extends AbstractType
@@ -36,5 +38,12 @@ class TraceImageType extends AbstractType
                 'mapped' => true,
                 'data' => [],
             ]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => Trace::class,
+        ]);
     }
 }

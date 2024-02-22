@@ -38,4 +38,43 @@ class TraceVideo extends AbstractTrace
     {
         return self::TYPE;
     }
+
+    public function sauvegarde(?array $contenu,
+                               ?array $existingContenu
+    ): array
+    {
+        if ($existingContenu) {
+            $contenu = array_merge($contenu, $existingContenu);
+        }
+
+        if ($contenu) {
+            foreach ($contenu as $key => $video) {
+                $youtubeId = null;
+                if (
+                    preg_match('/^(https?:\/\/)?(www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/', $video, $matches)
+                    || preg_match('/^(https?:\/\/)?(www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/', $video, $matches)
+                ) {
+                    $youtubeId = $matches[3];
+                }
+
+                if ($youtubeId) {
+                    // Construire le lien embed à partir de l'ID
+                    $Embedcontenu = 'https://www.youtube.com/embed/' . $youtubeId;
+
+                    // Remplacer le lien original par le lien embed dans le tableau des video
+                    $contenu[$key] = $Embedcontenu;
+                }
+
+                // Vérification des liens non youtube
+                if (!$youtubeId && !preg_match('/^(https?:\/\/)?(www\.)?youtube\.com\/embed\/([a-zA-Z0-9_-]+)/', $video)) {
+                    $error = 'Le lien n\'est pas un lien YouTube valide';
+                    return array('success' => false, 'error' => $error);
+                }
+            }
+        } else {
+            return ['success' => false, 'error' => 'Le contenu est vide'];
+        }
+
+        return ['success' => true, 'contenu' => $contenu];
+    }
 }

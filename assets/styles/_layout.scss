@@ -8,9 +8,9 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
 
-  .row {
-    width: 100%;
-  }
+  //.row {
+  //  width: 100%;
+  //}
 
   .content-article {
     margin-bottom: 50px;
@@ -194,6 +194,10 @@
 
       .card-competences {
         padding: 10px 25px;
+
+        .accordion-button::after {
+          margin: auto;
+        }
       }
     }
   }
@@ -317,5 +321,45 @@
 
   .ue {
     font-weight: bold;
+  }
+
+
+  .filtres-input {
+    margin-bottom: 75px;
+
+    .accordion {
+      padding: 15px 25px;
+
+      .accordion-button:not(.collapsed) {
+        background-color: lighten($secondary-color, 10%);
+      }
+
+      .accordion-button:focus {
+        box-shadow: none;
+      }
+
+      .accordion-item {
+        border: solid 1px #e0e0e0
+      }
+    }
+
+    .fiole {
+      position: absolute;
+      width: 45px;
+      left: 5.25vw;
+      z-index: 10;
+    }
+  }
+
+  .accordion-button:not(.collapsed) {
+    background-color: transparent;
+  }
+
+  .accordion-button:focus {
+    box-shadow: none;
+  }
+
+  .accordion-item {
+    border: solid 1px #e0e0e0
   }
 }

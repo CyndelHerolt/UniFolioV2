@@ -148,6 +148,7 @@
       <path value="$PROJECT_DIR$/vendor/easycorp/easyadmin-bundle" />
       <path value="$PROJECT_DIR$/vendor/symfony/ux-twig-component" />
       <path value="$PROJECT_DIR$/vendor/symfony/ux-dropzone" />
+      <path value="$PROJECT_DIR$/vendor/symfony/ux-live-component" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />

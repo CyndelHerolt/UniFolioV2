@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Annee;
 use App\Entity\Bibliotheque;
+use App\Entity\Etudiant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -28,6 +30,18 @@ class BibliothequeRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findOneByEtudiantAnnee(?Etudiant $etudiant, ?Annee $annee)
+    {
+        return $this->createQueryBuilder('b')
+            ->where('b.etudiant = :etudiant')
+            ->andWhere('b.annee = :annee')
+            ->setParameter('annee', $annee)
+            ->setParameter('etudiant', $etudiant)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
     }
 
 //    /**

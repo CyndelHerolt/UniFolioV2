@@ -41,14 +41,6 @@ class TraceController extends AbstractController
     {
     }
 
-    #[Route('/bibliotheque/traces', name: 'app_trace')]
-    public function index(Request $request): Response
-    {
-        return $this->render('trace/index.html.twig', [
-            'controller_name' => 'TraceController',
-        ]);
-    }
-
     #[Route('/trace/new', name: 'app_trace_new')]
     public function new(Request $request): Response
     {

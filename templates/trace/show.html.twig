@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Dashboard{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_biblio_traces') }}" class="link">Bibliothèque de traces</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Trace {{ trace.libelle }}</li>
+        </ol>
+    </nav>
+    <section class="container-custom min-vh-100 section-pt">
+        <article class="row content-article">
+            <div class="card col-12 p-5">
+                <twig:TraceContent id="{{ trace.id }}"/>
+            </div>
+        </article>
+    </section>
+{% endblock %}

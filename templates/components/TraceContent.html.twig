@@ -1,0 +1,62 @@
+<div{{ attributes }}>
+    <h2>{{ this.trace.libelle }}</h2>
+    <div class="card-infos-min border-bottom">
+        <small>Publiée le : {{ this.trace.dateCreation|date("d-m-Y") }}</small>
+        &nbsp;|&nbsp;
+        <small>{{ this.trace.contenu|length }}
+            {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+        </small>
+    </div>
+    <div class="card-body">
+        <div class="row d-flex justify-content-center">
+            {% if this.trace.type == 'lien' %}
+                {% for preview in this.preview %}
+                    <div class="col-lg-6 col-12 d-flex justify-content-between">
+                        <a class="my_card col-12 h-100 panel_link"
+                           href="">
+                            <img src="{{ preview.image }}" alt="Preview image" width="100%"
+                                 style="border-top-left-radius: 15px; border-top-right-radius: 15px">
+                            <div class="card-body p-4">
+                                <h5 class="card-title">{{ preview.title }}</h5>
+                                <p class="card-text">{{ preview.description }}...</p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div class="row" style="margin: 50px 0; text-align: justify">
+            <div class="border-end" style="width: 150px; margin-top: 15px">
+                {% for validation in this.trace.validations %}
+                    {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
+                        <small><span
+                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }} p-2">{{ validation.apcNiveau.apcCompetence.nomCourt }}</span>
+                        </small><br>
+                    {% else %}
+                        <small><span
+                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} </span>
+                        </small>
+                    {% endif %}
+                    <br>
+                {% endfor %}
+            </div>
+            <div class="col-lg-7 col-12">
+                <p>{{ this.trace.description }}</p>
+            </div>
+            <div class="col-lg-3 col-12 d-flex flex-column align-items-end">
+                <div class="d-flex flex-column">
+                    <span class="text-muted mt-1">
+                        {{ this.trace.legende }}
+                    </span>
+                    <span class="text-muted mt-1">
+                        Date de réalisation : {{ this.trace.dateRealisation|date("m/Y") }}
+                    </span>
+                    <span class="text-muted mt-1">
+                        Contexte : {{ this.trace.contexte }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

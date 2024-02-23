@@ -10,19 +10,13 @@
     <div class="card-body">
         <div class="row d-flex justify-content-center">
             {% if this.trace.type == 'lien' %}
-                {% for preview in this.preview %}
-                    <div class="col-lg-6 col-12 d-flex justify-content-between">
-                        <a class="my_card col-12 h-100 panel_link"
-                           href="">
-                            <img src="{{ preview.image }}" alt="Preview image" width="100%"
-                                 style="border-top-left-radius: 15px; border-top-right-radius: 15px">
-                            <div class="card-body p-4">
-                                <h5 class="card-title">{{ preview.title }}</h5>
-                                <p class="card-text">{{ preview.description }}...</p>
-                            </div>
-                        </a>
-                    </div>
-                {% endfor %}
+                {% include('/partials/trace/_lien_content.html.twig') %}
+            {% elseif this.trace.type == 'image' %}
+                {% include('/partials/trace/_image_content.html.twig') %}
+            {% elseif this.trace.type == 'video' %}
+                {% include('/partials/trace/_video_content.html.twig') %}
+            {% elseif this.trace.type == 'pdf' %}
+                {% include('/partials/trace/_pdf_content.html.twig') %}
             {% endif %}
         </div>
         <div class="row" style="margin: 50px 0; text-align: justify">
@@ -34,7 +28,7 @@
                         </small><br>
                     {% else %}
                         <small><span
-                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} </span>
+                                    class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} </span>
                         </small>
                     {% endif %}
                     <br>
@@ -44,8 +38,8 @@
                 <p>{{ this.trace.description }}</p>
             </div>
             <div class="col-lg-3 col-12 d-flex flex-column align-items-end">
-                <div class="d-flex flex-column">
-                    <span class="text-muted mt-1">
+                <div class="d-flex flex-column" style="max-width: 70%">
+                    <span class="text-muted mt-1" >
                         {{ this.trace.legende }}
                     </span>
                     <span class="text-muted mt-1">
@@ -70,7 +64,7 @@
                         </small><br>
                     {% else %}
                         <small><span
-                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
+                                    class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcApprentissageCritique.libelle }}
                         </small>
                     {% endif %}
                     <span>
@@ -89,6 +83,33 @@
                             le {{ validation.dateModification|date('d-m-Y') }}</p>
                     {% endif %}
                 {% endfor %}
+            </div>
+
+            <div class="col-10 m-2">
+                <h5>Commentaires</h5>
+                {% set visibleComments = this.trace.commentaires|filter(commentaire => commentaire.visibilite == 1) %}
+                {% if visibleComments is empty %}
+                    <p>Aucun commentaire pour le moment</p>
+                {% else %}
+                    {% for commentaire in this.trace.commentaires %}
+                        {% if commentaire.visibilite == 1 %}
+                            <div class="card"
+                                 style="margin-bottom: 10px; box-shadow: none; border: 1px solid lightgrey">
+                                <div class="card-header">
+                                    <div style="display: flex; justify-content: space-between; align-items: center">
+                                        <h6 class="card-subtitle">{{ commentaire.enseignant.prenom }} {{ commentaire.enseignant.nom }}</h6>
+                                        <small>
+                                            {{ commentaire.datecreation|date('d-m-Y H:i') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ commentaire.contenu }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
 

@@ -1,0 +1,13 @@
+{% for preview in this.preview %}
+    <div class="col-lg-6 col-12 d-flex justify-content-between">
+        <a class="my_card col-12 h-100 panel_link"
+           href="">
+            <img src="{{ preview.image }}" alt="Preview image" width="100%"
+                 style="border-top-left-radius: 15px; border-top-right-radius: 15px">
+            <div class="card-body p-4">
+                <h5 class="card-title">{{ preview.title }}</h5>
+                <p class="card-text">{{ preview.description }}...</p>
+            </div>
+        </a>
+    </div>
+{% endfor %}

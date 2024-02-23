@@ -1,0 +1,6 @@
+<div class="d-flex flex-row flex-wrap justify-content-center g-3">
+    {% for image in this.trace.contenu %}
+        <img src="{{ asset(image) }}" class="card-img-top" alt="{{ this.trace.legende }}"
+             style="max-height: 500px; width: auto; margin: 0 25px">
+    {% endfor %}
+</div>

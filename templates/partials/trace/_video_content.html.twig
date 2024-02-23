@@ -1,0 +1,7 @@
+<div class="d-flex flex-row flex-wrap justify-content-center">
+    {% for video in this.trace.contenu %}
+        <div class="col-lg-5 col-12 m-3">
+            <iframe src="{{ video }}" width="100%" height="400px"></iframe>
+        </div>
+    {% endfor %}
+</div>

@@ -143,7 +143,7 @@ class TraceAbstractType extends AbstractType
                 'attr' => ['class' => 'tinymce form-control', 'placeholder' => '...', 'rows' => 15, 'id' => 'trace_abstract_description'],
                 'help' => 'Commentez votre trace pour justifier sa pertinence',
                 'mapped' => true,
-                'required' => true,
+                'required' => false,
             ])
             ->add('competences', ChoiceType::class, [
                 'constraints' => [

@@ -263,4 +263,13 @@ class TraceController extends AbstractController
 
         return $this->redirectToRoute('app_trace_new');
     }
+
+    #[Route('/trace/delete/{id}', name: 'app_trace_delete')]
+    public function delete(int $id): Response
+    {
+        $trace = $this->traceRepository->find($id);
+        $this->traceRepository->delete($trace, true);
+
+        return $this->redirectToRoute('app_biblio_traces');
+    }
 }

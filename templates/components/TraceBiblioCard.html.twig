@@ -61,8 +61,8 @@
                              aria-labelledby="flush-heading{{ this.trace.id }}"
                              data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body" style="padding: 0">
-                                <div class="card-competences d-flex justify-content-between align-items-center">
-                                    {% for validation in this.trace.validations %}
+                                {% for validation in this.trace.validations %}
+                                    <div class="card-competences d-flex justify-content-between align-items-center">
                                         {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
                                             <small><span
                                                         class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
@@ -79,8 +79,8 @@
                                         {% elseif validation.etat == 3 %} 3
                                         {% endif %}
                                         </span>
-                                    {% endfor %}
-                                </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                 <a href="#">
                     <button class="btn btn-secondary-color text-uppercase">Modifier</button>
                 </a>
-                <a href="#">
+                <a href="{{ path('app_trace_delete', {'id': this.trace.id}) }}">
                     <button class="btn btn-secondary-color text-uppercase">Supprimer</button>
                 </a>
             </div>

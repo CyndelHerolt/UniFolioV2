@@ -2,11 +2,25 @@
     <div class="col-lg-6 col-12 d-flex justify-content-between">
         <a class="my_card col-12 h-100 panel_link"
            href="">
-            <img src="{{ preview.image }}" alt="Preview image" width="100%"
+            <img src="
+                {% if preview.image is not null %}
+                {{ preview.image }}
+                {% else %}
+                {{ asset('images/link.jpg') }}
+                {% endif %}
+                " alt="Preview image" width="100%"
                  style="border-top-left-radius: 15px; border-top-right-radius: 15px">
             <div class="card-body p-4">
-                <h5 class="card-title">{{ preview.title }}</h5>
-                <p class="card-text">{{ preview.description }}...</p>
+                <h5 class="card-title">
+                    {% if preview.title is not null %}
+                        {{ preview.title }}
+                    {% else %}
+                        {{ preview.url }}
+                    {% endif %}
+                </h5>
+                {% if preview.description is not null %}
+                    <p class="card-text">{{ preview.description }}...</p>
+                {% endif %}
             </div>
         </a>
     </div>

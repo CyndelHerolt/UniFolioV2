@@ -30,6 +30,31 @@ class TraceRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(Trace $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function findByCompetence(array $competences): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.validations', 'v')
+            ->leftJoin('v.apcNiveau', 'n')
+            ->leftJoin('v.apc_apprentissage_critique', 'a')
+            ->where('n.id IN (:competences)')
+            ->orWhere('a.id IN (:competences)')
+            ->setParameter('competences', $competences)
+            ->getQuery()
+            ->getResult();
+
+        return $qb;
+    }
+
+
 //    /**
 //     * @return Trace[] Returns an array of Trace objects
 //     */

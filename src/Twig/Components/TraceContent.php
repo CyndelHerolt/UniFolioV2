@@ -22,7 +22,18 @@ final class TraceContent
     public function getLinkPreview(string $url): array
     {
         $client = new Client();
-        $response = $client->request('GET', $url);
+
+        try {
+            $response = $client->request('GET', $url);
+        } catch (\Exception $e) {
+            // Handle the exception here. For example, you can return a default value:
+            return [
+                'title' => null,
+                'description' => null,
+                'image' => null,
+                'url' => $url,
+            ];
+        }
 
         $html = (string)$response->getBody();
 
@@ -31,7 +42,6 @@ final class TraceContent
 
         preg_match('/<meta name="description" content="(.*?)"/is', $html, $matches);
         $description = $matches[1] ?? '';
-        // limiter la taille de la description à 100 caractères
         $description = substr($description, 0, 75);
 
         preg_match('/<meta property="og:image" content="(.*?)"/is', $html, $matches);

@@ -1,5 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
+    globals:
+        tinyMCEApiKey: '%env(TINYMCE_API_KEY)%'
 
 when@test:
     twig:

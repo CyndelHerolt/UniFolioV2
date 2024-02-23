@@ -6,7 +6,7 @@ use App\Repository\TraceRepository;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 
 #[AsTwigComponent]
-final class TraceCard
+final class TraceBiblioCard
 {
     public int $id;
 

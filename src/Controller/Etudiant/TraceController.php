@@ -41,11 +41,13 @@ class TraceController extends AbstractController
     {
     }
 
-    #[Route('/bibliotheque/traces', name: 'app_trace')]
-    public function index(Request $request): Response
+    #[Route('/trace/show/{id}', name: 'app_trace_show')]
+    public function show(?int $id): Response
     {
-        return $this->render('trace/index.html.twig', [
-            'controller_name' => 'TraceController',
+        $trace = $this->traceRepository->find($id);
+
+        return $this->render('trace/show.html.twig', [
+            'trace' => $trace,
         ]);
     }
 

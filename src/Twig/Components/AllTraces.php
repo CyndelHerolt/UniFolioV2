@@ -2,7 +2,9 @@
 
 namespace App\Twig\Components;
 
+use App\Entity\Annee;
 use App\Entity\Trace;
+use App\Repository\AnneeRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
@@ -34,6 +36,12 @@ final class AllTraces
     #[LiveProp(writable: true)]
     public string $selectedOrdreValidation = '';
 
+    #[LiveProp(writable: true)]
+    public array $selectedTraces = [];
+
+    #[LiveProp(writable: true)]
+    public ?int $selectedAnnee = null;
+
     public function __construct(
         private readonly Security                    $security,
         protected ApcNiveauRepository                $apcNiveauRepository,
@@ -41,6 +49,7 @@ final class AllTraces
         protected ApcCompetenceRepository            $apcCompetenceRepository,
         protected BibliothequeRepository             $bibliothequeRepository,
         protected TraceRepository                    $traceRepository,
+        protected AnneeRepository                    $anneeRepository,
     )
     {
         $user = $this->security->getUser()->getEtudiant();
@@ -99,6 +108,8 @@ final class AllTraces
             $this->competences = $apcApprentissageCritiques;
         }
 
+        $this->selectedAnnee = $annee->getId();
+
         $this->allTraces = $this->getAllTrace();
     }
 
@@ -122,9 +133,29 @@ final class AllTraces
         $this->allTraces = $this->getAllTrace();
     }
 
+    #[LiveAction]
+    public function changeAnnee()
+    {
+        $this->allTraces = $this->getAllTrace();
+    }
+
+    #[LiveAction]
+    public function deleteSelectedTraces(): void
+    {
+        if ($this->selectedTraces === null) {
+            return;
+        }
+        foreach ($this->selectedTraces as $trace) {
+            $trace = $this->traceRepository->find($trace);
+            $this->traceRepository->delete($trace, true);
+        }
+        $this->allTraces = $this->getAllTrace();
+    }
+
     public function getAllTrace(): array
     {
-        $bibliotheque = $this->bibliothequeRepository->findOneByEtudiantAnnee($this->security->getUser()->getEtudiant(), $this->security->getUser()->getEtudiant()->getSemestre()->getAnnee());
+        $annee = $this->anneeRepository->find($this->selectedAnnee);
+        $bibliotheque = $this->bibliothequeRepository->findOneByEtudiantAnnee($this->security->getUser()->getEtudiant(), $annee);
 
         $ordreDate = $this->selectedOrdreDate != null ? $this->selectedOrdreDate : null;
 

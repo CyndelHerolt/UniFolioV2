@@ -390,7 +390,8 @@
     margin: 15px 15px 25px 0;
   }
 
-  .active-filter {
-    font-weight: bold;
+  .disabled {
+    background-color: $quartenary-color;
+    opacity: 1;
   }
 }

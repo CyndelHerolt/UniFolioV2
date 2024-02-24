@@ -4,11 +4,13 @@
            href="">
             <img src="
                 {% if preview.image is not null %}
-                {{ preview.image }}
+                {{ preview.image }}"
+                 width="100%"
                 {% else %}
-                {{ asset('images/link.jpg') }}
+                {{ asset('images/link.jpg') }}"
+                width="auto"
                 {% endif %}
-                " alt="Preview image" width="100%"
+                 alt="Preview image"
                  style="border-top-left-radius: 15px; border-top-right-radius: 15px">
             <div class="card-body p-4">
                 <h5 class="card-title">

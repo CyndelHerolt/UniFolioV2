@@ -103,6 +103,7 @@ class TraceController extends AbstractController
                         $apcApprentissageCritiques[] = $apcApprentissageCritique;
                     }
                 }
+//                dd($apcApprentissageCritiques);
             }
         }
 

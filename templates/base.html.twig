@@ -23,13 +23,12 @@
 <header>
     {% block header %}
     {% endblock %}
-
     {% if app.user == null %}
-    {% include('partials/menu/_menu_public.html.twig') %}
+        {% include('partials/menu/_menu_public.html.twig') %}
     {% elseif app.user.etudiant != null %}
-    {% include('partials/menu/_menu_etudiant.html.twig') %}
+        {% include('partials/menu/_menu_etudiant.html.twig') %}
     {% elseif app.user.enseignant != null %}
-    {% include('partials/menu/_menu_enseignant.html.twig') %}
+        {% include('partials/menu/_menu_enseignant.html.twig') %}
     {% endif %}
 </header>
 <main class="min-vh-100">

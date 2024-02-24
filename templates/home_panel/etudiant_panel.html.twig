@@ -9,7 +9,7 @@
 
     <section class="container-custom d-flex flex-column justify-content-center align-items-center min-vh-100">
 {#        <img src="{{ asset('images/unifolio_logo.png') }}" alt="logo unifolio" class="logo_panel">#}
-        <div class="row justify-content-center w-100">
+        <div class="row justify-content-center w-100 h-100">
             <div class="card col-lg-3 col-12 panel panel_secondary flex-column align-items-center justify-content-center p-5 m-2">
                 <h2 class="text-uppercase panel-title">dashboard</h2>
                 <ul>
@@ -18,28 +18,28 @@
                     <li>Un suivi de l'évaluation</li>
                 </ul>
                 <a href="{{ path('app_dashboard_etudiant') }}" class="panel-btn-dashboard">
-                    <button class="btn btn-primary btn-secondary-color text-uppercase">
+                    <button class="btn btn-primary btn-primary-color text-uppercase">
                         Accéder
                     </button>
                 </a>
-                <img class="illu_dashboard" src="{{ asset('images/dashboard.png') }}" alt="">
+                <img class="illu_dashboard" src="{{ asset('images/dashboard2.png') }}" alt="">
             </div>
-            <div class="flex-column col-lg-4 col-12">
+            <div class="d-flex flex-column justify-content-between col-lg-4 col-12">
                 <div class="row">
                     <a class="card panel panel_primary g-2 p-3 m-2 col-lg-5 panel_link d-flex flex-column align-items-center justify-content-between"
                        href="">
-                        <img class="illu_panel" src="{{ asset('images/portfolio.png') }}" alt="">
+                        <img class="illu_panel" src="{{ asset('images/portfolio2.png') }}" alt="">
                         <h2 class="text-uppercase panel-title">créer un portfolio</h2>
                     </a>
                     <a class="card panel panel_secondary g-2 p-3 m-2 col-lg-5 panel_link d-flex flex-column align-items-center justify-content-between"
                        href="{{ path('app_trace_new') }}">
-                        <img class="illu_panel" src="{{ asset('images/trace.png') }}" alt="">
+                        <img class="illu_panel" src="{{ asset('images/trace2.png') }}" alt="">
                         <h2 class="text-uppercase panel-title">créer une trace</h2>
                     </a>
                 </div>
-                <div class="row">
+                <div class="row h-100">
                     <div class="card panel panel_tertiary g-2 p-3 m-2 col-lg-12 d-flex flex-row align-items-center">
-                        <img class="illu_panel" src="{{ asset('images/documentation.png') }}" alt="">
+                        <img class="illu_panel" src="{{ asset('images/documentation2.png') }}" alt="">
                         <div class="panel_content">
                             <h2 class="text-uppercase panel-title">Comment ça marche ?</h2>
                             <p>Explore la documentation</p>

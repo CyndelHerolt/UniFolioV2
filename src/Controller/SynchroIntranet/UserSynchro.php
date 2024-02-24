@@ -178,6 +178,8 @@ class UserSynchro extends AbstractController
                 $newEtudiant->setUser($user);
                 $biblio = new Bibliotheque();
                 $biblio->setEtudiant($newEtudiant);
+                $biblio->setAnnee($semestre->getAnnee());
+                $biblio->setActif(true);
                 $newEtudiant->setNom($data['nom']);
                 $newEtudiant->setPrenom($data['prenom']);
                 $newEtudiant->setUsername($data['username']);

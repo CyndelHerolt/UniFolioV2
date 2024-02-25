@@ -1,0 +1,48 @@
+<div{{ attributes }}>
+    <div class="row g-3 d-flex flex-row align-items-center flex-wrap">
+        <div class="col-lg-3 col-12">
+        {% if this.trace.type == 'image' %}
+            <div style="background-image: url({{ asset(this.trace.contenu|first) }}); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
+            </div>
+
+        {% elseif this.trace.type == 'lien' %}
+            {% set firstPreview = this.preview|first %}
+            <div style="background-image: url(
+            {% if firstPreview.image is not null %}
+                {{ firstPreview.image }}
+            {% else %}
+                {{ asset('images/link.jpg') }}
+            {% endif %}
+                    ); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
+            </div>
+
+        {% elseif this.trace.type == 'pdf' %}
+            <iframe src="{{ this.trace.contenu|first }}" width="100% !important;" height="150px !important;"></iframe>
+
+        {% elseif this.trace.type == 'video' %}
+            {% set videoId = this.trace.contenu|first|split('/')[4] %}
+            <div style="background-image: url(https://img.youtube.com/vi/{{ videoId }}/0.jpg); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
+            </div>
+        {% endif %}
+        </div>
+
+        <div class="col-lg-9 col-12 d-flex flex-column align-items-start justify-content-start">
+            <h5>{{ this.trace.libelle }}</h5>
+            <small class="text-muted">Publiée le : {{ this.trace.dateCreation|date('d-m-Y') }}
+            -
+                {{ this.trace.contenu|length }}
+                {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}</small>
+            {% for validation in this.trace.validations %}
+                {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
+                    <small class="{{ validation.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ validation.apcNiveau.apcCompetence.nomCourt }} • {{ validation.apcNiveau.libelle }}
+                    </small>
+                {% else %}
+                    <small class="{{ validation.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ validation.apcApprentissageCritique.code }} | {{ validation.apcApprentissageCritique.libelle }}
+                    </small>
+                {% endif %}
+            {% endfor %}
+            <p>{{ this.trace.description|striptags|slice(0, 300)|raw }}</p>
+        </div>
+
+    </div>
+</div>

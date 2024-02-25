@@ -129,17 +129,6 @@ class PortfolioUnivController extends AbstractController
 
             case 'page':
 
-                $bibliotheques = $user->getBibliotheques();
-
-                $traces = [];
-                foreach ($bibliotheques as $biblio) {
-                    $tracesBiblio = $biblio->getTraces();
-                    foreach ($tracesBiblio as $trace) {
-                        $traces[] = $trace;
-                    }
-                }
-
-
                 $page = $this->pageRepository->find($request->query->get('page'));
                 $form = $this->createForm(PageType::class, $page);
 
@@ -166,16 +155,8 @@ class PortfolioUnivController extends AbstractController
             case 'addTrace':
 
                 $page = $this->pageRepository->find($request->query->get('page'));
-                $bibliotheques = $user->getBibliotheques();
                 $edit = false;
                 $form = $this->createForm(PageType::class, $page);
-                $traces = [];
-                foreach ($bibliotheques as $biblio) {
-                    $tracesBiblio = $biblio->getTraces();
-                    foreach ($tracesBiblio as $trace) {
-                        $traces[] = $trace;
-                    }
-                }
 
                 $datas = $request->request->all();
 
@@ -200,6 +181,15 @@ class PortfolioUnivController extends AbstractController
         }
 
         $pages = $portfolio->getPages();
+        $bibliotheques = $user->getBibliotheques();
+
+        $traces = [];
+        foreach ($bibliotheques as $biblio) {
+            $tracesBiblio = $biblio->getTraces();
+            foreach ($tracesBiblio as $trace) {
+                $traces[] = $trace;
+            }
+        }
 
         return $this->render('portfolio_univ/edit.html.twig', [
             'portfolio' => $portfolio,

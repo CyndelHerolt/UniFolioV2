@@ -101,10 +101,10 @@
                     </button>
                 </a>
             </div>
-            <div class="row">
+            <div class="row d-flex flex-column g-5">
                 {% for tracePage in tracesPage %}
-                    <div class="col-lg-4">
-                        <twig:TraceCard id="{{ tracePage.id }}"/>
+                    <div class="col-12">
+                        <twig:TracePortfolioPreview id="{{ tracePage.id }}"/>
                     </div>
                 {% endfor %}
             </div>

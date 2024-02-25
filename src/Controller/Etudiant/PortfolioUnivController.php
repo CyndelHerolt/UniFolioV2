@@ -4,10 +4,13 @@ namespace App\Controller\Etudiant;
 
 use App\Entity\Page;
 use App\Entity\PortfolioUniv;
+use App\Entity\TracePage;
 use App\Form\PageType;
 use App\Form\PortfolioUnivType;
 use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
+use App\Repository\TracePageRepository;
+use App\Repository\TraceRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +22,8 @@ class PortfolioUnivController extends AbstractController
     public function __construct(
         protected PortfolioUnivRepository $portfolioUnivRepository,
         protected PageRepository          $pageRepository,
+        protected TraceRepository         $traceRepository,
+        protected TracePageRepository     $tracePageRepository
     )
     {
     }
@@ -74,6 +79,8 @@ class PortfolioUnivController extends AbstractController
     #[Route('/edit/{id}', name: 'app_portfolio_univ_edit')]
     public function edit(Request $request, PortfolioUniv $portfolio, ?string $step, ?bool $edit): Response
     {
+        $user = $this->getUser()->getEtudiant();
+
         $step = $request->query->get('step', $step);
 
         if ($step === null) {
@@ -121,6 +128,18 @@ class PortfolioUnivController extends AbstractController
                 break;
 
             case 'page':
+
+                $bibliotheques = $user->getBibliotheques();
+
+                $traces = [];
+                foreach ($bibliotheques as $biblio) {
+                    $tracesBiblio = $biblio->getTraces();
+                    foreach ($tracesBiblio as $trace) {
+                        $traces[] = $trace;
+                    }
+                }
+
+
                 $page = $this->pageRepository->find($request->query->get('page'));
                 $form = $this->createForm(PageType::class, $page);
 
@@ -133,8 +152,50 @@ class PortfolioUnivController extends AbstractController
                     $edit = false;
                 }
 
+                $tracesPages = $page->getTracePages();
+                $tracesPage = [];
+                foreach ($tracesPages as $tracePage) {
+                    $tracesPage[] = $tracePage->getTrace();
+                }
+
                 $edit = $request->query->get('edit', $edit);
                 $step = 'page';
+
+                break;
+
+            case 'addTrace':
+
+                $page = $this->pageRepository->find($request->query->get('page'));
+                $bibliotheques = $user->getBibliotheques();
+                $edit = false;
+                $form = $this->createForm(PageType::class, $page);
+                $traces = [];
+                foreach ($bibliotheques as $biblio) {
+                    $tracesBiblio = $biblio->getTraces();
+                    foreach ($tracesBiblio as $trace) {
+                        $traces[] = $trace;
+                    }
+                }
+
+                $datas = $request->request->all();
+
+                foreach ($datas as $data) {
+                    foreach ($data as $traceId) {
+                        $trace = $this->traceRepository->find($traceId);
+
+                        $tracePage = new TracePage();
+                        $tracePage->setPage($page);
+                        $tracePage->setTrace($trace);
+                        $tracePage->setOrdre(count($page->getTracePages()) + 1);
+
+                        $this->tracePageRepository->save($tracePage, true);
+                    }
+                }
+
+                $step = 'page';
+
+                return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
+
                 break;
         }
 
@@ -147,6 +208,8 @@ class PortfolioUnivController extends AbstractController
             'step' => $step,
             'page' => $page ?? null,
             'edit' => $edit ?? true,
+            'traces' => $traces ?? null,
+            'tracesPage' => $tracesPage ?? null,
         ]);
     }
 }

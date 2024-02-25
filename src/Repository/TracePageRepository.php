@@ -21,6 +21,15 @@ class TracePageRepository extends ServiceEntityRepository
         parent::__construct($registry, TracePage::class);
     }
 
+    public function save(TracePage $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return TracePage[] Returns an array of TracePage objects
 //     */

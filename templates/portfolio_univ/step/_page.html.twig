@@ -50,6 +50,65 @@
                    class="btn btn-primary-color text-uppercase">Modifier</a>
             </div>
         {% endif %}
-        <hr>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12">
+            <div class="btn_group">
+                <button class="btn btn-primary-color text-uppercase m-2" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdropAddTraces">
+                    Ajouter des traces
+                </button>
+                <!-- Modal AddTraces -->
+                <div class="modal modal-lg fade" id="staticBackdropAddTraces" data-bs-backdrop="static"
+                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Choisissez les traces que vous voulez
+                                    ajouter dans votre portfolio</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'addTrace', 'page': page.id}) }}"
+                                      method="post">
+                                    <div class="row">
+                                        {% for trace in traces|sort((a, b) => a.dateCreation <=> b.dateCreation) %}
+                                            <div class="col-lg-4">
+                                                <input type="checkbox" class="btn-check" id="trace{{ trace.id }}"
+                                                       name="traces[]" value="{{ trace.id }}" autocomplete="off">
+                                                <label class="btn btn-light" for="trace{{ trace.id }}">
+                                                    <twig:TraceCard id="{{ trace.id }}"/>
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">
+                                            Annuler
+                                        </button>
+                                        <button type="submit" class="btn btn-primary-color" data-bs-dismiss="modal">Valider</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="">
+                    <button class="btn btn-primary-color text-uppercase m-2">
+                        Créer une trace
+                    </button>
+                </a>
+            </div>
+            <div class="row">
+                {% for tracePage in tracesPage %}
+                    <div class="col-lg-4">
+                        <twig:TraceCard id="{{ tracePage.id }}"/>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
     </div>
 </turbo-frame>

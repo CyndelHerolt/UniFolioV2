@@ -102,6 +102,7 @@
   }
 
   .card {
+    background-color: var(--white);
     border: none;
     box-shadow: rgba(0, 0, 0, 0.08) 0 4px 12px;
     border-radius: 25px;
@@ -117,8 +118,14 @@
     }
 
     .card-header {
-      background-color: transparent;
+      background-color: var(--white);
       border-bottom: none;
+    }
+
+    .card-body {
+      background-color: var(--white);
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
     }
 
     .card-title {

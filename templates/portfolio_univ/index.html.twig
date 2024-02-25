@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UniFolio - Traces{% endblock %}
+{% block title %}UniFolio - Portfolios universitaires{% endblock %}
 
     {% block header %}
     {% endblock %}
@@ -10,12 +10,13 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
             <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Bibliothèque de traces</li>
+            <li class="breadcrumb-item active" aria-current="page">Bibliothèque de portfolios universitaires</li>
         </ol>
     </nav>
     <section class="container-custom min-vh-100 section-pt">
         <article class="row content-article">
-            <twig:AllTraces />
+            <h2>Biblio portfolios</h2>
+            <a href="{{ path('app_portfolio_univ_new') }}">Créer</a>
         </article>
     </section>
 {% endblock %}

@@ -52,6 +52,7 @@ class PortfolioUnivType extends AbstractType
                 ],
                 'help' => 'Image de couverture du portfolio',
                 'required' => false,
+                'mapped' => false,
             ])
             ->add('description', TextareaType::class, [
                 'constraints' => [

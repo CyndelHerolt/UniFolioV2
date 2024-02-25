@@ -21,6 +21,15 @@ class PortfolioUnivRepository extends ServiceEntityRepository
         parent::__construct($registry, PortfolioUniv::class);
     }
 
+    public function save(PortfolioUniv $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return PortfolioUniv[] Returns an array of PortfolioUniv objects
 //     */

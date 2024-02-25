@@ -1,0 +1,55 @@
+<turbo-frame id="portfolio-form">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="#">Portfolio</a>
+        </li>
+
+        {% if portfolio.pages is not null %}
+            {% for pageA in pages|sort((a, b) => a.ordre <=> b.ordre) %}
+                <li class="nav-item" value="{{ pageA.id }}">
+                    <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page"
+                       href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': pageA.id, 'edit': false}) }}">{{ pageA.libelle }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newPage'}) }}">Ajouter
+                une page</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="#">Cv</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_portfolio_univ') }}">Enregistrer et
+                quitter</a>
+        </li>
+    </ul>
+
+    <div class="row">
+        {% if edit == true %}
+            {{ form_start(form, {'action': path('app_portfolio_univ_edit', {'id': portfolio.id, 'step': 'page', 'page': page.id})}) }}
+            <div class="col-12 p-2">
+                {{ form_row(form.libelle) }}
+            </div>
+            <div class="col-12 p-2">
+                {{ form_row(form.description) }}
+            </div>
+            <button type="submit" class="btn btn-primary-color text-uppercase">Enregistrer les modifications
+            </button>
+            {{ form_end(form) }}
+        {% else %}
+            <div class="col-10 p-2">
+                <h2>{{ page.libelle }}</h2>
+                <em>{{ page.description }}</em>
+            </div>
+            <div class="col-1 p-2 d-flex align-items-center">
+                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': page.id, 'edit': true}) }}"
+                   class="btn btn-primary-color text-uppercase">Modifier</a>
+            </div>
+        {% endif %}
+        <hr>
+    </div>
+</turbo-frame>

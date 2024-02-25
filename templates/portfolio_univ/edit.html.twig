@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Portfolio Universitaire{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_portfolio_univ') }}" class="link">Bibliothèque de
+                    portfolios universitaires</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Edition portfolio universitaire</li>
+        </ol>
+    </nav>
+    <section class="container-custom min-vh-100 section-pt">
+        <div class="row d-flex">
+            <article class="col-lg-8 col-12">
+                <div class="card p-5">
+                    <div class="card-header">
+                        <h2>Edition d'un portfolio universitaire</h2>
+                    </div>
+                    <div class="card-body">
+                        <turbo-frame id="portfolio-form">
+                            {{ include('portfolio_univ/step/_'~step~'.html.twig') }}
+                        </turbo-frame>
+                    </div>
+                </div>
+            </article>
+            <aside class="col-lg-4 col-12">
+                <div class="card p-5 h-100">
+                    <div class="card-header">
+                        <h2>Guide du portfolio</h2>
+                        <em>Le portfolio universitaire est un outil qui permet de présenter de manière organisée et
+                            structurée les projets réalisés, les centres d’intérêt, les activités extra-universitaires,
+                            dans une démarche de réflexion sur son parcours et de valorisation de ses compétences.</em>
+                        <hr>
+                    </div>
+                    <div class="card-body">
+                        <turbo-frame id="portfolio-steps">
+                            <h4>Etapes</h4>
+                            <ul class="progress-list">
+                                <li>Initialisation du portfolio</li>
+                                <li>Création d'une ou plusieurs pages</li>
+                                <li>Création ou ajout de traces dans les pages</li>
+                                <li>Création ou ajout d'un CV <small class="text-muted">- Facultatif</small></li>
+                            </ul>
+                        </turbo-frame>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+{% endblock %}

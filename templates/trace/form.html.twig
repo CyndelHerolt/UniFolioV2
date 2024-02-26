@@ -21,11 +21,7 @@
                         <h2>Création d'une trace</h2>
                     </div>
 
-{#                    {% if 'TraceImage' in selectedTraceType or 'TracePdf' in selectedTraceType %}#}
-                        {{ form_start(form, {'action': path('app_trace_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
-{#                    {% else %}#}
-{#                        {{ form_start(form, {'action': path('app_trace_sauvegarde')}) }}#}
-{#                    {% endif %}#}
+                    {{ form_start(form, {'action': path('app_trace_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
 
                     <div class="visually-hidden">
                         {{ form_row(form.date_creation) }}

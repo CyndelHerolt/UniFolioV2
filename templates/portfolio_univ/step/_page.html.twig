@@ -4,7 +4,7 @@
             <a class="nav-link" aria-current="page" href="#">Portfolio</a>
         </li>
 
-        {% if portfolio.pages is not null %}
+        {% if pages is not null %}
             {% for pageA in pages|sort((a, b) => a.ordre <=> b.ordre) %}
                 <li class="nav-item" value="{{ pageA.id }}">
                     <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page"
@@ -83,28 +83,60 @@
                                                 </label>
                                             </div>
                                         {% endfor %}
+                                        {% if traces is empty %}
+                                            <div class="col-12 d-flex flex-column align-items-center">
+                                                <p class="text-center">Aucune trace disponible.</p>
+                                                <a href="">
+                                                    <button class="btn btn-primary-color text-uppercase m-2">
+                                                        Créer une trace
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">
                                             Annuler
                                         </button>
+                                        {% if traces is not empty %}
                                         <button type="submit" class="btn btn-primary-color" data-bs-dismiss="modal">Valider</button>
+                                        {% endif %}
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                <a href="">
+                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
                     <button class="btn btn-primary-color text-uppercase m-2">
                         Créer une trace
                     </button>
                 </a>
             </div>
-            <div class="row d-flex flex-column g-5">
+            <div class="row d-flex flex-column g-5 mt-3">
                 {% for tracePage in tracesPage %}
                     <div class="col-12">
                         <twig:TracePortfolioPreview id="{{ tracePage.id }}"/>
+                        <div class="d-flex flex-row justify-content-evenly bg-light p-3">
+                            <button class="btn btn-primary-color text-uppercase">
+                                up
+                            </button>
+                            <button class="btn btn-primary-color text-uppercase">
+                                down
+                            </button>
+                            <button class="btn btn-primary-color text-uppercase">
+                                edit
+                            </button>
+                            <button class="btn btn-primary-color text-uppercase">
+                                delete
+                            </button>
+                            <button class="btn btn-primary-color text-uppercase">
+                                voir
+                            </button>
+                            <button class="btn btn-primary-color text-uppercase">
+                                évaluer
+                            </button>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

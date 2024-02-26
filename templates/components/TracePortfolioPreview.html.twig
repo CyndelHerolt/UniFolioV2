@@ -41,8 +41,7 @@
                     </small>
                 {% endif %}
             {% endfor %}
-            <p>{{ this.trace.description|striptags|slice(0, 300)|raw }}</p>
+            <p>{{ this.trace.description|striptags|slice(0, 300)|raw }}...</p>
         </div>
-
     </div>
 </div>

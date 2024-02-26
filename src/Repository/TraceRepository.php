@@ -2,8 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\Page;
 use App\Entity\Trace;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -54,6 +56,32 @@ class TraceRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function findNotInPage(Page $page, Collection $biblio)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.tracePages', 'tp', 'WITH', 'tp.page = :page')
+            ->where('t.bibliotheque IN (:biblio)')
+            ->andWhere('tp.page IS NULL')
+            ->setParameter('biblio', $biblio)
+            ->setParameter('page', $page)
+            ->getQuery()
+            ->getResult();
+        return $qb;
+    }
+
+    public function findInPage(Page $page)
+    {
+        // écrire une requête qui récupère les traces qui ont pour tracePage.page = page par ordre croissant
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.tracePages', 'tp')
+            ->where('tp.page = :page')
+            ->setParameter('page', $page)
+            ->orderBy('tp.ordre', 'ASC')
+            ->getQuery()
+            ->getResult();
+        return $qb;
+
+    }
 
 //    /**
 //     * @return Trace[] Returns an array of Trace objects

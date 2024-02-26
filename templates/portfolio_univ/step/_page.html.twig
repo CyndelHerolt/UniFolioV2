@@ -86,8 +86,8 @@
                                         {% if traces is empty %}
                                             <div class="col-12 d-flex flex-column align-items-center">
                                                 <p class="text-center">Aucune trace disponible.</p>
-                                                <a href="">
-                                                    <button class="btn btn-primary-color text-uppercase m-2">
+                                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
+                                                    <button class="btn btn-secondary-color text-uppercase m-2" data-bs-dismiss="modal">
                                                         Créer une trace
                                                     </button>
                                                 </a>
@@ -118,24 +118,24 @@
                     <div class="col-12">
                         <twig:TracePortfolioPreview id="{{ tracePage.id }}"/>
                         <div class="d-flex flex-row justify-content-evenly bg-light p-3">
-                            <button class="btn btn-primary-color text-uppercase">
+                            <a href="">
                                 up
-                            </button>
-                            <button class="btn btn-primary-color text-uppercase">
+                            </a>
+                            <a href="">
                                 down
-                            </button>
-                            <button class="btn btn-primary-color text-uppercase">
+                            </a>
+                            <a href="">
                                 edit
-                            </button>
-                            <button class="btn btn-primary-color text-uppercase">
+                            </a>
+                            <a href="">
                                 delete
-                            </button>
-                            <button class="btn btn-primary-color text-uppercase">
+                            </a>
+                            <a href="">
                                 voir
-                            </button>
-                            <button class="btn btn-primary-color text-uppercase">
+                            </a>
+                            <a href="">
                                 évaluer
-                            </button>
+                            </a>
                         </div>
                     </div>
                 {% endfor %}

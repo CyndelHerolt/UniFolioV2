@@ -87,7 +87,8 @@
                                             <div class="col-12 d-flex flex-column align-items-center">
                                                 <p class="text-center">Aucune trace disponible.</p>
                                                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
-                                                    <button class="btn btn-secondary-color text-uppercase m-2" data-bs-dismiss="modal">
+                                                    <button class="btn btn-secondary-color text-uppercase m-2"
+                                                            data-bs-dismiss="modal">
                                                         Créer une trace
                                                     </button>
                                                 </a>
@@ -99,7 +100,9 @@
                                             Annuler
                                         </button>
                                         {% if traces is not empty %}
-                                        <button type="submit" class="btn btn-primary-color" data-bs-dismiss="modal">Valider</button>
+                                            <button type="submit" class="btn btn-primary-color" data-bs-dismiss="modal">
+                                                Valider
+                                            </button>
                                         {% endif %}
                                     </div>
                                 </form>
@@ -118,7 +121,7 @@
                     <div class="col-12">
                         <twig:TracePortfolioPreview id="{{ tracePage.id }}"/>
                         <div class="d-flex flex-row justify-content-evenly bg-light p-3">
-                            <a href="">
+                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'upTrace', 'page': page.id, 'trace': trace.id}) }}">
                                 up
                             </a>
                             <a href="">

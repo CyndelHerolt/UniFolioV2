@@ -198,6 +198,17 @@ class PortfolioUnivController extends AbstractController
                 return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
 
             case 'upTrace' :
+                $trace = $this->traceRepository->find($request->query->get('trace'));
+                $page = $this->pageRepository->find($request->query->get('page'));
+                $tracePage = $this->tracePageRepository->findOneBy(['trace' => $trace, 'page' => $page]);
+
+                $ordre = $tracePage->getOrdre();
+                $previousTracePage = $this->tracePageRepository->findOneBy(['page' => $page, 'ordre' => $ordre - 1]);
+
+                $tracePage->setOrdre($ordre - 1);
+                $previousTracePage->setOrdre($ordre);
+
+                $this->tracePageRepository->save($tracePage, true);
                 break;
 
             case 'downTrace' :

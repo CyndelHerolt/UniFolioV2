@@ -172,27 +172,30 @@ class UserSynchro extends AbstractController
                 return $etudiant['username'] === $login;
             });
             foreach ($etudiant as $data) {
-                $semestre = $semestreRepository->findOneBy(['id' => $data['semestre']]);
-                // Créer un nouvel etudiant dans la base de données avec les données de $etudiant
-                $newEtudiant = new Etudiant();
-                $newEtudiant->setUser($user);
-                $biblio = new Bibliotheque();
-                $biblio->setEtudiant($newEtudiant);
-                $biblio->setAnnee($semestre->getAnnee());
-                $biblio->setActif(true);
-                $newEtudiant->setNom($data['nom']);
-                $newEtudiant->setPrenom($data['prenom']);
-                $newEtudiant->setUsername($data['username']);
-                $newEtudiant->setMailUniv($data['mail_univ']);
-                $newEtudiant->setMailPerso($data['mail_perso']);
-                $newEtudiant->setSemestre($semestre);
-//                    dd($data['groupes']);
-                foreach ($data['groupes'] as $groupe) {
-                    $groupe = $groupeRepository->findOneBy(['id' => $groupe]);
-                    $newEtudiant->addGroupe($groupe);
+                // vérifier si l'étudiant existe déjà dans la base de données
+                $existingEtudiant = $etudiantRepository->findOneBy(['username' => $data['username']]);
+                if (!$existingEtudiant) {
+                    $semestre = $semestreRepository->findOneBy(['id' => $data['semestre']]);
+                    // Créer un nouvel etudiant dans la base de données avec les données de $etudiant
+                    $newEtudiant = new Etudiant();
+                    $newEtudiant->setUser($user);
+                    $biblio = new Bibliotheque();
+                    $biblio->setEtudiant($newEtudiant);
+                    $biblio->setAnnee($semestre->getAnnee());
+                    $biblio->setActif(true);
+                    $newEtudiant->setNom($data['nom']);
+                    $newEtudiant->setPrenom($data['prenom']);
+                    $newEtudiant->setUsername($data['username']);
+                    $newEtudiant->setMailUniv($data['mail_univ']);
+                    $newEtudiant->setMailPerso($data['mail_perso']);
+                    $newEtudiant->setSemestre($semestre);
+                    foreach ($data['groupes'] as $groupe) {
+                        $groupe = $groupeRepository->findOneBy(['id' => $groupe]);
+                        $newEtudiant->addGroupe($groupe);
+                    }
+                    $etudiantRepository->save($newEtudiant, true);
+                    $bibliothequeRepository->save($biblio, true);
                 }
-                $etudiantRepository->save($newEtudiant, true);
-                $bibliothequeRepository->save($biblio, true);
             }
             return true;
         } else {
@@ -332,22 +335,26 @@ class UserSynchro extends AbstractController
                 return $enseignant['username'] === $login;
             });
             foreach ($enseignant as $data) {
-                // Créer un nouvel enseignant dans la base de données avec les données de $enseignant
-                $newEnseignant = new Enseignant();
-                $newEnseignant->setUser($user);
-                $newEnseignant->setNom($data['nom']);
-                $newEnseignant->setPrenom($data['prenom']);
-                $newEnseignant->setUsername($data['username']);
-                $newEnseignant->setMailUniv($data['mail_univ']);
-                $newEnseignant->setMailPerso($data['mail_perso']);
-                foreach ($data['departements'] as $departement) {
-                    $departement = $departementRepository->findOneBy(['libelle' => $departement]);
-                    if ($departement) {
-                        $newDepartementEnseignant = new DepartementEnseignant($newEnseignant, $departement);
-                        $newEnseignant->AddDepartementEnseignant($newDepartementEnseignant);
+                // vérifier si l'étudiant existe déjà dans la base de données
+                $existingEnseignant = $enseignantRepository->findOneBy(['username' => $data['username']]);
+                if (!$existingEnseignant) {
+                    // Créer un nouvel enseignant dans la base de données avec les données de $enseignant
+                    $newEnseignant = new Enseignant();
+                    $newEnseignant->setUser($user);
+                    $newEnseignant->setNom($data['nom']);
+                    $newEnseignant->setPrenom($data['prenom']);
+                    $newEnseignant->setUsername($data['username']);
+                    $newEnseignant->setMailUniv($data['mail_univ']);
+                    $newEnseignant->setMailPerso($data['mail_perso']);
+                    foreach ($data['departements'] as $departement) {
+                        $departement = $departementRepository->findOneBy(['libelle' => $departement]);
+                        if ($departement) {
+                            $newDepartementEnseignant = new DepartementEnseignant($newEnseignant, $departement);
+                            $newEnseignant->AddDepartementEnseignant($newDepartementEnseignant);
+                        }
                     }
+                    $enseignantRepository->save($newEnseignant, true);
                 }
-                $enseignantRepository->save($newEnseignant, true);
             }
             return true;
         } else {

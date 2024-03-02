@@ -203,15 +203,10 @@ class PortfolioUnivController extends AbstractController
                 $tracePage = $this->tracePageRepository->findOneBy(['trace' => $trace, 'page' => $page]);
 
                 $ordre = $tracePage->getOrdre();
+                $previousTracePage = $this->tracePageRepository->findOneBy(['page' => $page, 'ordre' => $ordre - 1]);
+
                 $tracePage->setOrdre($ordre - 1);
-                // changer l'ordre des autres traces de la page
-                $tracesPage = $this->tracePageRepository->findBy(['page' => $page]);
-                foreach ($tracesPage as $tracePage) {
-                    if ($tracePage->getOrdre() === $ordre - 1) {
-                        $tracePage->setOrdre($ordre);
-                        $this->tracePageRepository->save($tracePage, true);
-                    }
-                }
+                $previousTracePage->setOrdre($ordre);
 
                 $this->tracePageRepository->save($tracePage, true);
                 break;

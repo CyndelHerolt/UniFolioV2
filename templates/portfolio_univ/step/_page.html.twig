@@ -117,16 +117,22 @@
                 </a>
             </div>
             <div class="row d-flex flex-column g-5 mt-3">
-                {% for tracePage in tracesPage %}
+                {% for trace in tracesPage %}
                     <div class="col-12">
-                        <twig:TracePortfolioPreview id="{{ tracePage.id }}"/>
+                        <twig:TracePortfolioPreview id="{{ trace.id }}"/>
                         <div class="d-flex flex-row justify-content-evenly bg-light p-3">
-                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'upTrace', 'page': page.id, 'trace': trace.id}) }}">
-                                up
-                            </a>
-                            <a href="">
-                                down
-                            </a>
+                            {% set currentTracePage = trace.tracePages|filter(tracePage => tracePage.page == page)|first %}
+                            {% if currentTracePage.ordre != 1 %}
+                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'upTrace', 'page': page.id, 'trace': trace.id}) }}">
+                                    up
+                                </a>
+                            {% endif %}
+                            {% set totalTraces = tracesPage|length %}
+                            {% if currentTracePage.ordre != totalTraces %}
+                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'downTrace', 'page': page.id, 'trace': trace.id}) }}">
+                                    down
+                                </a>
+                            {% endif %}
                             <a href="">
                                 edit
                             </a>

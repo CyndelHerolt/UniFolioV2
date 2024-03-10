@@ -2,7 +2,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './bootstrap.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
-import 'fontawesome';
 import './js/a11y.js';
 import './js/tinymce.js';
 

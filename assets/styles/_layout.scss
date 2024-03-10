@@ -168,6 +168,22 @@
   }
 }
 
+.delete-link {
+  height: fit-content;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #dc2222;
+  //background-color: var(--quartenary-color);
+  border-radius: 5px;
+  transition: 0.3s ease;
+
+  //&:hover {
+  //  transform: scale(1.05);
+  //}
+}
+
 
 .flatpickr-monthSelect-months {
   width: auto;
@@ -461,7 +477,7 @@
   margin-top: 15px;
   list-style: none;
 
-li {
+  li {
     padding: 10px;
     border: solid 1px #e0e0e0;
     //border-bottom: solid 1px #e0e0e0;

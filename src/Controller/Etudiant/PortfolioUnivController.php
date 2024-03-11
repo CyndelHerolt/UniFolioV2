@@ -54,9 +54,15 @@ class PortfolioUnivController extends AbstractController
     #[Route('/', name: 'app_portfolio_univ')]
     public function index(): Response
     {
-        return $this->render('portfolio_univ/index.html.twig', [
-            'controller_name' => 'PortfolioUnivController',
-        ]);
+        if ($this->isGranted('ROLE_ETUDIANT')) {
+
+            return $this->render('portfolio_univ/index.html.twig', [
+                'controller_name' => 'PortfolioUnivController',
+            ]);
+
+        } else {
+            return $this->render('security/accessDenied.html.twig');
+        }
     }
 
     #[Route('/new', name: 'app_portfolio_univ_new')]

@@ -12,6 +12,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/etudiant')]
 class DashboardEtudiantController extends AbstractController
 {
     public function __construct(
@@ -26,7 +27,7 @@ class DashboardEtudiantController extends AbstractController
 
     }
 
-    #[Route('/dashboard/etudiant', name: 'app_dashboard_etudiant')]
+    #[Route('/dashboard', name: 'app_dashboard_etudiant')]
     public function index(): Response
     {
         // Vérifier que l'utilisateur est connecté sinon on le redirige vers la page d'erreur

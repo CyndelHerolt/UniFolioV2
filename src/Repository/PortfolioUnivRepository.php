@@ -30,6 +30,15 @@ class PortfolioUnivRepository extends ServiceEntityRepository
         }
     }
 
+    public function remove(PortfolioUniv $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return PortfolioUniv[] Returns an array of PortfolioUniv objects
 //     */

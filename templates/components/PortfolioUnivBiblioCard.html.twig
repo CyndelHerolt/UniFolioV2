@@ -1,0 +1,76 @@
+<div{{ attributes }}>
+    <div class="my_card">
+        <div class="card-header">
+            <h3 class="card-title">{{ this.portfolioUniv.libelle }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="card-infos-min border-bottom">
+                <div>
+                    <small>
+                        {% if this.portfolioUniv.annee %}
+                            Portfolio universitaire
+                        {% else %}
+                            Portfolio personnel
+                        {% endif %}
+                    </small>
+                    •
+                    <small>
+                        {% if this.portfolioUniv.visibilite == 1 %}
+                            Public
+                        {% else %}
+                            Privé
+                        {% endif %}
+                    </small>
+                </div>
+                <small>Publié le : {{ this.portfolioUniv.dateCreation|date('d-m-Y') }}</small>
+            </div>
+            <div class="card-content">
+                <p class="m-0">{{ this.portfolioUniv.description|slice(0, 50) }}
+                    {% if this.portfolioUniv.description|length > 50 %}
+                        ...
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="d-flex justify-content-evenly m-3 btn_group">
+                <a href="{{ path('app_portfolio_univ_show', {'id': this.portfolioUniv.id}) }}"
+                   class="btn btn-primary-color text-uppercase">Voir</a>
+                <a href="{{ path('app_portfolio_univ_edit', {'id': this.portfolioUniv.id}) }}">
+                    <button class="btn btn-primary-color text-uppercase">Modifier</button>
+                </a>
+                <button class="btn btn-primary-color text-uppercase" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdropDelete">
+                    Supprimer
+                </button>
+                <!-- Modal Delete -->
+                <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
+                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment supprimer ces
+                                    portfolios
+                                    ?</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Les portfolios sélectionnés seront supprimés.</p>
+                                <p style="color: red">Attention, cette action est irréversible !</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                                </button>
+                                <a href="{{ path('app_portfolio_univ_delete', {'id': this.portfolioUniv.id}) }}">
+                                    <button class="btn btn-primary-color" data-bs-dismiss="modal">
+                                        Supprimer
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -82,10 +82,65 @@ class PortfolioUnivController extends AbstractController
         $currentPage = $this->pageRepository->find($pagerfanta->getCurrentPageResults()[0]->getId());
         $tracesPage = $this->traceRepository->findInPage($currentPage);
 
+        $user = $this->getUser()->getEtudiant();
+
+        $semestre = $user->getSemestre();
+        $annee = $semestre->getAnnee();
+
+        $dept = $user->getSemestre()->getAnnee()->getDiplome()->getDepartement();
+
+        $groupe = $user->getGroupe();
+        foreach ($groupe as $g) {
+            if ($g->getTypeGroupe()->getType() === 'TD') {
+                $parcours = $g->getApcParcours();
+            }
+        }
+
+        $apcApprentissageCritiques = [];
+        $apcNiveaux = [];
+
+        if ($parcours === null) {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
+            $referentiel = $dept->getApcReferentiels();
+            $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
+            $niveaux = [];
+            foreach ($competences as $competence) {
+                $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
+            }
+            // si les apcNiveaux dans niveaux ont pour actif = true
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+            }
+        } else {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
+            $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+//                dd($apcApprentissageCritiques);
+            }
+        }
+
         return $this->render('portfolio_univ/show.html.twig', [
             'portfolio' => $portfolio,
             'pages' => $pagerfanta,
             'tracesPage' => $tracesPage,
+            'apcNiveaux' => $apcNiveaux ?? null,
+            'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
+            'groupedApprentissageCritiques' => $groupedApprentissageCritiques ?? null,
         ]);
     }
 
@@ -497,5 +552,13 @@ class PortfolioUnivController extends AbstractController
             'apcNiveaux' => $apcNiveaux ?? null,
             'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
         ]);
+    }
+
+    #[Route('/delete/{id}', name: 'app_portfolio_univ_delete')]
+    public function delete(PortfolioUniv $portfolio): Response
+    {
+        $this->portfolioUnivRepository->remove($portfolio, true);
+
+        return $this->redirectToRoute('app_biblio_portfolio_univ');
     }
 }

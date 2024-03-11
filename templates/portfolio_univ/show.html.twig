@@ -110,7 +110,70 @@
             </article>
             <aside class="col-lg-4 col-12">
                 <div class="card p-5 h-100">
-                    <h2>Validation des compétences</h2>
+                    <div class="card-header">
+                        <h3>Référentiel</h3>
+                        <em>Cliquez sur une compétence pour afficher les apprentissages critiques</em>
+                    </div>
+                    <div class="apc-card mb-5">
+                        {% if apcNiveaux is not null %}
+                            {% for niveau in apcNiveaux %}
+                                <div class="apc-accordion" id="accordionFlush{{ niveau.id }}">
+                                    <div class="apc-bloc">
+                                        <div class="collapsed {{ niveau.apcCompetence.couleur }} apc-element"
+                                             type="button"
+                                             data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveau.id }}"
+                                             aria-expanded="false"
+                                             aria-controls="flush-collapse{{ niveau.id }}">
+                                            <p class="m-0">{{ niveau.apcCompetence.nomCourt }}
+                                                <br>
+                                                <em>{{ niveau.libelle }}</em></p>
+                                        </div>
+                                        <div id="flush-collapse{{ niveau.id }}" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush{{ niveau.id }}">
+                                            <div class="{{ niveau.apcCompetence.couleur }}bg apc-element">
+                                                <ul>
+                                                    {% for ac in niveau.apcApprentissageCritiques %}
+                                                        <li>{{ ac.code }} | {{ ac.libelle }}</li>
+                                                        <hr>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% for niveauId, data in groupedApprentissageCritiques %}
+                                <div class="apc-accordion" id="accordionFlush{{ niveauId }}">
+                                    <div class="apc-bloc">
+                                        <div class="collapsed {{ data.niveau.apcCompetence.couleur }} apc-element"
+                                             type="button"
+                                             data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveauId }}"
+                                             aria-expanded="false"
+                                             aria-controls="flush-collapse{{ niveauId }}">
+                                            <p class="m-0">{{ data.niveau.apcCompetence.nomCourt }}
+                                                <br>
+                                                <em>{{ data.niveau.libelle }}</em></p>
+                                        </div>
+                                        <div id="flush-collapse{{ niveauId }}" class="accordion-collapse collapse"
+                                             data-bs-parent="#accordionFlush{{ niveauId }}">
+                                            <div class="{{ data.niveau.apcCompetence.couleur }}bg apc-element">
+                                                <ul>
+                                                    {% for ac in data.critiques %}
+                                                        <li>{{ ac.code }} | {{ ac.libelle }}</li>
+                                                        <hr>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="card-header">
+                        <h3>Validation des compétences dans cette page</h3>
+                    </div>
                 </div>
             </aside>
         </div>

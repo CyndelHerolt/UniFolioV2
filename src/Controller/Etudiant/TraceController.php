@@ -151,7 +151,7 @@ class TraceController extends AbstractController
             'selectedTraceType' => $selectedTraceType ?? null,
             'apcNiveaux' => $apcNiveaux ?? null,
             'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
-            'groupedApprentissageCritiques' => $groupedApprentissageCritiques,
+            'groupedApprentissageCritiques' => $groupedApprentissageCritiques ?? null,
 
         ]);
     }

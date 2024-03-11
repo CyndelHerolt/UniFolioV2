@@ -24,6 +24,8 @@ use App\Repository\PortfolioUnivRepository;
 use App\Repository\TracePageRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,7 +53,7 @@ class PortfolioUnivController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'app_portfolio_univ')]
+    #[Route('/', name: 'app_biblio_portfolio_univ')]
     public function index(): Response
     {
         if ($this->isGranted('ROLE_ETUDIANT')) {
@@ -63,6 +65,28 @@ class PortfolioUnivController extends AbstractController
         } else {
             return $this->render('security/accessDenied.html.twig');
         }
+    }
+
+    #[Route('/show/{id}', name: 'app_portfolio_univ_show', defaults: ["page" => 1])]
+    public function show(PortfolioUniv $portfolio, Request $request): Response
+    {
+        $pages = $this->pageRepository->findBy(['portfolio' => $portfolio]);
+
+        $page = $request->query->get('page', 1);
+
+        $adapter = new ArrayAdapter($pages);
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage(1);
+        $pagerfanta->setCurrentPage($page);
+
+        $currentPage = $this->pageRepository->find($pagerfanta->getCurrentPageResults()[0]->getId());
+        $tracesPage = $this->traceRepository->findInPage($currentPage);
+
+        return $this->render('portfolio_univ/show.html.twig', [
+            'portfolio' => $portfolio,
+            'pages' => $pagerfanta,
+            'tracesPage' => $tracesPage,
+        ]);
     }
 
     #[Route('/new', name: 'app_portfolio_univ_new')]
@@ -250,7 +274,6 @@ class PortfolioUnivController extends AbstractController
 
                 $typesTrace = $this->traceRegistry->getTypeTraces();
                 $user = $this->getUser()->getEtudiant();
-
                 $semestre = $user->getSemestre();
                 $annee = $semestre->getAnnee();
 

@@ -14,6 +14,7 @@ use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,17 +38,21 @@ class TraceController extends AbstractController
         private readonly TraceRepository                    $traceRepository,
         private readonly ValidationRepository               $validationRepository,
         private readonly BibliothequeRepository             $bibliothequeRepository,
+        private readonly PortfolioUnivRepository            $portfolioUnivRepository,
     )
     {
     }
 
     #[Route('/trace/show/{id}', name: 'app_trace_show')]
-    public function show(?int $id): Response
+    public function show(?int $id, Request $request): Response
     {
         $trace = $this->traceRepository->find($id);
 
+        $portfolio = $this->portfolioUnivRepository->findOneBy(['id' => $request->query->get('portfolio')]);
+
         return $this->render('trace/show.html.twig', [
             'trace' => $trace,
+            'portfolio' => $portfolio ?? null,
         ]);
     }
 

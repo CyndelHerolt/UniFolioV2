@@ -40,11 +40,15 @@ class Departement
     #[ORM\OneToMany(targetEntity: ApcReferentiel::class, mappedBy: 'departement')]
     private Collection $apcReferentiels;
 
+    #[ORM\OneToMany(targetEntity: Criteres::class, mappedBy: 'departement', orphanRemoval: true)]
+    private Collection $criteres;
+
     public function __construct()
     {
         $this->enseignant = new ArrayCollection();
         $this->diplomes = new ArrayCollection();
         $this->apcReferentiels = new ArrayCollection();
+        $this->criteres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -219,6 +223,36 @@ class Departement
             // set the owning side to null (unless already changed)
             if ($apcReferentiel->getDepartement() === $this) {
                 $apcReferentiel->setDepartement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Criteres>
+     */
+    public function getCriteres(): Collection
+    {
+        return $this->criteres;
+    }
+
+    public function addCritere(Criteres $critere): static
+    {
+        if (!$this->criteres->contains($critere)) {
+            $this->criteres->add($critere);
+            $critere->setDepartement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritere(Criteres $critere): static
+    {
+        if ($this->criteres->removeElement($critere)) {
+            // set the owning side to null (unless already changed)
+            if ($critere->getDepartement() === $this) {
+                $critere->setDepartement(null);
             }
         }
 

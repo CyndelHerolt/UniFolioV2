@@ -67,13 +67,7 @@
                                     class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcApprentissageCritique.libelle }}
                         </small>
                     {% endif %}
-                    <span>
-                                        {% if validation.etat == 0 %} 0
-                                        {% elseif validation.etat == 1 %} 1
-                                        {% elseif validation.etat == 2 %} 2
-                                        {% elseif validation.etat == 3 %} 3
-                                        {% endif %}
-                                        </span>
+
                     </div>
                     {% if validation.etat == 0 %}
                         <p class="text-end">En attente de validation</p>

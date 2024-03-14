@@ -60,13 +60,15 @@
                                 </div>
                             </div>
 
-                            <button class="btn btn-primary align-self-center" type="submit">
+                            <div class="d-flex justify-content-center align-items-center m-3">
+                            <button class="btn btn-primary" type="submit">
                                 Se connecter
                             </button>
+                            </div>
                         </form>
                         <div class="form-footer">
                             <p class="text-center p-0 m-0">
-                                <a href="" class=" form-text">Renvoyer le mail de vérification de compte</a>
+                                <a href="{{ path('app_verify_resend_email') }}" class=" form-text">Renvoyer le mail de vérification de compte</a>
                             </p>
                             <p class="text-center form-text">Vous n'avez pas encore créé votre compte ? <a
                                         href="{{ path('app_register') }}">Inscription</a></p>

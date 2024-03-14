@@ -1,0 +1,28 @@
+.cv-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .new_soft_skill, .new_hard_skill, .new_langue, .new_reseau {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px 20px 0;
+  }
+}
+
+.cv-large-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+
+  .new_formation, .new_experience {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px 20px 0;
+    width: 100%;
+  }
+}

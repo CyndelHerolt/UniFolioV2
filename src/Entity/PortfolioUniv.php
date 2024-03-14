@@ -31,7 +31,7 @@ class PortfolioUniv
     private ?bool $visibilite = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $banniere = null;
+    private ?string $banniere = '/files_directory/banniere.jpg';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ValidationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
@@ -22,9 +24,6 @@ class Validation
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_modification = null;
 
-    #[ORM\Column]
-    private ?int $etat = null;
-
     #[ORM\ManyToOne(inversedBy: 'validations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Trace $trace = null;
@@ -38,6 +37,20 @@ class Validation
 
     #[ORM\ManyToOne(inversedBy: 'validations')]
     private ?ApcApprentissageCritique $apc_apprentissage_critique = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $pourcentage_global = null;
+
+    #[ORM\OneToMany(targetEntity: ValidationCriteres::class, mappedBy: 'validation')]
+    private Collection $validationCriteres;
+
+    #[ORM\Column]
+    private ?int $etat = null;
+
+    public function __construct()
+    {
+        $this->validationCriteres = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -64,18 +77,6 @@ class Validation
     public function setDateModification(?\DateTimeInterface $date_modification): static
     {
         $this->date_modification = $date_modification;
-
-        return $this;
-    }
-
-    public function getEtat(): ?int
-    {
-        return $this->etat;
-    }
-
-    public function setEtat(int $etat): static
-    {
-        $this->etat = $etat;
 
         return $this;
     }
@@ -124,6 +125,60 @@ class Validation
     public function setApcApprentissageCritique(?ApcApprentissageCritique $apc_apprentissage_critique): static
     {
         $this->apc_apprentissage_critique = $apc_apprentissage_critique;
+
+        return $this;
+    }
+
+    public function getPourcentageGlobal(): ?float
+    {
+        return $this->pourcentage_global;
+    }
+
+    public function setPourcentageGlobal(?float $pourcentage_global): static
+    {
+        $this->pourcentage_global = $pourcentage_global;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ValidationCriteres>
+     */
+    public function getValidationCriteres(): Collection
+    {
+        return $this->validationCriteres;
+    }
+
+    public function addValidationCritere(ValidationCriteres $validationCritere): static
+    {
+        if (!$this->validationCriteres->contains($validationCritere)) {
+            $this->validationCriteres->add($validationCritere);
+            $validationCritere->setValidation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValidationCritere(ValidationCriteres $validationCritere): static
+    {
+        if ($this->validationCriteres->removeElement($validationCritere)) {
+            // set the owning side to null (unless already changed)
+            if ($validationCritere->getValidation() === $this) {
+                $validationCritere->setValidation(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getEtat(): ?int
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(int $etat): static
+    {
+        $this->etat = $etat;
 
         return $this;
     }

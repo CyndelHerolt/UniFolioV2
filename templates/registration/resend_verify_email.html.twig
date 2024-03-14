@@ -1,36 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}UniFolio - Vérification de compte{% endblock %}
+{% block title %}UniFolio - Vérification de votre compte{% endblock %}
 
-{% block body %}
-    <div class="content-container account">
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-{#                <li class="breadcrumb-item"><a href="{{ path('app_accueil') }}">Accueil</a></li>#}
-                <li class="breadcrumb-item active" aria-current="page">Vérification de compte</li>
-            </ol>
-        </nav>
-        <div class="row">
-            <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
-                <h1>Vérification de votre compte</h1>
-                <form action="{{ path('app_verify_resend_email') }}" method="post">
-                    <div class="form-group">
-                        <label for="email-univ" class="form-label">adresse mail</label>
-                        <input type="email" id="email-univ" name="mail-univ" class="form-control">
-                        <div>
-                            <small>
-                                Veuillez renseigner votre adresse mail universitaire.
-                            </small>
+{% block header %}
+{% endblock %}
+
+{% block main %}
+
+    <section class="container-custom d-flex justify-content-center align-items-center min-vh-100 section_banner">
+        <div class="row justify-content-center w-100">
+            <div class="card col-6">
+                <article class="p-5">
+                    <div class="form-alone">
+                        <div class="form-header">
+                            <h2>Vérification de votre compte</h2>
+                            <p class="form-text">
+                                Renvoyer le mail de vérification.
+                            </p>
                         </div>
+                        <form action="{{ path('app_verify_resend_email') }}" method="post">
+                            <div class="form-group">
+                                <label for="email-univ" class="form-label">adresse mail</label>
+                                <input type="email" id="email-univ" name="mail-univ" class="form-control">
+                                <div>
+                                    <small>
+                                        Veuillez renseigner votre adresse mail universitaire.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center m-3">
+                                <button type="submit" class="btn btn-primary align-self-center">Envoyer</button>
+                            </div>
+
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                            <div class="form-footer">
+                                <p class="text-center p-0 m-2"><a href="{{ path('app_login') }}" class=" form-text">Retour au formulaire de
+                                        Connexion</a></p>
+                                <p class="text-center p-0 m-2"><a href="{{ path('app_register') }}" class=" form-text">Retour au formulaire
+                                        d'Inscription</a></p>
+                            </div>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
-                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                    <div class="form-group">
-                        <p><a href="{{ path('app_login') }}">Retour au formulaire de Connexion</a></p>
-                        <p><a href="{{ path('app_register') }}">Retour au formulaire d'Inscription</a></p>
-                    </div>
-                </form>
+                </article>
             </div>
         </div>
-    </div>
+    </section>
 {% endblock %}

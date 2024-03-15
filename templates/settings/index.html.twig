@@ -30,9 +30,34 @@
                     </div>
                     <turbo-frame id="bareme">
                         <h4>Barème portfolio</h4>
-                        <a href="{{ path('app_settings_criteres_defaut') }}">
-                            <button class="btn btn-primary-color">Revenir au barème par défaut</button>
-                        </a>
+
+                        <button class="btn btn-secondary-color text-uppercase m-4" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdropDefaut">
+                            Revenir au barème par défaut
+                        </button>
+                        <!-- Modal Defaut -->
+                        <div class="modal modal-lg fade" id="staticBackdropDefaut" data-bs-backdrop="static"
+                             data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment rétablir le barème par défaut ?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Le barème actuellement actif sera supprimé.</p>
+                                        <p style="color: red">Attention, cette action est irréversible !</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                                        </button>
+                                        <a href="{{ path('app_settings_criteres_defaut') }}" data-bs-dismiss="modal">
+                                            <button class="btn btn-primary-color">Confirmer</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <hr>
                         {% if error is not null and error.where == 'bareme' %}
                             <div class="alert alert-danger">

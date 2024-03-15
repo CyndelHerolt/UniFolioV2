@@ -7,6 +7,7 @@ use App\Form\CritereType;
 use App\Repository\CriteresRepository;
 use App\Repository\DepartementRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -21,10 +22,9 @@ class SettingsController extends AbstractController
     }
 
     #[Route('/settings', name: 'app_settings')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-
-//        $formCriteres = $this->createForm(CritereType::class);
+        $edit = false;
 
         $enseignant = $this->getUser()->getEnseignant();
         $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
@@ -32,12 +32,18 @@ class SettingsController extends AbstractController
 
         $formCriteres = [];
         foreach ($criteres as $critere) {
-            $formCriteres[] = $this->createForm(CritereType::class, $critere)->createView();
+            $formCriteres[$critere->getId()] = $this->createForm(CritereType::class, $critere)->createView();
         }
+
+        $editCritereId = $request->query->get('critereId');
+
+        $request->query->get('edit') ? $edit = true : $edit = false;
 
         return $this->render('settings/index.html.twig', [
             'formCriteres' => $formCriteres ?? null,
+            'editCritereId' => $editCritereId,
             'criteres' => $criteres ?? null,
+            'edit' => $edit,
         ]);
     }
 

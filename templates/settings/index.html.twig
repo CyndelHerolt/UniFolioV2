@@ -15,7 +15,7 @@
     </nav>
     <section class="container-custom min-vh-100 section-pt">
         <article class="row content-article g-5">
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
+            <div class="col-12 d-flex justify-content-center">
                 <div class="card p-4 col-12 h-100" {{ stimulus_controller('critereCollection') }}>
                     <h2>Barèmes</h2>
                     <em>
@@ -34,36 +34,45 @@
                             <button class="btn btn-primary-color">Revenir au barème par défaut</button>
                         </a>
                         <hr>
-
-                        {% for formCritere in formCriteres %}
-                            {{ form_start(formCritere) }}
-                            {{ form_row(formCritere.libelle) }}
-                            <div class="form-group mt-2">
-                                {{ form_row(formCritere.valeurs) }}
-
-{#                                {{ form_row(formCritere.valeurKey) }}#}
-{#                                {{ form_row(formCritere.valeurValue) }}#}
-                                <div data-critereCollection-target="inputValeur" class="critere-input input-group">
-                                </div>
-{#                                <button type="button" class="btn btn-primary-color add-critere-valeur"#}
-{#                                        data-action="critereCollection#addValeur">#}
-{#                                    Ajouter une valeur#}
-{#                                </button>#}
-                            </div>
-                            <div class="w-100 d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary-color">Enregistrer</button>
-                            </div>
-                            {#                            {{ form_end(formCritere) }} #}
-                        {% endfor %}
-
-                        <hr>
-                        {#                        <h4>Barème stage/alternance</h4> #}
-                        {#                        <p> #}
-                        {#                            Aucun barème n'a été importé pour le moment. #}
-                        {#                        </p> #}
-                        {#                        <a href=""> #}
-                        {#                            <button class="btn btn-primary-color">Importer</button> #}
-                        {#                        </a> #}
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Critère</th>
+                                <th scope="row">Valeurs</th>
+                            </tr>
+                            </thead>
+                            {% for critere in criteres %}
+                                <tr>
+                                    <td>
+                                        {% if edit == true and critere.id == editCritereId %}
+                                            {{ form_widget(formCriteres[critere.id].libelle) }}
+                                        {% else %}
+                                            {{ critere.libelle }}
+                                        {% endif %}
+                                    </td>
+                                    {% for key, valeur in critere.valeurs %}
+                                        <td>
+                                            {% if edit == true and critere.id == editCritereId %}
+                                                {{ form_widget(formCriteres[critere.id].valeurs[key]) }}
+                                            {% else %}
+                                                {{ valeur }} : {{ key }}
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                    {% if edit == true and critere.id == editCritereId %}
+                                        <td>
+                                            <button type="submit" class="btn btn-primary-color">Enregistrer</button>
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <a href="{{ path('app_settings', {'edit': true, 'critereId' : critere.id}) }}">
+                                                <button class="btn btn-primary-color">Modifier</button>
+                                            </a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </turbo-frame>
                 </div>
             </div>
@@ -130,39 +139,39 @@
                             </a>
                             <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
                         </div>
-                        <hr>
-                        <h4>Consignes</h4>
-                        <h5>Etudiants</h5>
-                        <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckChecked" checked>
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
-                        </div>
+                        {#                        <hr> #}
+                        {#                        <h4>Consignes</h4> #}
+                        {#                        <h5>Etudiants</h5> #}
+                        {#                        <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p> #}
+                        {#                        <div class="form-check form-switch"> #}
+                        {#                            <a href="" type="checkbox"> #}
+                        {#                                <input class="form-check-input" type="checkbox" role="switch" #}
+                        {#                                       id="flexSwitchCheckChecked" checked> #}
+                        {#                            </a> #}
+                        {#                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label> #}
+                        {#                        </div> #}
 
-                        <form action="">
-                            <label for="consignes">Message</label>
-                            <textarea class="form-control" id="consignes" rows="3"></textarea>
-                            <button class="btn btn-primary-color">Enregistrer</button>
-                        </form>
-                        <hr>
-                        <h5>Enseignants</h5>
-                        <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckChecked" checked>
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
-                        </div>
+                        {#                        <form action=""> #}
+                        {#                            <label for="consignes">Message</label> #}
+                        {#                            <textarea class="form-control" id="consignes" rows="3"></textarea> #}
+                        {#                            <button class="btn btn-primary-color">Enregistrer</button> #}
+                        {#                        </form> #}
+                        {#                        <hr> #}
+                        {#                        <h5>Enseignants</h5> #}
+                        {#                        <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p> #}
+                        {#                        <div class="form-check form-switch"> #}
+                        {#                            <a href="" type="checkbox"> #}
+                        {#                                <input class="form-check-input" type="checkbox" role="switch" #}
+                        {#                                       id="flexSwitchCheckChecked" checked> #}
+                        {#                            </a> #}
+                        {#                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label> #}
+                        {#                        </div> #}
 
-                        <form action="">
-                            <label for="consignes">Message</label>
-                            <textarea class="form-control" id="consignes" rows="3"></textarea>
-                            <button class="btn btn-primary-color">Enregistrer</button>
-                        </form>
+                        {#                        <form action=""> #}
+                        {#                            <label for="consignes">Message</label> #}
+                        {#                            <textarea class="form-control" id="consignes" rows="3"></textarea> #}
+                        {#                            <button class="btn btn-primary-color">Enregistrer</button> #}
+                        {#                        </form> #}
                     </turbo-frame>
                 </div>
             </div>

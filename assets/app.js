@@ -15,25 +15,17 @@ flatpickr("#trace_abstract_dateRealisation", {
     locale: "fr",
 });
 
-const valeurs = document.querySelectorAll('.criteres_valeurs-input');
-valeurs.forEach(valeur => {
-    const key = '<div class="col-4">' +
-        // '<label class="form-label" for="valeur">Valeur</label>' +
-        '<select name="valeurs" id="valeur" class="form-select">' +
-        '<option value="1">1</option>' +
-        '<option value="2">2</option>' +
-        '<option value="3">3</option>' +
-        '<option value = "4" > 4 </option>' +
-        '</select></div>';
-
-    valeur.closest("div").classList.add('d-flex')
-    valeur.closest("div").innerHTML += key;
-
-
-    // valeur.innerHTML += '<select name="" id="">' +
-    //     '<option value="1">1</option>' +
-    //     '<option value="2">2</option>' +
-    //     '<option value="3">3</option>' +
-    //     '<option value="4">4</option>' +
-    //     '</select>';
-});
+// const valeurs = document.querySelectorAll('.criteres_valeurs-input');
+// valeurs.forEach(valeur => {
+//     const key = '<div class="col-4">' +
+//         // '<label class="form-label" for="valeur">Valeur</label>' +
+//         '<select name="valeurs" id="valeur" class="form-select">' +
+//         '<option value="1">1</option>' +
+//         '<option value="2">2</option>' +
+//         '<option value="3">3</option>' +
+//         '<option value="4">4</option>' +
+//         '</select></div>';
+//
+//     valeur.closest("div").classList.add('d-flex')
+//     valeur.closest("div").innerHTML += key;
+// });

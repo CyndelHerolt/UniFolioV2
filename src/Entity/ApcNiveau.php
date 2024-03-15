@@ -41,11 +41,15 @@ class ApcNiveau
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
+    #[ORM\ManyToMany(targetEntity: Criteres::class, mappedBy: 'apcNiveau')]
+    private Collection $criteres;
+
     public function __construct()
     {
         $this->apcParcours = new ArrayCollection();
         $this->apcApprentissageCritiques = new ArrayCollection();
         $this->validations = new ArrayCollection();
+        $this->criteres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -208,6 +212,33 @@ class ApcNiveau
     public function setActif(?bool $actif): static
     {
         $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Criteres>
+     */
+    public function getCriteres(): Collection
+    {
+        return $this->criteres;
+    }
+
+    public function addCritere(Criteres $critere): static
+    {
+        if (!$this->criteres->contains($critere)) {
+            $this->criteres->add($critere);
+            $critere->addApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritere(Criteres $critere): static
+    {
+        if ($this->criteres->removeElement($critere)) {
+            $critere->removeApcNiveau($this);
+        }
 
         return $this;
     }

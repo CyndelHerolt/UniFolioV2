@@ -36,9 +36,13 @@ class ApcApprentissageCritique
     #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'apc_apprentissage_critique')]
     private Collection $validations;
 
+    #[ORM\ManyToMany(targetEntity: Criteres::class, mappedBy: 'apcApprentissageCritique')]
+    private Collection $criteres;
+
     public function __construct()
     {
         $this->validations = new ArrayCollection();
+        $this->criteres = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -119,6 +123,33 @@ class ApcApprentissageCritique
             if ($validation->getApcApprentissageCritique() === $this) {
                 $validation->setApcApprentissageCritique(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Criteres>
+     */
+    public function getCriteres(): Collection
+    {
+        return $this->criteres;
+    }
+
+    public function addCritere(Criteres $critere): static
+    {
+        if (!$this->criteres->contains($critere)) {
+            $this->criteres->add($critere);
+            $critere->addApcApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritere(Criteres $critere): static
+    {
+        if ($this->criteres->removeElement($critere)) {
+            $critere->removeApcApprentissageCritique($this);
         }
 
         return $this;

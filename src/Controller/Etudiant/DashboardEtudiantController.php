@@ -3,6 +3,7 @@
 namespace App\Controller\Etudiant;
 
 use App\Components\Trace\TraceRegistry;
+use App\Controller\BaseController;
 use App\Repository\BibliothequeRepository;
 use App\Repository\PortfolioPersoRepository;
 use App\Repository\PortfolioUnivRepository;
@@ -13,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/etudiant')]
-class DashboardEtudiantController extends AbstractController
+class DashboardEtudiantController extends BaseController
 {
     public function __construct(
         private Security $security,

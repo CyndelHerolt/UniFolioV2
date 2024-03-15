@@ -2,6 +2,7 @@ twig:
     file_name_pattern: '*.twig'
     globals:
         tinyMCEApiKey: '%env(TINYMCE_API_KEY)%'
+        data_user: '@App\Service\DataUserSessionService'
 
 when@test:
     twig:

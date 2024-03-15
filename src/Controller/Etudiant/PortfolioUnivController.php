@@ -8,6 +8,7 @@ use App\Components\Trace\TypeTrace\TraceImage;
 use App\Components\Trace\TypeTrace\TraceLien;
 use App\Components\Trace\TypeTrace\TracePdf;
 use App\Components\Trace\TypeTrace\TraceVideo;
+use App\Controller\BaseController;
 use App\Entity\Page;
 use App\Entity\PortfolioUniv;
 use App\Entity\Trace;
@@ -32,7 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/etudiant/portfolio/univ')]
-class PortfolioUnivController extends AbstractController
+class PortfolioUnivController extends BaseController
 {
     public function __construct(
         protected PortfolioUnivRepository            $portfolioUnivRepository,

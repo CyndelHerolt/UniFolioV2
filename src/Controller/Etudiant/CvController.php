@@ -2,6 +2,7 @@
 
 namespace App\Controller\Etudiant;
 
+use App\Controller\BaseController;
 use App\Entity\Cv;
 use App\Form\CvType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/etudiant')]
-class CvController extends AbstractController
+class CvController extends BaseController
 {
     #[Route('/cv', name: 'app_cv')]
     public function index(): Response

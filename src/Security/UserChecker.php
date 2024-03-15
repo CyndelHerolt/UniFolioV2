@@ -19,8 +19,6 @@ public function checkPreAuth(UserInterface $user): void
         // throw an exception if the user is not verified
         throw new CustomUserMessageAuthenticationException('Votre profil n\'est pas vérifié. Veuillez vérifier votre boîte mail pour activer votre compte ou faites une nouvelle demande de vérification.');
     }
-
-    dd('checkPreAuth called');
 }
 
     public function checkPostAuth(UserInterface $user): void

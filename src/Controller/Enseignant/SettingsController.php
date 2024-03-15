@@ -27,6 +27,7 @@ class SettingsController extends AbstractController
         $edit = false;
 
         $error = $request->query->get('error');
+        $error = json_decode($error, true);
 
         $enseignant = $this->getUser()->getEnseignant();
         $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
@@ -110,7 +111,8 @@ class SettingsController extends AbstractController
             }
             // si dans le tableau keys on a des valeurs identiques on redirige vers la page d'édition
             if (count($keys) !== count(array_unique($keys))) {
-                $error = 'Les valeurs ne peuvent pas être identiques';
+                $error = ['message' => 'Les valeurs ne peuvent pas être identiques', 'where' => 'bareme'];
+                $error = json_encode($error);
                 return $this->redirectToRoute('app_settings', ['edit' => true, 'critereId' => $id, 'error' => $error]);
             }
 

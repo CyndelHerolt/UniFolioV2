@@ -34,9 +34,9 @@
                             <button class="btn btn-primary-color">Revenir au barème par défaut</button>
                         </a>
                         <hr>
-                        {% if error is not null %}
+                        {% if error is not null and error.where == 'bareme' %}
                             <div class="alert alert-danger">
-                                {{ error }}
+                                {{ error.message }}
                             </div>
                         {% endif %}
                         {% for critere in criteres %}

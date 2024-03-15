@@ -26,6 +26,8 @@ class SettingsController extends AbstractController
     {
         $edit = false;
 
+        $error = $request->query->get('error');
+
         $enseignant = $this->getUser()->getEnseignant();
         $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
         $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
@@ -40,6 +42,7 @@ class SettingsController extends AbstractController
         $request->query->get('edit') ? $edit = true : $edit = false;
 
         return $this->render('settings/index.html.twig', [
+            'error' => $error ?? null,
             'formCriteres' => $formCriteres ?? null,
             'editCritereId' => $editCritereId,
             'criteres' => $criteres ?? null,
@@ -82,6 +85,44 @@ class SettingsController extends AbstractController
             $this->criteresRepository->save($critere, true);
         }
 
+        return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/settings/criteres/edit/{id}', name: 'app_settings_criteres_edit')]
+    public function editCriteres(Request $request, ?int $id): Response
+    {
+        $critere = $this->criteresRepository->find($id);
+
+        $form = $this->createForm(CritereType::class, $critere);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $request->request->all();
+
+            // Récupérer les clés et les valeurs
+            $keys = [];
+            $values = $data['critere']['valeurs'];
+            foreach ($data as $key => $value) {
+                if ($key !== 'critere') {
+                    $keys[] = $value;
+                }
+            }
+            // si dans le tableau keys on a des valeurs identiques on redirige vers la page d'édition
+            if (count($keys) !== count(array_unique($keys))) {
+                $error = 'Les valeurs ne peuvent pas être identiques';
+                return $this->redirectToRoute('app_settings', ['edit' => true, 'critereId' => $id, 'error' => $error]);
+            }
+
+            // Assembler les clés et les valeurs
+            $transformedValues = array_combine($keys, $values);
+            // Remplacer les valeurs du critère par les valeurs transformées
+            $critere->setValeurs($transformedValues);
+
+            $this->criteresRepository->save($critere, true);
+        } else {
+            return $this->redirectToRoute('app_settings', ['edit' => true, 'critereId' => $id]);
+        }
         return $this->redirectToRoute('app_settings');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Criteres;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,7 +16,7 @@ class CritereType extends AbstractType
     {
         $builder
             ->add('libelle', TextType::class, [
-                'label' => 'Libellé',
+                'label' => false,
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'placeholder' => 'Libellé du critère',],
                 'required' => false,
@@ -31,7 +32,12 @@ class CritereType extends AbstractType
                 'prototype' => true,
                 'by_reference' => false,
                 'attr' => ['class' => 'col-9']
-            ]);
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Enregistrer',
+                'attr' => ['class' => 'btn btn-primary-color'],
+            ])
+            ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

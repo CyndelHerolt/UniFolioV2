@@ -155,6 +155,11 @@ class SettingsController extends BaseController
     {
         $enseignant = $this->getUser()->getEnseignant();
         $departement = $this->departementRepository->find($id);
+        // on modifie le département par défaut de l'enseignant
+        $departementDefaut = $this->departementEnseignantRepository->findOneBy(['enseignant' => $enseignant, 'defaut' => true]);
+        $departementDefaut->setDefaut(false);
+        $this->departementEnseignantRepository->save($departementDefaut, true);
+
         $departementEnseignant = $this->departementEnseignantRepository->findOneBy(['departement' => $departement, 'enseignant' => $enseignant]);
         $departementEnseignant->setDefaut(true);
         $this->departementEnseignantRepository->save($departementEnseignant, true);

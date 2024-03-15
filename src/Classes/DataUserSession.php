@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class DataUserSession
 {
     private $departement;
+    private $departements;
     private $enseignant;
     private $etudiant;
 
@@ -50,7 +51,7 @@ class DataUserSession
         $this->departement = $departement;
     }
 
-    public function getDepartement()
+    public function getDepartementDefaut()
     {
         if ($this->getEnseignant()) {
             $this->departement = $this->departementEnseignantRepository->findOneBy(['enseignant' => $this->getEnseignant(), 'defaut' => true])->getDepartement();
@@ -58,6 +59,17 @@ class DataUserSession
             $this->departement = $this->getEtudiant()->getSemestre()->getAnnee()->getDiplome()->getDepartement();
         }
         return $this->departement;
+    }
+
+    public function getDepartementsNotDefaut()
+    {
+        if ($this->getEnseignant()) {
+            $this->departement = $this->departementEnseignantRepository->findBy(['enseignant' => $this->getEnseignant(), 'defaut' => false]);
+            foreach ($this->departement as $departement) {
+                $this->departements[] = $departement->getDepartement();
+            }
+        }
+        return $this->departements;
     }
 
     public function getDepartementsEnseignant()

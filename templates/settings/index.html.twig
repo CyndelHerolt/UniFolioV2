@@ -34,34 +34,80 @@
                             <button class="btn btn-primary-color">Revenir au barème par défaut</button>
                         </a>
                         <hr>
+                        {% if error is not null %}
+                            <div class="alert alert-danger">
+                                {{ error }}
+                            </div>
+                        {% endif %}
+                        {% for critere in criteres %}
+                            {% if edit == true and critere.id == editCritereId %}
+                                {{ form_start(formCriteres[critere.id], {'action': path('app_settings_criteres_edit', {'id' : editCritereId})}) }}
+                                <table class="table table-borderless">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Critère</th>
+                                        <th scope="row">Valeurs</th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            {{ form_row(formCriteres[critere.id].libelle) }}
+                                        </td>
+                                        {#                                        <label for="valeurs">Valeurs</label> #}
+                                        {% for key, valeur in critere.valeurs %}
+                                            <td>
+                                                {{ form_row(formCriteres[critere.id].valeurs[key]) }}
+                                                <select name="{{ valeur }}" id="valeur" class="form-select">
+                                                    <option value={{ key }}>{{ key }}</option>
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                </select>
+                                            </td>
+                                        {% endfor %}
+                                        <td>
+                                            {{ form_row(formCriteres[critere.id].submit) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="{{ path('app_settings', {'edit': false}) }}">
+                                                <button class="btn btn-secondary-color">Retour</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                {{ form_end(formCriteres[critere.id]) }}
+                            {% endif %}
+                        {% endfor %}
                         <table class="table table-striped">
                             <thead>
                             <tr>
                                 <th scope="col">Critère</th>
                                 <th scope="row">Valeurs</th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
                             </tr>
                             </thead>
+                            <tbody>
                             {% for critere in criteres %}
                                 <tr>
-                                    <td>
-                                        {% if edit == true and critere.id == editCritereId %}
-                                            {{ form_widget(formCriteres[critere.id].libelle) }}
-                                        {% else %}
-                                            {{ critere.libelle }}
-                                        {% endif %}
-                                    </td>
+                                    <td>{{ critere.libelle }}</td>
                                     {% for key, valeur in critere.valeurs %}
-                                        <td>
-                                            {% if edit == true and critere.id == editCritereId %}
-                                                {{ form_widget(formCriteres[critere.id].valeurs[key]) }}
-                                            {% else %}
-                                                {{ valeur }} : {{ key }}
-                                            {% endif %}
-                                        </td>
+                                        <td>{{ valeur }} : {{ key }}</td>
                                     {% endfor %}
-                                    {% if edit == true and critere.id == editCritereId %}
-                                        <td>
-                                            <button type="submit" class="btn btn-primary-color">Enregistrer</button>
+                                    {% if critere.id == editCritereId %}
+                                        <td class="p-4">
                                         </td>
                                     {% else %}
                                         <td>
@@ -72,6 +118,7 @@
                                     {% endif %}
                                 </tr>
                             {% endfor %}
+                            </tbody>
                         </table>
                     </turbo-frame>
                 </div>

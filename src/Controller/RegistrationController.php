@@ -201,6 +201,9 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/resend_verify_email.html.twig', [
+            'error' => $error ?? null,
         ]);
     }
+
+
 }

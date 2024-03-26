@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Dashboard{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Trace</li>
+        </ol>
+    </nav>
+    <section class="container-custom min-vh-100 section-pt">
+        <div class="row d-flex">
+            <article class="col-lg-12 col-12" {{ stimulus_controller('cvCollection') }}>
+                <div class="card p-5">
+                    <div class="card-header">
+                        <h2>Création d'un CV</h2>
+                    </div>
+
+                    {{ form_start(form) }}
+
+                    <div class="row">
+                        <div class="col-6 p-2">
+                            {{ form_row(form.intitule) }}
+                        </div>
+                        <div class="col-6 p-2">
+                            {{ form_row(form.email) }}
+                        </div>
+
+                        <div class="col-12 p-2">
+                            {{ form_row(form.description) }}
+                        </div>
+                    </div>
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class=" mb-3 bloc_experience">
+                                {{ form_row(form.experiences) }}
+                            </div>
+                            <div data-cvCollection-target="inputExperience" class="cv-large-input">
+                            </div>
+                            <button type="button" class="btn btn-primary add-experience" data-action="cvCollection#addExperience">
+                                Ajouter une expérience
+                            </button>
+                            <br>
+                            <small class="text-muted">Expériences professionnelles (elles seront automatiquement triées par date
+                                décroissante)</small>
+                            <!-- Fin expériences -->
+                        </div>
+                        <div class="col-6">
+                            <!-- Formations -->
+                            <div class="mb-3 bloc_formation">
+                                {{ form_row(form.formations) }}
+                            </div>
+                            <div data-cvCollection-target="inputFormation" class="cv-large-input">
+                            </div>
+                            <button type="button" class="btn btn-primary add-formation" data-action="cvCollection#addFormation">
+                                Ajouter une formation
+                            </button>
+                            <br>
+                            <small class="text-muted">Formations (elles seront automatiquement triées par date
+                                décroissante)</small>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <!-- SoftSkills -->
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label required">Soft skills</label>
+                            <div class="input-group mb-3">
+                                {{ form_widget(form.soft_skills) }}
+                            </div>
+                            <div data-cvCollection-target="inputSoft" class="cv-input">
+                            </div>
+                            <button type="button" class="btn btn-primary add-soft-skill" data-action="cvCollection#addSoftSkill">
+                                Ajouter un soft skill
+                            </button>
+                            <br>
+                            <small class="text-muted">Compétences comportementales</small>
+                            <!-- Fin SofSkills -->
+                        </div>
+                        <div class="col-6">
+                            <!-- HardSkills -->
+                            <label class="form-label required">Hard skills</label>
+                            <div class="input-group mb-3">
+                                {{ form_widget(form.hard_skills) }}
+                            </div>
+                            <div data-cvCollection-target="inputHard" class="cv-input">
+                            </div>
+                            <button type="button" class="btn btn-primary add-hard-skill" data-action="cvCollection#addHardSkill">
+                                Ajouter un hard skill
+                            </button>
+                            <br>
+                            <small class="text-muted">Compétences techniques</small>
+                        </div>
+                    </div>
+                    <!-- Fin HardSkills -->
+                    <hr>
+                    <!-- Langues -->
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label required">Langues</label>
+                            <div class="input-group mb-3">
+                                {{ form_widget(form.langues) }}
+                            </div>
+                            <div data-cvCollection-target="inputLangue" class="cv-input">
+                            </div>
+                            <button type="button" class="btn btn-primary add-langue" data-action="cvCollection#addLangue">
+                                Ajouter une langue
+                            </button>
+                            <br>
+                            <small class="text-muted">Langues parlées et niveau</small>
+                            <!-- Fin Langues -->
+                        </div>
+                        <div class="col-6">
+                            <!-- Reseaux -->
+                            <label class="form-label required">Réseaux sociaux</label>
+                            <div class="input-group mb-3">
+                                {{ form_widget(form.reseaux) }}
+                            </div>
+                            <div data-cvCollection-target="inputReseau" class="cv-input">
+                            </div>
+                            <button type="button" class="btn btn-primary add-reseau" data-action="cvCollection#addReseau">
+                                Ajouter un réseau
+                            </button>
+                            <br>
+                            <small class="text-muted">Sasissez le lien de votre profil sur le réseau social</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-color text-uppercase">Enregistrer</button>
+                    {{ form_end(form) }}
+                </div>
+            </article>
+        </div>
+    </section>
+{% endblock %}

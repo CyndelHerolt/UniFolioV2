@@ -3,6 +3,7 @@
 namespace App\Controller\Etudiant;
 
 use App\Components\Trace\TraceRegistry;
+use App\Controller\BaseController;
 use App\Repository\BibliothequeRepository;
 use App\Repository\PortfolioPersoRepository;
 use App\Repository\PortfolioUnivRepository;
@@ -12,7 +13,8 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class DashboardEtudiantController extends AbstractController
+#[Route('/etudiant')]
+class DashboardEtudiantController extends BaseController
 {
     public function __construct(
         private Security $security,
@@ -26,7 +28,7 @@ class DashboardEtudiantController extends AbstractController
 
     }
 
-    #[Route('/dashboard/etudiant', name: 'app_dashboard_etudiant')]
+    #[Route('/dashboard', name: 'app_dashboard_etudiant')]
     public function index(): Response
     {
         // Vérifier que l'utilisateur est connecté sinon on le redirige vers la page d'erreur

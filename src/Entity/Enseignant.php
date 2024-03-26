@@ -133,6 +133,11 @@ $this->commentaires = new ArrayCollection();
             return $this;
         }
 
+        public function getDepartementEnseignants(): ?Collection
+        {
+            return $this->departementEnseignants;
+        }
+
         public function addDepartement(Departement $departement): self
         {
             $departementEnseignant = new DepartementEnseignant($this, $departement);

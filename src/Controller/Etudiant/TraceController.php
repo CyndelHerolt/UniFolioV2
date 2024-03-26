@@ -8,12 +8,14 @@ use App\Components\Trace\TypeTrace\TraceImage;
 use App\Components\Trace\TypeTrace\TraceLien;
 use App\Components\Trace\TypeTrace\TracePdf;
 use App\Components\Trace\TypeTrace\TraceVideo;
+use App\Controller\BaseController;
 use App\Entity\Trace;
 use App\Entity\Validation;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/etudiant')]
-class TraceController extends AbstractController
+class TraceController extends BaseController
 {
 
     public function __construct(
@@ -37,17 +39,21 @@ class TraceController extends AbstractController
         private readonly TraceRepository                    $traceRepository,
         private readonly ValidationRepository               $validationRepository,
         private readonly BibliothequeRepository             $bibliothequeRepository,
+        private readonly PortfolioUnivRepository            $portfolioUnivRepository,
     )
     {
     }
 
     #[Route('/trace/show/{id}', name: 'app_trace_show')]
-    public function show(?int $id): Response
+    public function show(?int $id, Request $request): Response
     {
         $trace = $this->traceRepository->find($id);
 
+        $portfolio = $this->portfolioUnivRepository->findOneBy(['id' => $request->query->get('portfolio')]);
+
         return $this->render('trace/show.html.twig', [
             'trace' => $trace,
+            'portfolio' => $portfolio ?? null,
         ]);
     }
 
@@ -146,7 +152,7 @@ class TraceController extends AbstractController
             'selectedTraceType' => $selectedTraceType ?? null,
             'apcNiveaux' => $apcNiveaux ?? null,
             'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
-            'groupedApprentissageCritiques' => $groupedApprentissageCritiques,
+            'groupedApprentissageCritiques' => $groupedApprentissageCritiques ?? null,
 
         ]);
     }

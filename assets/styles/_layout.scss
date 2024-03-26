@@ -249,6 +249,10 @@
           margin: auto;
         }
       }
+
+      .card-content {
+        padding: 10px 25px;
+      }
     }
   }
 
@@ -484,4 +488,14 @@
     border-radius: 15px;
     margin: 10px 0;
   }
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.critere_valeurs_div {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }

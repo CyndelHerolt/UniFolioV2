@@ -8,6 +8,7 @@ use App\Components\Trace\TypeTrace\TraceImage;
 use App\Components\Trace\TypeTrace\TraceLien;
 use App\Components\Trace\TypeTrace\TracePdf;
 use App\Components\Trace\TypeTrace\TraceVideo;
+use App\Controller\BaseController;
 use App\Entity\Page;
 use App\Entity\PortfolioUniv;
 use App\Entity\Trace;
@@ -24,13 +25,15 @@ use App\Repository\PortfolioUnivRepository;
 use App\Repository\TracePageRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/etudiant/portfolio/univ')]
-class PortfolioUnivController extends AbstractController
+class PortfolioUnivController extends BaseController
 {
     public function __construct(
         protected PortfolioUnivRepository            $portfolioUnivRepository,
@@ -51,11 +54,94 @@ class PortfolioUnivController extends AbstractController
     {
     }
 
-    #[Route('/', name: 'app_portfolio_univ')]
+    #[Route('/', name: 'app_biblio_portfolio_univ')]
     public function index(): Response
     {
-        return $this->render('portfolio_univ/index.html.twig', [
-            'controller_name' => 'PortfolioUnivController',
+        if ($this->isGranted('ROLE_ETUDIANT')) {
+
+            return $this->render('portfolio_univ/index.html.twig', [
+                'controller_name' => 'PortfolioUnivController',
+            ]);
+
+        } else {
+            return $this->render('security/accessDenied.html.twig');
+        }
+    }
+
+    #[Route('/show/{id}', name: 'app_portfolio_univ_show', defaults: ["page" => 1])]
+    public function show(PortfolioUniv $portfolio, Request $request): Response
+    {
+        $pages = $this->pageRepository->findBy(['portfolio' => $portfolio]);
+
+        $page = $request->query->get('page', 1);
+
+        $adapter = new ArrayAdapter($pages);
+        $pagerfanta = new Pagerfanta($adapter);
+        $pagerfanta->setMaxPerPage(1);
+        $pagerfanta->setCurrentPage($page);
+
+        $currentPage = $this->pageRepository->find($pagerfanta->getCurrentPageResults()[0]->getId());
+        $tracesPage = $this->traceRepository->findInPage($currentPage);
+
+        $user = $this->getUser()->getEtudiant();
+
+        $semestre = $user->getSemestre();
+        $annee = $semestre->getAnnee();
+
+        $dept = $user->getSemestre()->getAnnee()->getDiplome()->getDepartement();
+
+        $groupe = $user->getGroupe();
+        foreach ($groupe as $g) {
+            if ($g->getTypeGroupe()->getType() === 'TD') {
+                $parcours = $g->getApcParcours();
+            }
+        }
+
+        $apcApprentissageCritiques = [];
+        $apcNiveaux = [];
+
+        if ($parcours === null) {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
+            $referentiel = $dept->getApcReferentiels();
+            $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
+            $niveaux = [];
+            foreach ($competences as $competence) {
+                $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
+            }
+            // si les apcNiveaux dans niveaux ont pour actif = true
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+            }
+        } else {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
+            $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+//                dd($apcApprentissageCritiques);
+            }
+        }
+
+        return $this->render('portfolio_univ/show.html.twig', [
+            'portfolio' => $portfolio,
+            'pages' => $pagerfanta,
+            'tracesPage' => $tracesPage,
+            'apcNiveaux' => $apcNiveaux ?? null,
+            'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
+            'groupedApprentissageCritiques' => $groupedApprentissageCritiques ?? null,
         ]);
     }
 
@@ -244,7 +330,6 @@ class PortfolioUnivController extends AbstractController
 
                 $typesTrace = $this->traceRegistry->getTypeTraces();
                 $user = $this->getUser()->getEtudiant();
-
                 $semestre = $user->getSemestre();
                 $annee = $semestre->getAnnee();
 
@@ -468,5 +553,13 @@ class PortfolioUnivController extends AbstractController
             'apcNiveaux' => $apcNiveaux ?? null,
             'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
         ]);
+    }
+
+    #[Route('/delete/{id}', name: 'app_portfolio_univ_delete')]
+    public function delete(PortfolioUniv $portfolio): Response
+    {
+        $this->portfolioUnivRepository->remove($portfolio, true);
+
+        return $this->redirectToRoute('app_biblio_portfolio_univ');
     }
 }

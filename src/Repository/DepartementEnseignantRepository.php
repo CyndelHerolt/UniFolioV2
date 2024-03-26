@@ -134,12 +134,12 @@ class DepartementEnseignantRepository extends ServiceEntityRepository
 //        return $t;
 //    }
 
-    public function save(DepartementEnseignant $enseignantDepartement, bool $flush = false): void
+    public function save(DepartementEnseignant $entity, bool $flush = false): void
     {
-        $this->_em->persist($enseignantDepartement);
+        $this->getEntityManager()->persist($entity);
 
         if ($flush) {
-            $this->_em->flush();
+            $this->getEntityManager()->flush();
         }
     }
 }

@@ -72,7 +72,7 @@ class DepartementRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findDepartementEnseignantDefaut(Enseignant $enseignant): array
+    public function findDepartementEnseignantDefaut(Enseignant $enseignant): ?Departement
     {
         return $this->createQueryBuilder('f')
             ->innerJoin(DepartementEnseignant::class, 'p', 'WITH', 'p.departement = f.id')
@@ -81,7 +81,7 @@ class DepartementRepository extends ServiceEntityRepository
             ->setParameter('enseignant', $enseignant->getId())
             ->setParameter('defaut', true)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
     public function truncate(): void

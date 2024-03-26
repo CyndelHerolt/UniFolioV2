@@ -1,34 +1,39 @@
 <div{{ attributes }}>
     <div class="my_card">
-        <div class="card_header">
+        <div class="card-header">
             <h3 class="card-title">{{ this.portfolio.libelle }}</h3>
         </div>
-        <div class="card_body">
-            <small>
-                {% if this.portfolio.annee %}
-                    Portfolio universitaire
-                {% else %}
-                    Portfolio personnel
-                {% endif %}
-            </small>
-            •
-            <small>
-                {% if this.portfolio.visibilite == 1 %}
-                    Public
-                {% else %}
-                    Privé
-                {% endif %}
-            </small>
-            <br>
-            <small>Publié le : {{ this.portfolio.dateCreation|date('d-m-Y') }}</small>
-            <p>{{ this.portfolio.description|slice(0, 50) }}
-                {% if this.portfolio.description|length > 50 %}
-                    ...
-                {% endif %}
-            </p>
-            <a href="">
-                <button class="btn btn-primary-color">Voir</button>
-            </a>
+        <div class="card-body">
+            <div class="card-infos-min border-bottom">
+                <div>
+                    <small>
+                        {% if this.portfolio.annee %}
+                            Portfolio universitaire
+                        {% else %}
+                            Portfolio personnel
+                        {% endif %}
+                    </small>
+                    •
+                    <small>
+                        {% if this.portfolio.visibilite == 1 %}
+                            Public
+                        {% else %}
+                            Privé
+                        {% endif %}
+                    </small>
+                </div>
+                <small>Publié le : {{ this.portfolio.dateCreation|date('d-m-Y') }}</small>
+            </div>
+            <div class="card-content">
+                <p class="m-0">{{ this.portfolio.description|slice(0, 50) }}
+                    {% if this.portfolio.description|length > 50 %}
+                        ...
+                    {% endif %}
+                </p>
+            </div>
+            <div class="d-flex justify-content-center m-3">
+                <a href="{{ path('app_portfolio_univ_show', {'id': this.portfolio.id}) }}" class="btn btn-primary-color text-uppercase">Voir</a>
+            </div>
         </div>
     </div>
 </div>

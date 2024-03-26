@@ -23,7 +23,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_portfolio_univ') }}">Enregistrer et
+            <a class="nav-link" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
                 quitter</a>
         </li>
     </ul>
@@ -74,6 +74,7 @@
                                 <form action="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'addTrace', 'page': page.id}) }}"
                                       method="post">
                                     <div class="row">
+                                        {% if traces is not empty %}
                                         {% for trace in traces|sort((a, b) => a.dateCreation <=> b.dateCreation) %}
                                             <div class="col-lg-4">
                                                 <input type="checkbox" class="btn-check" id="trace{{ trace.id }}"
@@ -83,7 +84,7 @@
                                                 </label>
                                             </div>
                                         {% endfor %}
-                                        {% if traces is empty %}
+                                        {% else %}
                                             <div class="col-12 d-flex flex-column align-items-center">
                                                 <p class="text-center">Aucune trace disponible.</p>
                                                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">

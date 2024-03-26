@@ -9,45 +9,142 @@
     <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_enseignant') }}" class="link">Dashboard</a></li>
             <li class="breadcrumb-item active" aria-current="page">Paramètres</li>
         </ol>
     </nav>
     <section class="container-custom min-vh-100 section-pt">
         <article class="row content-article g-5">
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <div class="card p-4 col-12 h-100">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="card p-4 col-12 h-100" {{ stimulus_controller('critereCollection') }}>
                     <h2>Barèmes</h2>
                     <em>
-                        Importer vos propres barèmes pour l'évaluation des étudiants.
+                        Gérez le barème pour l'évaluation des compétences.
                     </em>
                     <hr>
                     <div class="alert alert-warning">
-                            <span>Attention, le barème doit être au format .csv et respecter <a
-                                        href="">ce modèle</a>.</span>
+                        <span>
+                            Chacun de ces critères est appliqué à l'ensemble des compétences.
+                            <strong>Attention</strong>, la modification du barème peut impacter les évaluations déjà effectuées.
+                        </span>
                     </div>
-                    <turbo-frame>
+                    <turbo-frame id="bareme">
                         <h4>Barème portfolio</h4>
-                        <p>
-                            Aucun barème n'a été importé pour le moment.
-                        </p>
-                        {#                        <a href=""> #}
-                        {#                            <button class="btn btn-primary-color">Voir</button> #}
-                        {#                        </a> #}
-                        <a href="">
-                            <button class="btn btn-primary-color">Importer</button>
-                        </a>
+
+                        <button class="btn btn-secondary-color text-uppercase m-4" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdropDefaut">
+                            Revenir au barème par défaut
+                        </button>
+                        <!-- Modal Defaut -->
+                        <div class="modal modal-lg fade" id="staticBackdropDefaut" data-bs-backdrop="static"
+                             data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment rétablir le barème par défaut ?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Le barème actuellement actif sera supprimé.</p>
+                                        <p style="color: red">Attention, cette action est irréversible !</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                                        </button>
+                                        <a href="{{ path('app_settings_criteres_defaut') }}">
+                                            <button class="btn btn-primary-color"  data-bs-dismiss="modal">Confirmer</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <hr>
-                        <h4>Barème stage/alternance</h4>
-                        <p>
-                            Aucun barème n'a été importé pour le moment.
-                        </p>
-                        {#                        <a href=""> #}
-                        {#                            <button class="btn btn-primary-color">Voir</button> #}
-                        {#                        </a> #}
-                        <a href="">
-                            <button class="btn btn-primary-color">Importer</button>
-                        </a>
+                        {% if error is not null and error.where == 'bareme' %}
+                            <div class="alert alert-danger">
+                                {{ error.message }}
+                            </div>
+                        {% endif %}
+                        {% for critere in criteres %}
+                            {% if edit == true and critere.id == editCritereId %}
+                                {{ form_start(formCriteres[critere.id], {'action': path('app_settings_criteres_edit', {'id' : editCritereId})}) }}
+                                <table class="table table-borderless">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Critère</th>
+                                        <th scope="row">Valeurs</th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            {{ form_row(formCriteres[critere.id].libelle) }}
+                                        </td>
+                                        {#                                        <label for="valeurs">Valeurs</label> #}
+                                        {% for key, valeur in critere.valeurs %}
+                                            <td>
+                                                {{ form_row(formCriteres[critere.id].valeurs[key]) }}
+                                                <select name="{{ valeur }}" id="valeur" class="form-select">
+                                                    <option value={{ key }}>{{ key }}</option>
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                </select>
+                                            </td>
+                                        {% endfor %}
+                                        <td>
+                                            {{ form_row(formCriteres[critere.id].submit) }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="{{ path('app_settings', {'edit': false}) }}">
+                                                <button class="btn btn-secondary-color">Retour</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                {{ form_end(formCriteres[critere.id]) }}
+                            {% endif %}
+                        {% endfor %}
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">Critère</th>
+                                <th scope="row">Valeurs</th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for critere in criteres %}
+                                <tr>
+                                    <td>{{ critere.libelle }}</td>
+                                    {% for key, valeur in critere.valeurs %}
+                                        <td>{{ valeur }} : {{ key }}</td>
+                                    {% endfor %}
+                                    {% if critere.id == editCritereId %}
+                                        <td class="p-4">
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <a href="{{ path('app_settings', {'edit': true, 'critereId' : critere.id}) }}">
+                                                <button class="btn btn-primary-color">Modifier</button>
+                                            </a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     </turbo-frame>
                 </div>
             </div>
@@ -105,7 +202,8 @@
                     <hr>
                     <turbo-frame>
                         <h4>Option stage/alternance</h4>
-                        <p>Permet aux étudiants de créer leur rapport de stage ou d'alternance et de le soumettre à évaluation.</p>
+                        <p>Permet aux étudiants de créer leur rapport de stage ou d'alternance et de le soumettre à
+                            évaluation.</p>
                         <div class="form-check form-switch">
                             <a href="" type="checkbox">
                                 <input class="form-check-input" type="checkbox" role="switch"
@@ -113,39 +211,39 @@
                             </a>
                             <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
                         </div>
-                        <hr>
-                        <h4>Consignes</h4>
-                        <h5>Etudiants</h5>
-                        <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckChecked" checked>
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
-                        </div>
+                        {#                        <hr> #}
+                        {#                        <h4>Consignes</h4> #}
+                        {#                        <h5>Etudiants</h5> #}
+                        {#                        <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p> #}
+                        {#                        <div class="form-check form-switch"> #}
+                        {#                            <a href="" type="checkbox"> #}
+                        {#                                <input class="form-check-input" type="checkbox" role="switch" #}
+                        {#                                       id="flexSwitchCheckChecked" checked> #}
+                        {#                            </a> #}
+                        {#                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label> #}
+                        {#                        </div> #}
 
-                        <form action="">
-                            <label for="consignes">Message</label>
-                            <textarea class="form-control" id="consignes" rows="3"></textarea>
-                            <button class="btn btn-primary-color">Enregistrer</button>
-                        </form>
-                        <hr>
-                        <h5>Enseignants</h5>
-                        <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckChecked" checked>
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
-                        </div>
+                        {#                        <form action=""> #}
+                        {#                            <label for="consignes">Message</label> #}
+                        {#                            <textarea class="form-control" id="consignes" rows="3"></textarea> #}
+                        {#                            <button class="btn btn-primary-color">Enregistrer</button> #}
+                        {#                        </form> #}
+                        {#                        <hr> #}
+                        {#                        <h5>Enseignants</h5> #}
+                        {#                        <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p> #}
+                        {#                        <div class="form-check form-switch"> #}
+                        {#                            <a href="" type="checkbox"> #}
+                        {#                                <input class="form-check-input" type="checkbox" role="switch" #}
+                        {#                                       id="flexSwitchCheckChecked" checked> #}
+                        {#                            </a> #}
+                        {#                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label> #}
+                        {#                        </div> #}
 
-                        <form action="">
-                            <label for="consignes">Message</label>
-                            <textarea class="form-control" id="consignes" rows="3"></textarea>
-                            <button class="btn btn-primary-color">Enregistrer</button>
-                        </form>
+                        {#                        <form action=""> #}
+                        {#                            <label for="consignes">Message</label> #}
+                        {#                            <textarea class="form-control" id="consignes" rows="3"></textarea> #}
+                        {#                            <button class="btn btn-primary-color">Enregistrer</button> #}
+                        {#                        </form> #}
                     </turbo-frame>
                 </div>
             </div>

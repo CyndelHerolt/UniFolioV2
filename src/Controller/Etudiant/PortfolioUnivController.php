@@ -2,6 +2,7 @@
 
 namespace App\Controller\Etudiant;
 
+use App\Classes\DataUserSession;
 use App\Components\Trace\Form\TraceAbstractType;
 use App\Components\Trace\TraceRegistry;
 use App\Components\Trace\TypeTrace\TraceImage;
@@ -25,6 +26,7 @@ use App\Repository\PortfolioUnivRepository;
 use App\Repository\TracePageRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
+use App\Service\DataUserSessionService;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,8 +52,12 @@ class PortfolioUnivController extends BaseController
         private readonly TraceVideo                  $traceVideo,
         private readonly ValidationRepository        $validationRepository,
         private readonly BibliothequeRepository      $bibliothequeRepository,
+        protected DataUserSessionService             $dataUserSessionService
     )
     {
+        parent::__construct(
+            $dataUserSessionService
+        );
     }
 
     #[Route('/', name: 'app_biblio_portfolio_univ')]
@@ -320,7 +326,16 @@ class PortfolioUnivController extends BaseController
                 return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
 
             case 'deleteTrace' :
-                break;
+                $trace = $this->traceRepository->find($request->query->get('trace'));
+                $page = $this->pageRepository->find($request->query->get('page'));
+                $tracePage = $this->tracePageRepository->findOneBy(['trace' => $trace, 'page' => $page]);
+
+                $this->tracePageRepository->delete($tracePage, true);
+
+                $edit = false;
+                $step = 'page';
+
+                return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
 
             case 'editTrace' :
                 break;

@@ -30,6 +30,15 @@ class TracePageRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(TracePage $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return TracePage[] Returns an array of TracePage objects
 //     */

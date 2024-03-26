@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}UniFolio - Choix du département{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+
+    <section class="container-custom d-flex flex-column justify-content-center align-items-center min-vh-100">
+        <div class="row justify-content-center w-100">
+            <div class="card col-6">
+                <article class="p-5">
+                    <h2>Choix de votre département</h2>
+                    <small>Vous pourrez modifier ce choix à tout moment dans votre espace personnel.</small>
+                    <hr>
+
+                    {% for departement in departements %}
+                    <a href="{{ path('app_settings_choix_departement_save', {'id': departement.id}) }}">
+                        <button class="btn btn-primary-color">
+                            {{ departement.libelle }}
+                        </button>
+                    </a>
+                    {% endfor %}
+
+                    <br>
+                    <p>Si vous constatez une anomalie dans les départements disponibles, veuillez contacter
+                        l'administrateur du site à l'adresse suivante : portfolio.iut-troyes@univ-reims.fr
+                        .</p>
+                </article>
+            </div>
+        </div>
+    </section>
+{% endblock %}

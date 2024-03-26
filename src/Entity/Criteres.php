@@ -10,8 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: CriteresRepository::class)]
 class Criteres
 {
-    private $valeurKey;
-    private $valeurValue;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,9 +29,17 @@ class Criteres
     #[ORM\OneToMany(targetEntity: ValidationCriteres::class, mappedBy: 'critere')]
     private Collection $validationCriteres;
 
+    #[ORM\ManyToMany(targetEntity: ApcNiveau::class, inversedBy: 'criteres')]
+    private Collection $apcNiveau;
+
+    #[ORM\ManyToMany(targetEntity: ApcApprentissageCritique::class, inversedBy: 'criteres')]
+    private Collection $apcApprentissageCritique;
+
     public function __construct()
     {
         $this->validationCriteres = new ArrayCollection();
+        $this->apcNiveau = new ArrayCollection();
+        $this->apcApprentissageCritique = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,26 +113,50 @@ class Criteres
         return $this;
     }
 
-    public function getValeurKey(): ?int
+    /**
+     * @return Collection<int, ApcNiveau>
+     */
+    public function getApcNiveau(): Collection
     {
-        return $this->valeurKey;
+        return $this->apcNiveau;
     }
 
-    public function setValeurKey(int $valeurKey): self
+    public function addApcNiveau(ApcNiveau $apcNiveau): static
     {
-        $this->valeurKey = $valeurKey;
+        if (!$this->apcNiveau->contains($apcNiveau)) {
+            $this->apcNiveau->add($apcNiveau);
+        }
 
         return $this;
     }
 
-    public function getValeurValue(): ?string
+    public function removeApcNiveau(ApcNiveau $apcNiveau): static
     {
-        return $this->valeurValue;
+        $this->apcNiveau->removeElement($apcNiveau);
+
+        return $this;
     }
 
-    public function setValeurValue(string $valeurValue): self
+    /**
+     * @return Collection<int, ApcApprentissageCritique>
+     */
+    public function getApcApprentissageCritique(): Collection
     {
-        $this->valeurValue = $valeurValue;
+        return $this->apcApprentissageCritique;
+    }
+
+    public function addApcApprentissageCritique(ApcApprentissageCritique $apcApprentissageCritique): static
+    {
+        if (!$this->apcApprentissageCritique->contains($apcApprentissageCritique)) {
+            $this->apcApprentissageCritique->add($apcApprentissageCritique);
+        }
+
+        return $this;
+    }
+
+    public function removeApcApprentissageCritique(ApcApprentissageCritique $apcApprentissageCritique): static
+    {
+        $this->apcApprentissageCritique->removeElement($apcApprentissageCritique);
 
         return $this;
     }

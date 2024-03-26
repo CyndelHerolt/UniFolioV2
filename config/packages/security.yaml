@@ -14,6 +14,7 @@ security:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
     main:
+      user_checker: App\Security\UserChecker
       lazy: true
       provider: app_user_provider
       form_login:
@@ -46,9 +47,6 @@ when@test:
       - { path: ^/inscription, roles: IS_AUTHENTICATED_ANONYMOUSLY }
       - { path: /, roles: IS_AUTHENTICATED_ANONYMOUSLY }
       - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
-    firewalls:
-      main:
-        access_denied_handler: App\Security\AccessDeniedHandler
     password_hashers:
       # By default, password hashers are resource intensive and take time. This is
       # important to generate secure password hashes. In tests however, secure hashes

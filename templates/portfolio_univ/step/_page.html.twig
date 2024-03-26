@@ -23,7 +23,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_portfolio_univ') }}">Enregistrer et
+            <a class="nav-link" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
                 quitter</a>
         </li>
     </ul>
@@ -125,44 +125,66 @@
                             {% set currentTracePage = trace.tracePages|filter(tracePage => tracePage.page == page)|first %}
                             {% if currentTracePage.ordre != 1 %}
                                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'upTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="déplacer vers le haut">
-                                    <img src="{{ asset('icons/arrow-up-solid.svg') }}" alt="bouton supprimer"
-                                         width="15px" height="15px">
+                                    <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/>
                                 </a>
                             {% else %}
                                 <button class="btn p-0 m-0 border-0" disabled>
-                                    <img src="{{ asset('icons/arrow-up-solid.svg') }}" alt="bouton supprimer"
-                                         width="15px" height="15px">
+                                    <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/>
                                 </button>
                             {% endif %}
                             {% set totalTraces = tracesPage|length %}
                             {% if currentTracePage.ordre != totalTraces %}
                                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'downTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="déplacer vers le bas">
-                                    <img src="{{ asset('icons/arrow-down-solid.svg') }}" alt="" width="15px"
-                                         height="15px">
+                                    <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
                                 </a>
                             {% else %}
                                 <button class="btn p-0 m-0 border-0" disabled>
-                                    <img src="{{ asset('icons/arrow-down-solid.svg') }}" alt="bouton supprimer"
-                                         width="15px" height="15px">
+                                    <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
                                 </button>
                             {% endif %}
                             <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer">
-                                <img src="{{ asset('icons/pen-solid.svg') }}" alt="" width="15px" height="15px">
+                                <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/>
                             </a>
                             <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">
-                                <img src="{{ asset('icons/eye-solid.svg') }}" alt="" width="15px" height="15px">
+                                <twig:ux:icon name="bi:eye-fill" width="15" height="auto"/>
                             </a>
                             <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="auto-évaluation">
-                                <img src="{{ asset('icons/sliders-solid.svg') }}" alt="" width="15px" height="15px">
+                                <twig:ux:icon name="bi:sliders" width="15" height="auto"/>
                             </a>
-                            <a href="" class="delete-link" data-bs-toggle="tooltip" data-bs-placement="top" title="supprimer">
-                                <img src="{{ asset('icons/trash-solid-white.svg') }}" alt="" width="15px" height="15px">
+                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}" class="delete-link" title="supprimer" data-bs-toggle="modal"
+                               data-bs-target="#staticBackdropDelete">
+                                <twig:ux:icon name="bi:trash-fill" width="15" height="auto"/>
                             </a>
+                            <!-- Modal Delete -->
+                            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
+                                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous retirer cette trace du portfolio
+                                                ?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p style="color: red">La trace ne sera pas supprimée mais seulement retirée du portfolio.</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                                            </button>
+                                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}">
+                                                <button class="btn btn-primary-color" data-bs-dismiss="modal">
+                                                    Valider
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-
         </div>
     </div>
 </turbo-frame>

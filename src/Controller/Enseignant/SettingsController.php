@@ -2,21 +2,26 @@
 
 namespace App\Controller\Enseignant;
 
+use App\Controller\BaseController;
 use App\Entity\Criteres;
+use App\Entity\Departement;
 use App\Form\CritereType;
 use App\Repository\CriteresRepository;
+use App\Repository\DepartementEnseignantRepository;
 use App\Repository\DepartementRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\EnseignantRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/enseignant')]
-class SettingsController extends AbstractController
+class SettingsController extends BaseController
 {
     public function __construct(
         private CriteresRepository    $criteresRepository,
-        private DepartementRepository $departementRepository
+        protected DepartementRepository $departementRepository,
+        protected EnseignantRepository  $enseignantRepository,
+        protected DepartementEnseignantRepository $departementEnseignantRepository,
     )
     {
     }
@@ -126,5 +131,39 @@ class SettingsController extends AbstractController
             return $this->redirectToRoute('app_settings', ['edit' => true, 'critereId' => $id]);
         }
         return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/settings/choix_departement', name: 'app_settings_choix_departement')]
+    public function choixDepartement(Request $request): Response
+    {
+        $enseignant = $this->getUser()->getEnseignant();
+        $departementsEnseignant = $enseignant->getDepartementEnseignants();
+
+        $departements = [];
+        foreach ($departementsEnseignant as $departementEnseignant) {
+            $departements[] = $departementEnseignant->getDepartement();
+        }
+
+        return $this->render('settings/choix_departement.html.twig', [
+            'departements' => $departements,
+            'enseignant' => $enseignant,
+        ]);
+    }
+
+#[Route('/settings/choix_departement/save/{id}', name: 'app_settings_choix_departement_save')]
+    public function choixDepartementSave(?int $id): Response
+    {
+        $enseignant = $this->getUser()->getEnseignant();
+        $departement = $this->departementRepository->find($id);
+        // on modifie le département par défaut de l'enseignant
+        $departementDefaut = $this->departementEnseignantRepository->findOneBy(['enseignant' => $enseignant, 'defaut' => true]);
+        $departementDefaut->setDefaut(false);
+        $this->departementEnseignantRepository->save($departementDefaut, true);
+
+        $departementEnseignant = $this->departementEnseignantRepository->findOneBy(['departement' => $departement, 'enseignant' => $enseignant]);
+        $departementEnseignant->setDefaut(true);
+        $this->departementEnseignantRepository->save($departementEnseignant, true);
+
+        return $this->redirectToRoute('app_home_panel');
     }
 }

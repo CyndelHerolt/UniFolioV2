@@ -8,6 +8,7 @@ use App\Components\Trace\TypeTrace\TraceImage;
 use App\Components\Trace\TypeTrace\TraceLien;
 use App\Components\Trace\TypeTrace\TracePdf;
 use App\Components\Trace\TypeTrace\TraceVideo;
+use App\Controller\BaseController;
 use App\Entity\Trace;
 use App\Entity\Validation;
 use App\Repository\ApcApprentissageCritiqueRepository;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/etudiant')]
-class TraceController extends AbstractController
+class TraceController extends BaseController
 {
 
     public function __construct(

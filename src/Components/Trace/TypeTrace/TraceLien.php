@@ -14,7 +14,7 @@ class TraceLien extends AbstractTrace
 
     public const FORM_TEMPLATE = 'trace/form_types/_form_lien.html.twig';
 
-    public const ICON = 'fa-solid fa-3x fa-link';
+    public const ICON = 'bi:link-45deg';
 
     public const CONSTRAINT = 'Format : https://www.exemple.com';
 

@@ -16,7 +16,7 @@ class TracePdf extends AbstractTrace
 
     public const FORM_TEMPLATE = 'trace/form_types/_form_pdf.html.twig';
 
-    public const ICON = 'fa-solid fa-3x fa-file-pdf';
+    public const ICON = 'bi:file-pdf-fill';
 
     public const CONSTRAINT = 'Poids maximum : 8 Mo';
 

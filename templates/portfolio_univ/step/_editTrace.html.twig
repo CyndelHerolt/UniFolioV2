@@ -30,7 +30,7 @@
 
     <div class="row">
         <div class="card-header">
-            <h2>Création d'une trace</h2>
+            <h2>Edition de {{ trace.libelle }}</h2>
         </div>
 
         {{ form_start(form, {'action': path('app_portfolio_univ_edit', {'id': portfolio.id, 'step': 'saveTrace', 'trace': trace.id, 'page': page.id}), 'attr': {'enctype': 'multipart/form-data'}}) }}
@@ -59,7 +59,7 @@
                             <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', type), 'step': 'newType'}) }}"
                                data-turbo-action="replace" data-turbo-frame="trace-form-content"
                                class="col-12 col-lg-2 p-3"
-                                    {% if selectedTraceType == constant('CLASS_NAME', type) %}
+                                    {% if selectedTraceType == constant('CLASS_NAME', type) or trace.type == constant('TYPE', type) %}
                                         style="background-color: #f8f9fa;"
                                     {% endif %}
                             >

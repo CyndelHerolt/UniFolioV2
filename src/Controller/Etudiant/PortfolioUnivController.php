@@ -338,6 +338,88 @@ class PortfolioUnivController extends BaseController
                 return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
 
             case 'editTrace' :
+                $page = $this->pageRepository->find($request->query->get('page'));
+                $trace = $this->traceRepository->find($request->query->get('trace'));
+
+                $typesTrace = $this->traceRegistry->getTypeTraces();
+                $user = $this->getUser()->getEtudiant();
+                $semestre = $user->getSemestre();
+                $annee = $semestre->getAnnee();
+
+                $dept = $user->getSemestre()->getAnnee()->getDiplome()->getDepartement();
+
+                $groupe = $user->getGroupe();
+                foreach ($groupe as $g) {
+                    if ($g->getTypeGroupe()->getType() === 'TD') {
+                        $parcours = $g->getApcParcours();
+                    }
+                }
+
+                $apcApprentissageCritiques = [];
+                $apcNiveaux = [];
+
+                if ($parcours === null) {
+                    // ------------récupère tous les apcNiveau de l'année -------------------------
+                    $referentiel = $dept->getApcReferentiels();
+                    $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
+                    $niveaux = [];
+                    foreach ($competences as $competence) {
+                        $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
+                    }
+                    // si les apcNiveaux dans niveaux ont pour actif = true
+                    foreach ($niveaux as $niveau) {
+                        if ($niveau->isActif() === true) {
+                            $apcNiveaux[] = $niveau;
+                        } else {
+                            // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                            foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                                $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                            }
+                        }
+                    }
+                } else {
+                    // ------------récupère tous les apcNiveau de l'année -------------------------
+                    $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
+                    foreach ($niveaux as $niveau) {
+                        if ($niveau->isActif() === true) {
+                            $apcNiveaux[] = $niveau;
+                        } else {
+                            // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                            foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                                $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                            }
+                        }
+                    }
+                }
+
+                if (isset($apcNiveaux)) {
+                    $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcNiveaux]);
+                } else {
+                    $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcApprentissageCritiques]);
+                }
+                // Vérifier si un type de trace a été passé en paramètre
+                $selectedTraceType = $request->query->get('type', null);
+                if ($selectedTraceType !== null) {
+                    $formType = $selectedTraceType::FORM;
+                    $formType = $this->createForm($formType, $trace);
+                    $formType = $formType->createView();
+                    $typeTrace = $selectedTraceType::TYPE;
+                } else {
+                    $formType = null;
+                }
+
+                $groupedApprentissageCritiques = [];
+                foreach ($apcApprentissageCritiques as $ac) {
+                    $niveauId = $ac->getApcNiveau()->getId();
+                    if (!isset($groupedApprentissageCritiques[$niveauId])) {
+                        $groupedApprentissageCritiques[$niveauId] = [
+                            'niveau' => $ac->getApcNiveau(),
+                            'critiques' => [],
+                        ];
+                    }
+                    $groupedApprentissageCritiques[$niveauId]['critiques'][] = $ac;
+                }
+
                 break;
 
             case 'newTrace' :

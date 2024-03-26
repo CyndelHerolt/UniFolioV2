@@ -142,7 +142,7 @@
                                     <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
                                 </button>
                             {% endif %}
-                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer">
+                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'editTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer">
                                 <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/>
                             </a>
                             <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">

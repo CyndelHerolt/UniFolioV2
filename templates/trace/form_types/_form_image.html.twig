@@ -13,7 +13,7 @@
                 {% if selectedTraceType == constant('CLASS_NAME', typeTrace) %}
                    active
                 {% endif %}">
-                    <i class="{{ constant('ICON', typeTrace) }}">ICON</i>
+                    <twig:ux:icon name="{{ constant('ICON', typeTrace) }}" width="15" height="auto"/>
                     <div>
                         <strong>{{ typeTrace.display }}</strong>
                         <br>

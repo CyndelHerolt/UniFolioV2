@@ -13,9 +13,9 @@
             <li class="breadcrumb-item"><a href="{{ path('app_biblio_traces') }}" class="link">Bibliothèque de
                     traces</a></li>
             {% if 'edit' in app.request.uri %}
-            <li class="breadcrumb-item active" aria-current="page">Edition de la trace "{{ trace.libelle }}"</li>
+                <li class="breadcrumb-item active" aria-current="page">Edition de la trace "{{ trace.libelle }}"</li>
             {% else %}
-            <li class="breadcrumb-item active" aria-current="page">Création d'une trace</li>
+                <li class="breadcrumb-item active" aria-current="page">Création d'une trace</li>
             {% endif %}
         </ol>
     </nav>
@@ -24,13 +24,17 @@
             <article class="col-lg-8 col-12">
                 <div class="card p-5">
                     <div class="card-header">
-                        <h2>Création d'une trace</h2>
+                        {% if 'edit' in app.request.uri %}
+                            <h2>Edition de la trace "{{ trace.libelle }}"</h2>
+                        {% else %}
+                            <h2>Création d'une trace</h2>
+                        {% endif %}
                     </div>
 
                     {% if 'new' in app.request.uri %}
-                    {{ form_start(form, {'action': path('app_trace_new_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
+                        {{ form_start(form, {'action': path('app_trace_new_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
                     {% else %}
-                    {{ form_start(form, {'action': path('app_trace_edit_sauvegarde', {'id': trace.id}), 'attr': {'enctype': 'multipart/form-data'}}) }}
+                        {{ form_start(form, {'action': path('app_trace_edit_sauvegarde', {'id': trace.id}), 'attr': {'enctype': 'multipart/form-data'}}) }}
                     {% endif %}
 
                     <div class="visually-hidden">
@@ -66,7 +70,8 @@
                                                     style="background-color: #f8f9fa;"
                                                 {% endif %}
                                         >
-                                            <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto" length="auto"/>
+                                            <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
+                                                          length="auto"/>
                                             <div>
                                                 <strong>{{ type.display }}</strong>
                                                 <br>

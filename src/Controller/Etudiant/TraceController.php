@@ -468,8 +468,8 @@ class TraceController extends BaseController
             $contenu = array_filter($contenu, function ($item) {
                 return $item !== '';
             });
-            $contenu = $this->traceLien->sauvegarde($contenu, null);
-            $trace->setType($this->traceLien::TYPE);
+            $contenu = $this->traceVideo->sauvegarde($contenu, null);
+            $trace->setType($this->traceVideo::TYPE);
         }
 
         if (isset($contenu) && $contenu['success'] === false) {

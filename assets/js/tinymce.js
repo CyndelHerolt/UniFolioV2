@@ -1,10 +1,4 @@
 document.addEventListener('turbo:load', function () {
-    // Obtenez l'URL de la page actuelle
-    const currentUrl = new URL(window.location.href);
-
-    // Vérifiez si l'URL correspond à la route 'app_trace_new'
-    if (currentUrl.pathname === '/etudiant/trace/new') {
-        // Si c'est le cas, initialisez TinyMCE
         if (window.tinymce) {
             tinymce.remove();
             tinymce.init({
@@ -15,5 +9,4 @@ document.addEventListener('turbo:load', function () {
                 language: 'fr_FR',
             });
         }
-    }
 });

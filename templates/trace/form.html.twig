@@ -10,7 +10,13 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
             <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Trace</li>
+            <li class="breadcrumb-item"><a href="{{ path('app_biblio_traces') }}" class="link">Bibliothèque de
+                    traces</a></li>
+            {% if 'edit' in app.request.uri %}
+            <li class="breadcrumb-item active" aria-current="page">Edition de la trace "{{ trace.libelle }}"</li>
+            {% else %}
+            <li class="breadcrumb-item active" aria-current="page">Création d'une trace</li>
+            {% endif %}
         </ol>
     </nav>
     <section class="container-custom min-vh-100 section-pt">
@@ -21,7 +27,11 @@
                         <h2>Création d'une trace</h2>
                     </div>
 
-                    {{ form_start(form, {'action': path('app_trace_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
+                    {% if 'new' in app.request.uri %}
+                    {{ form_start(form, {'action': path('app_trace_new_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
+                    {% else %}
+                    {{ form_start(form, {'action': path('app_trace_edit_sauvegarde', {'id': trace.id}), 'attr': {'enctype': 'multipart/form-data'}}) }}
+                    {% endif %}
 
                     <div class="visually-hidden">
                         {{ form_row(form.date_creation) }}
@@ -44,14 +54,19 @@
                             {% if formType is null %}
                                 <div class="types row p-2">
                                     {% for type in typesTrace %}
-                                        <a href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
-                                           data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                           class="col-12 col-lg-2 p-3"
+                                        <a
+                                                {% if 'trace/new' in app.request.uri %}
+                                                    href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
+                                                {% else %}
+                                                    href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', type), 'id': trace.id}) }}"
+                                                {% endif %}
+                                                data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                                                class="col-12 col-lg-2 p-3"
                                                 {% if selectedTraceType == constant('CLASS_NAME', type) %}
                                                     style="background-color: #f8f9fa;"
                                                 {% endif %}
                                         >
-                                            <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"/>
+                                            <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto" length="auto"/>
                                             <div>
                                                 <strong>{{ type.display }}</strong>
                                                 <br>

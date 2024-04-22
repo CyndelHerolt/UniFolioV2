@@ -30,3 +30,31 @@
     margin: 10px 10px 20px 0;
   }
 }
+
+#trace_lien_contenu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.existing_lien {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 10px 20px 0;
+}
+
+#trace_video_contenu {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.existing_video {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 10px 20px 0;
+}

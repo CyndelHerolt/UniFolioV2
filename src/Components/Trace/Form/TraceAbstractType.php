@@ -28,24 +28,34 @@ class TraceAbstractType extends AbstractType
         protected TraceRepository     $traceRepository,
         public BibliothequeRepository $bibliothequeRepository,
         #[Required] public Security   $security,
-        private RequestStack $requestStack,
+        private RequestStack          $requestStack,
     )
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-//        $competences = $options['competences'];
-//        // récupérer les libelle des compétences
-//        $competences = array_map(function ($competence) {
-//            return $competence->getLibelle();
-//        }, $competences);
+
+        $trace = $options['data'];
+        $validations = [];
+        foreach ($trace->getValidations() as $validation) {
+            if ($validation->getApcNiveau() !== null) {
+                $validations[] = $validation->getApcNiveau()->getId();
+            } else {
+                $validations[] = $validation->getApcApprentissagesCritiques()->getId();
+            }
+        }
 
         // Create an array with libelle as keys and ids as values
         $competences = [];
+        $checkedCompetences = [];
         foreach ($options['competences'] as $competence) {
             $competences[$competence->getLibelle()] = $competence->getId();
+            if (in_array($competence->getId(), $validations)) {
+                $checkedCompetences[] = $competence->getId();
+            }
         }
+
 
         $session = $this->requestStack->getSession();
         $session->set('competences', $competences);
@@ -163,6 +173,10 @@ class TraceAbstractType extends AbstractType
                 'expanded' => true,
                 'mapped' => false,
             ]);
+
+        // préselectionner les compétences déjà validées
+        $builder->get('competences')->setData($checkedCompetences);
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

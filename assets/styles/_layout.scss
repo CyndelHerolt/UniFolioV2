@@ -166,6 +166,10 @@
       background-color: var(--quartenary-color);
     }
   }
+
+  .breadcrumb-item-secondary + .breadcrumb-item-secondary::before {
+    color: var(--text-dark-color) !important;
+  }
 }
 
 .delete-link {
@@ -296,7 +300,7 @@
     transition: transform 0.3s ease;
 
     &:hover {
-      transform: scale(1.05);
+      transform: scale(1.02);
     }
   }
 

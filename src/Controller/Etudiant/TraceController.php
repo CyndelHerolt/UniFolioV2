@@ -442,13 +442,43 @@ class TraceController extends BaseController
             $trace->setType($this->traceLien::TYPE);
         }
 
-        dd($contenu);
+        elseif (isset($files['trace_pdf']) && !isset($data['pdf'])) {
+            $contenu = $files['trace_pdf']['contenu'];
+            $contenu = $this->tracePdf->sauvegarde($contenu, null);
+            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                return is_string($item);
+            });
+            $trace->setType($this->tracePdf::TYPE);
+        } elseif (isset($data['pdf']) && !isset($files['trace_pdf'])) {
+            $trace->setContenu($data['pdf']);
+            $trace->setType($this->tracePdf::TYPE);
+        } elseif (isset($data['pdf']) && isset($files['trace_pdf'])) {
+            $contenu = $files['trace_pdf']['contenu'];
+            $contenu = $this->tracePdf->sauvegarde($contenu, null);
+            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                return is_string($item);
+            });
+            $contenu['contenu'] = array_merge($contenu['contenu'], $data['pdf']);
+            $trace->setType($this->tracePdf::TYPE);
+        }
 
-        if ($contenu['success'] === false) {
+        elseif (isset($data['trace_video'])) {
+            $contenu = $data['trace_video']['contenu'];
+            // si une entrée est vide, on la supprime
+            $contenu = array_filter($contenu, function ($item) {
+                return $item !== '';
+            });
+            $contenu = $this->traceLien->sauvegarde($contenu, null);
+            $trace->setType($this->traceLien::TYPE);
+        }
+
+        if (isset($contenu) && $contenu['success'] === false) {
             $this->addFlash('danger', $contenu['error']);
             return $this->redirectToRoute('app_trace_edit', ['id'=>$id]);
         } else {
-            $trace->setContenu($contenu['contenu']);
+            if (isset($contenu)) {
+                $trace->setContenu($contenu['contenu']);
+            }
             $trace->setBibliotheque($bibliotheque);
             $trace->setDateCreation(new \DateTime());
             $trace->setLibelle($formDatas['libelle']);
@@ -507,7 +537,7 @@ class TraceController extends BaseController
 
         }
 
-        return $this->redirectToRoute('app_trace_edit', ['id' => $id]);
+        return $this->redirectToRoute('app_trace_edit', ['id' => $trace->getId()]);
     }
 
     #[Route('/trace/delete/{id}', name: 'app_trace_delete')]

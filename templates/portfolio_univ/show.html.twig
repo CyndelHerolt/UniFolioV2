@@ -47,7 +47,7 @@
 
                             {% for trace in tracesPage %}
                                 <div class="col-12 panel_link mt-5 mb-5">
-                                    <a href="{{ path('app_trace_show', {'id': trace.id, 'portfolio': portfolio.id}) }}"
+                                    <a href="{{ path('app_trace_show', {'id': trace.id, 'portfolio': portfolio.id, 'page': page.id}) }}"
                                        class="panel_link">
                                         <twig:TracePortfolioPreview id="{{ trace.id }}"/>
                                     </a>

@@ -5,8 +5,10 @@
                 <a
                   {% if 'portfolio' in app.request.uri %}
                       href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace), 'step': 'newType'}) }}"
-                  {% else %}
+                  {% elseif 'new' in app.request.uri %}
                     href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
+                  {% elseif 'edit' in app.request.uri %}
+                      href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                   {% endif %}
                     data-turbo-action="replace" data-turbo-frame="trace-form-content"
                     class="col-12 col-lg-2 p-3
@@ -22,7 +24,7 @@
                 </a>
             {% endfor %}
         </div>
-        {% if '/edit' in app.request.uri %}
+        {% if '/edit' in app.request.uri and trace.type == 'image' %}
             <div class="galerie">
                 {% for data in trace.contenu %}
                     <div class="image_trace_div">
@@ -32,7 +34,7 @@
 
                         </div>
                         <button type="button" class="btn btn-danger delete-image">
-                            <i class="fa-solid fa-square-minus"></i>
+                            <twig:ux:icon name="bi:trash-fill" width="15" height="15"/>
                         </button>
                     </div>
                 {% endfor %}

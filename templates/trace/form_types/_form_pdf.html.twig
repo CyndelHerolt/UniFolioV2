@@ -5,8 +5,10 @@
                 <a
                         {% if 'portfolio' in app.request.uri %}
                             href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace), 'step': 'newType'}) }}"
-                        {% else %}
+                        {% elseif 'new' in app.request.uri %}
                             href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
+                        {% elseif 'edit' in app.request.uri %}
+                            href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                         {% endif %}
                         data-turbo-action="replace" data-turbo-frame="trace-form-content"
                         class="col-12 col-lg-2 p-3
@@ -23,7 +25,7 @@
             {% endfor %}
         </div>
 
-        {% if '/edit' in app.request.uri %}
+        {% if '/edit' in app.request.uri and trace.type == 'pdf' %}
             {% for data in trace.contenu %}
                 <div class="pdf_trace_div">
                     <p>Pdf déjà dans la DB</p>

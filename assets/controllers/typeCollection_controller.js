@@ -1,10 +1,46 @@
-import { Controller } from '@hotwired/stimulus';
+import {Controller} from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['input']
 
     connect() {
-        console.log('connected');
+        const liensContainer = document.getElementById('trace_lien_contenu')
+        if (liensContainer) {
+            const liens = liensContainer.children
+// ajouter la classe new_lien aux liens
+            for (let i = 0; i < liens.length; i++) {
+                liens[i].classList.add('existing_lien')
+            }
+
+// pour chaque lien, ajouter un bouton supprimer
+            const liensDiv = document.querySelectorAll('.existing_lien')
+            liensDiv.forEach(lien => {
+                lien.innerHTML += (
+                    '<button type="button" class="btn btn-danger delete-lien" data-action="typeCollection#removeExistingLien"> Supprimer </button>'
+                )
+                const button = lien.querySelector('.delete-lien');
+                lien.appendChild(button);
+            })
+        }
+
+        const videosContainer = document.getElementById('trace_video_contenu')
+        if (videosContainer) {
+            const videos = videosContainer.children
+// ajouter la classe new_video aux videos
+            for (let i = 0; i < videos.length; i++) {
+                videos[i].classList.add('existing_video')
+            }
+
+// pour chaque video, ajouter un bouton supprimer
+            const videosDiv = document.querySelectorAll('.existing_video')
+            videosDiv.forEach(video => {
+                video.innerHTML += (
+                    '<button type="button" class="btn btn-danger delete-video" data-action="typeCollection#removeExistingVideo"> Supprimer </button>'
+                )
+                const button = video.querySelector('.delete-video');
+                video.appendChild(button);
+            })
+        }
     }
 
     addImage(event) {
@@ -40,7 +76,6 @@ export default class extends Controller {
         event.currentTarget.closest('.image_trace_div').remove();
     }
 
-
     addLien(event) {
 // Récupération du prototype
         const prototype = document.querySelector('#trace_lien_contenu').dataset.prototype;
@@ -72,6 +107,10 @@ export default class extends Controller {
 
     removeLien(event) {
         event.currentTarget.closest('.lien_trace_div').remove();
+    }
+
+    removeExistingLien(event) {
+        event.currentTarget.closest('.existing_lien').remove();
     }
 
     addPdf(event) {
@@ -138,5 +177,9 @@ export default class extends Controller {
 
     removeVideo(event) {
         event.currentTarget.closest('.video_trace_div').remove();
+    }
+
+    removeExistingVideo(event) {
+        event.currentTarget.closest('.existing_video').remove();
     }
 }

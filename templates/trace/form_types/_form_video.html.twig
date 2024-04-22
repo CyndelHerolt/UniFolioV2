@@ -24,7 +24,7 @@
                 </a>
             {% endfor %}
         </div>
-        {% if trace.type == 'lien' %}
+        {% if trace.type == 'video' %}
             {{ form_widget(formType.contenu) }}
         {% else %}
             {{ form_widget(formType.contenu, { 'attr': {'class': 'visually-hidden'} }) }}

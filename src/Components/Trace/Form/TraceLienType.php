@@ -30,6 +30,7 @@ class TraceLienType extends AbstractType
                 'entry_options' => [
                     'attr' => [
                         'class' => "form-control lien_trace",
+                        'style' => 'width: fit-content',
                         'placeholder' => 'Lien',
                     ],
                     'by_reference' => false,
@@ -44,7 +45,6 @@ class TraceLienType extends AbstractType
                 'required' => false,
                 'by_reference' => false,
                 'empty_data' => [],
-//                'mapped' => true,
             ]);
     }
 }

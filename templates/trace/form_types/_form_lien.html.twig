@@ -26,11 +26,11 @@
         </div>
         {% if trace.type == 'lien' %}
             {{ form_widget(formType.contenu) }}
-            {% else %}
-                {{ form_widget(formType.contenu, { 'attr': {'class': 'visually-hidden'} }) }}
+        {% else %}
+            {{ form_widget(formType.contenu, { 'attr': {'class': 'visually-hidden'} }) }}
         {% endif %}
-            <div data-typeCollection-target="input" class="trace-content-input">
-            </div>
+        <div data-typeCollection-target="input" class="trace-content-input">
+        </div>
         <button type="button" class="btn btn-primary add-lien" data-action="typeCollection#addLien">
             Ajouter un lien
         </button>

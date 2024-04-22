@@ -25,17 +25,15 @@
             {% endfor %}
         </div>
         {% if '/edit' in app.request.uri and trace.type == 'image' %}
-            <div class="galerie">
+            <div class="galerie d-flex flex-wrap justify-content-evenly">
                 {% for data in trace.contenu %}
-                    <div class="image_trace_div">
+                    <div class="image_trace_div d-flex flex-column m-4 col-5">
                         <input type="hidden" name="img[{{ loop.index }}]" value="{{ data }}">
                         <div class="trace-img"
-                             style="background-image: url('{{ asset(data) }}')">
+                             style="background-image: url('{{ asset(data) }}'); background-position: center; background-size: cover; width: 100% !important; height: 250px !important;">
 
                         </div>
-                        <button type="button" class="btn btn-danger delete-image">
-                            <twig:ux:icon name="bi:trash-fill" width="15" height="15"/>
-                        </button>
+                        <button type="button" class="btn btn-danger delete-image" data-action="typeCollection#removeImage">Supprimer</button>
                     </div>
                 {% endfor %}
             </div>

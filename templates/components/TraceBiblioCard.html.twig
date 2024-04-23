@@ -23,10 +23,58 @@
         </div>
         <div class="card-body">
             <div class="card-infos-min border-bottom">
-                <small>Publiée le : {{ this.trace.dateCreation|date("d-m-Y") }}</small>
-                <small>{{ this.trace.contenu|length }}
-                    {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
-                </small>
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex justify-content-between">
+                        <small>Publiée le : {{ this.trace.dateCreation|date("d-m-Y") }}</small>
+                        <small>
+                            {% if this.trace.type is null %}
+                                Type non défini
+                            {% else %}
+                                {{ this.trace.contenu|length }}
+                                {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <div>
+                            <small type="button" class="btn text-danger d-flex align-items-center gap-2 dropdown-toggle"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                <twig:ux:icon name="bi:exclamation-triangle-fill" width="15px" height="auto"/>
+                                Trace incomplète
+                            </small>
+                            <ul class="dropdown-menu p-3">
+                                {% if this.trace.validations is empty %}
+                                    <li class="text-danger d-flex align-items-center gap-2">
+                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                        Aucune compétence liée
+                                    </li>
+                                    <hr>
+                                {% endif %}
+                                {% if this.trace.contenu is empty or this.trace.contenu is null %}
+                                    <li class="text-danger d-flex align-items-center gap-2">
+                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                        Aucun média d'illustration
+                                    </li>
+                                    <hr>
+                                {% endif %}
+                                {% if this.trace.description is empty or this.trace.description is null %}
+                                    <li class="text-danger d-flex align-items-center gap-2">
+                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                        Aucun argumentaire
+                                    </li>
+                                    <hr>
+                                {% endif %}
+                                {% if this.trace.contexte is empty or this.trace.contexte is null %}
+                                    <li class="text-danger d-flex align-items-center gap-2">
+                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                        Pas de contexte renseigné
+                                    </li>
+                                    <hr>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card-competences">
                 <div class="accordion accordion-flush" id="accordionFlushExample">
@@ -41,7 +89,7 @@
                                     <div class="progress">
                                         {% if percentage == 0 %}
                                             <div class="progress-bar" role="progressbar"
-                                                 style="width: 100%; background-color: #6F18AD26"
+                                                 style="width: 100%; background: #6F18AD26"
                                                  aria-valuenow="0" aria-valuemin="0"
                                                  aria-valuemax="100">
                                                 0%
@@ -88,13 +136,13 @@
             </div>
             <div class="d-flex justify-content-evenly m-3 btn_group">
                 <a href="{{ path('app_trace_show', {'id': this.trace.id}) }}">
-                    <button class="btn btn-primary-color text-uppercase">Voir</button>
+                    <button class="btn btn-primary text-uppercase">Voir</button>
                 </a>
                 <a href="{{ path('app_trace_edit', {'id': this.trace.id}) }}">
-                    <button class="btn btn-primary-color text-uppercase">Modifier</button>
+                    <button class="btn btn-secondary text-uppercase">Modifier</button>
                 </a>
                 <a href="{{ path('app_trace_delete', {'id': this.trace.id}) }}">
-                    <button class="btn btn-primary-color text-uppercase">Supprimer</button>
+                    <button class="btn btn-secondary text-uppercase">Supprimer</button>
                 </a>
             </div>
         </div>

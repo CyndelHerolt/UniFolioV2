@@ -233,7 +233,11 @@ class TraceController extends BaseController
             $trace->setDateCreation(new \DateTime());
             $trace->setLibelle($formDatas['libelle']);
             $trace->setContexte($formDatas['contexte']);
-            $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+            if (!empty($formDatas['dateRealisation'])) {
+                $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+            } else {
+                $trace->setDateRealisation(null);
+            }
             $trace->setLegende($formDatas['legende']);
             $trace->setDescription($formDatas['description']);
             $this->traceRepository->save($trace, true);
@@ -487,7 +491,11 @@ class TraceController extends BaseController
             $trace->setDateCreation(new \DateTime());
             $trace->setLibelle($formDatas['libelle']);
             $trace->setContexte($formDatas['contexte']);
-            $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+            if (!empty($formDatas['dateRealisation'])) {
+                $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+            } else {
+                $trace->setDateRealisation(null);
+            }
             $trace->setLegende($formDatas['legende']);
             $trace->setDescription($formDatas['description']);
             $this->traceRepository->save($trace, true);

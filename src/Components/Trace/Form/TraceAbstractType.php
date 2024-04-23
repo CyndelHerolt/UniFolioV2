@@ -113,7 +113,6 @@ class TraceAbstractType extends AbstractType
             ])
             //----------------------------------------------------------------
             ->add('dateRealisation', DateType::class, [
-                'data' => new \DateTimeImmutable(),
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Veuillez saisir une date',
@@ -124,7 +123,7 @@ class TraceAbstractType extends AbstractType
                 'label' => 'Date de réalisation',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'id' => 'dateRealisation'],
-                'help' => 'Date à laquelle vous avez réalisé le travail présenté ici',
+                'help' => 'Date à laquelle vous avez réalisé le travail présenté ici. Format attendu : mm-YYYY',
                 'required' => false,
                 'html5' => false,
             ])

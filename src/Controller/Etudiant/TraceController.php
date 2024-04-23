@@ -174,6 +174,8 @@ class TraceController extends BaseController
     public function editType(?int $id, $type, Request $request): Response
     {
         $trace = $this->traceRepository->find($id);
+        $trace->setContenu([]);
+        $this->traceRepository->save($trace, true);
         // Stocker le type de trace dans la session
         $request->getSession()->set('selected_trace_type', $type);
 
@@ -403,6 +405,7 @@ class TraceController extends BaseController
     #[Route('/trace/{id}/sauvegarde', name: 'app_trace_edit_sauvegarde')]
     public function sauvegardeEditTrace(?int $id, Request $request): Response
     {
+        //todo: ne récupérer que les données du nouveau type de trace si modifié
         $data = $request->request->all();
         $files = $request->files->all();
         $formDatas = $request->request->all()['trace_abstract'];

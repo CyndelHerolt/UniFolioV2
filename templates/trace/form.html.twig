@@ -53,13 +53,14 @@
                             {{ form_row(form.dateRealisation) }}
                         </div>
 
+{#           todo: faire un modal qui prévient que les données seront perdues en cas de chgt de type             #}
                         <turbo-frame id="trace-form-content" class="form-control p-4">
                             <label>Contenu média</label>
                             {% if formType is null %}
                                 <div class="types row p-2">
                                     {% for type in typesTrace %}
                                         <a
-                                                {% if 'trace/new' in app.request.uri %}
+                                                {% if 'new' in app.request.uri %}
                                                     href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
                                                 {% else %}
                                                     href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', type), 'id': trace.id}) }}"
@@ -106,7 +107,7 @@
                         </div>
                     </div>
                     <hr>
-                    <button type="submit" class="btn btn-primary-color text-uppercase">Enregistrer</button>
+                    <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
                     {{ form_end(form) }}
                 </div>
             </article>

@@ -35,6 +35,8 @@
                             </div>
                             <div class="modal-body d-flex flex-column align-items-center gap-4">
                                 <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
+                                <p class="text-danger">Attention, cette action est irréversible !</p>
+
                                 <p class="w-75">
                                     Si vous changez le type de trace, les médias déjà ajoutés seront perdus. Êtes-vous
                                     sûr de vouloir continuer ?
@@ -48,7 +50,7 @@
                                 {% elseif 'edit' in app.request.uri %}
                                     <a href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                                        class="flex-grow-0" style="border: none;">
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accepter</button></a>
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirmer</button></a>
                                 {% endif %}
                             </div>
                         </div>

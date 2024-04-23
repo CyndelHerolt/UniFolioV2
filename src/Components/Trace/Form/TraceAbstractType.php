@@ -109,7 +109,7 @@ class TraceAbstractType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'placeholder' => '...'],
                 'help' => 'Description de votre média, 100 caractères maximum',
-                'required' => true,
+                'required' => false,
             ])
             //----------------------------------------------------------------
             ->add('dateRealisation', DateType::class, [
@@ -125,7 +125,7 @@ class TraceAbstractType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'id' => 'dateRealisation'],
                 'help' => 'Date à laquelle vous avez réalisé le travail présenté ici',
-                'required' => true,
+                'required' => false,
                 'html5' => false,
             ])
             //----------------------------------------------------------------
@@ -139,7 +139,7 @@ class TraceAbstractType extends AbstractType
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'placeholder' => '...'],
                 'help' => 'Le contexte dans lequel vous avez réalisé le travail présenté ici (SAE, projet personnel, en groupe, en solo ...)',
-                'required' => true,
+                'required' => false,
             ])
             //----------------------------------------------------------------
             ->add('description', TextareaType::class, [
@@ -169,7 +169,7 @@ class TraceAbstractType extends AbstractType
                 },
                 'label' => false,
                 'multiple' => true,
-                'required' => true,
+                'required' => false,
                 'expanded' => true,
                 'mapped' => false,
             ]);

@@ -154,6 +154,15 @@
       //background-color: darken(var(--primary-color), 3%);
       background-color: var(--primary-color-dark) !important;
     }
+
+    &.disabled {
+      opacity: .8;
+    }
+
+    &.active-filter, .disabled {
+      opacity: 1;
+      background-color: var(--primary-color-dark);
+    }
   }
 
   .btn-secondary {
@@ -168,6 +177,15 @@
       //background-color: darken(var(--secondary-color), 3%);
       background-color: var(--tertiary-color);
     }
+
+    &.disabled {
+      opacity: .8;
+    }
+
+    &.active-filter, .disabled {
+      opacity: 1;
+      background-color: #e5e5e5;
+    }
   }
 
   .btn-tertiary {
@@ -178,6 +196,15 @@
 
     &:hover {
       //background-color: darken(var(--secondary-color), 3%);
+      background-color: var(--quartenary-color);
+    }
+
+    &.disabled {
+      opacity: .8;
+    }
+
+    &.active-filter, .disabled {
+      opacity: 1;
       background-color: var(--quartenary-color);
     }
   }
@@ -443,11 +470,6 @@
   .badge {
     font-size: .9rem;
     margin: 15px 15px 25px 0;
-  }
-
-  .disabled {
-    background-color: var(--quartenary-color);
-    opacity: 1;
   }
 }
 

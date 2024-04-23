@@ -30,6 +30,15 @@ class ValidationRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(Validation $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Validation[] Returns an array of Validation objects
 //     */

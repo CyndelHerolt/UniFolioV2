@@ -288,7 +288,7 @@ class TraceController extends BaseController
             }
         }
 
-        return $this->redirectToRoute('app_trace_new');
+        return $this->redirectToRoute('app_biblio_traces');
     }
 
     #[Route('/trace/edit/{id}', name: 'app_trace_edit')]

@@ -115,7 +115,7 @@
                 Supprimer les traces sélectionnées
             </button>
             <!-- Modal Delete -->
-            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
+            <div class="modal fade" id="staticBackdropDelete" data-bs-backdrop="static"
                  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -124,9 +124,13 @@
                                 ?</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <p>Les traces sélectionnées seront supprimées.</p>
-                            <p style="color: red">Attention, cette action est irréversible !</p>
+                        <div class="modal-body d-flex flex-column align-items-center gap-4">
+                            <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
+                            <p class="text-danger">Attention, cette action est irréversible !</p>
+                            <p class="w-75">
+                                Les traces sélectionnées seront supprimées. Êtes-vous
+                                sûr de vouloir continuer ?
+                            </p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler

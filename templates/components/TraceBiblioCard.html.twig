@@ -35,45 +35,48 @@
                             {% endif %}
                         </small>
                     </div>
-                    <div class="d-flex justify-content-center">
-                        <div>
-                            <small type="button" class="btn text-danger d-flex align-items-center gap-2 dropdown-toggle"
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                <twig:ux:icon name="bi:exclamation-triangle-fill" width="15px" height="auto"/>
-                                Trace incomplète
-                            </small>
-                            <ul class="dropdown-menu p-3">
-                                {% if this.trace.validations is empty %}
-                                    <li class="text-danger d-flex align-items-center gap-2">
-                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
-                                        Aucune compétence liée
-                                    </li>
-                                    <hr>
-                                {% endif %}
-                                {% if this.trace.contenu is empty or this.trace.contenu is null %}
-                                    <li class="text-danger d-flex align-items-center gap-2">
-                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
-                                        Aucun média d'illustration
-                                    </li>
-                                    <hr>
-                                {% endif %}
-                                {% if this.trace.description is empty or this.trace.description is null %}
-                                    <li class="text-danger d-flex align-items-center gap-2">
-                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
-                                        Aucun argumentaire
-                                    </li>
-                                    <hr>
-                                {% endif %}
-                                {% if this.trace.contexte is empty or this.trace.contexte is null %}
-                                    <li class="text-danger d-flex align-items-center gap-2">
-                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
-                                        Pas de contexte renseigné
-                                    </li>
-                                    <hr>
-                                {% endif %}
-                            </ul>
+                    {% if this.trace.validations is empty or this.trace.contenu is empty or this.trace.contenu is null or this.trace.description is empty or this.trace.description is null or this.trace.contexte is empty or this.trace.contexte is null %}
+                        <div class="d-flex justify-content-center">
+                            <div>
+                                <small type="button"
+                                       class="btn text-danger d-flex align-items-center gap-2 dropdown-toggle"
+                                       data-bs-toggle="dropdown" aria-expanded="false">
+                                    <twig:ux:icon name="bi:exclamation-triangle-fill" width="15px" height="auto"/>
+                                    Trace incomplète
+                                </small>
+                                <ul class="dropdown-menu p-3">
+                                    {% if this.trace.validations is empty %}
+                                        <li class="text-danger d-flex align-items-center gap-2 mb-2 mt-2">
+                                            <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                            Aucune compétence liée
+                                        </li>
+
+                                    {% endif %}
+                                    {% if this.trace.contenu is empty or this.trace.contenu is null %}
+                                        <li class="text-danger d-flex align-items-center gap-2 mb-2 mt-2">
+                                            <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                            Aucun média d'illustration
+                                        </li>
+
+                                    {% endif %}
+                                    {% if this.trace.description is empty or this.trace.description is null %}
+                                        <li class="text-danger d-flex align-items-center gap-2 mb-2 mt-2">
+                                            <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                            Aucun argumentaire
+                                        </li>
+
+                                    {% endif %}
+                                    {% if this.trace.contexte is empty or this.trace.contexte is null %}
+                                        <li class="text-danger d-flex align-items-center gap-2 mb-2 mt-2">
+                                            <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                            Pas de contexte renseigné
+                                        </li>
+
+                                    {% endif %}
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-competences">
@@ -109,26 +112,35 @@
                              aria-labelledby="flush-heading{{ this.trace.id }}"
                              data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body" style="padding: 0">
-                                {% for validation in this.trace.validations %}
-                                    <div class="card-competences d-flex justify-content-between align-items-center">
-                                        {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-                                            <small><span
-                                                        class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
-                                            </small><br>
-                                        {% else %}
-                                            <small><span
-                                                        class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
-                                            </small>
-                                        {% endif %}
-                                        <span>
+                                {% if this.trace.validations is empty %}
+                                    <div class="d-flex mb-2 mt-2 justify-content-center">
+                                    <p class="text-danger d-flex align-items-center gap-2 ">
+                                        <twig:ux:icon name="bi:exclamation-octagon" width="15px" height="auto"/>
+                                        Aucune compétence liée
+                                    </p>
+                                    </div>
+                                {% else %}
+                                    {% for validation in this.trace.validations %}
+                                        <div class="card-competences d-flex justify-content-between align-items-center">
+                                            {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
+                                                <small><span
+                                                            class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
+                                                </small><br>
+                                            {% else %}
+                                                <small><span
+                                                            class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
+                                                </small>
+                                            {% endif %}
+                                            <span>
                                         {% if validation.etat == 0 %} 0
                                         {% elseif validation.etat == 1 %} 1
                                         {% elseif validation.etat == 2 %} 2
                                         {% elseif validation.etat == 3 %} 3
                                         {% endif %}
                                         </span>
-                                    </div>
-                                {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -141,9 +153,39 @@
                 <a href="{{ path('app_trace_edit', {'id': this.trace.id}) }}">
                     <button class="btn btn-secondary text-uppercase">Modifier</button>
                 </a>
-                <a href="{{ path('app_trace_delete', {'id': this.trace.id}) }}">
-                    <button class="btn btn-secondary text-uppercase">Supprimer</button>
-                </a>
+                <button class="btn btn-secondary text-uppercase" data-bs-toggle="modal"
+                        data-bs-target="#delete{{ this.trace.id }}Modal">Supprimer
+                </button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="delete{{ this.trace.id }}Modal" tabindex="-1"
+                 aria-labelledby="delete{{ this.trace.id }}ModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="delete{{ this.trace.id }}ModalLabel">Supprimer une
+                                trace</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex flex-column align-items-center gap-4">
+                            <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
+                            <p class="text-danger">Attention, cette action est irréversible !</p>
+
+                            <p>
+                                La trace "{{ this.trace.libelle }}" va être supprimée. Êtes-vous sûr de vouloir
+                                continuer ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <a href="{{ path('app_trace_delete', {'id': this.trace.id}) }}">
+                                <button type="button" class="btn btn-primary">Confirmer</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

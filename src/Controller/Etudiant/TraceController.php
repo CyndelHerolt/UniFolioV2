@@ -570,7 +570,8 @@ class TraceController extends BaseController
             }
         }
 
-        return $this->redirectToRoute('app_trace_edit', ['id' => $trace->getId()]);
+        $this->addFlash('success', 'Trace modifiée avec succès');
+        return $this->redirectToRoute('app_biblio_traces');
     }
 
     #[Route('/trace/delete/{id}', name: 'app_trace_delete')]

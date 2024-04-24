@@ -1,6 +1,6 @@
 <div{{ attributes }}>
     <div class="d-flex">
-        <button class="btn btn-secondary-color text-uppercase m-4" data-bs-toggle="modal"
+        <button class="btn btn-secondary text-uppercase m-4" data-bs-toggle="modal"
                 data-bs-target="#staticBackdropDelete">
             Supprimer les portfolios sélectionnés
         </button>
@@ -19,9 +19,9 @@
                         <p style="color: red">Attention, cette action est irréversible !</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler
                         </button>
-                        <button class="btn btn-primary-color"
+                        <button class="btn btn-primary"
                                 data-action="live#action"
                                 data-action-name="deleteSelectedTraces"
                                 data-bs-dismiss="modal">
@@ -32,7 +32,7 @@
             </div>
         </div>
         <a href="{{ path('app_portfolio_univ_new') }}" class="m-4">
-            <button class="btn btn-secondary-color text-uppercase">
+            <button class="btn btn-secondary text-uppercase">
                 Créer un portfolio universitaire
             </button>
         </a>

@@ -57,9 +57,9 @@
                 {% if formType is null %}
                     <div class="types row p-2">
                         {% for type in typesTrace %}
-                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', type), 'step': 'editType'}) }}"
-                                    data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                    class="col-12 col-lg-2 p-3"
+                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', type), 'step': 'newType'}) }}"
+                               data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                               class="col-12 col-lg-2 p-3"
                                     {% if selectedTraceType == constant('CLASS_NAME', type) %}
                                         style="background-color: #f8f9fa;"
                                     {% endif %}
@@ -100,22 +100,22 @@
             </div>
         </div>
         <hr>
-        <button type="submit" class="btn btn-primary-color text-uppercase">Enregistrer</button>
+        <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
         <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': page.id, 'edit': false}) }}">
-            <button class="btn btn-secondary-color text-uppercase">Annuler</button>
+            <button class="btn btn-secondary text-uppercase">Annuler</button>
         </a>
         {{ form_end(form) }}
     </div>
+    <script>
+        // Initialisation de flatpickr sur l'élément dateRealisation
+        flatpickr("#trace_abstract_dateRealisation", {
+            plugins: [monthSelectPlugin({
+                shorthand: true, // true for 12/2020, false for December 2020
+                dateFormat: "m-Y", // see https://flatpickr.js.org/formatting/
+                altFormat: "F Y",
+            })],
+            locale: "fr",
+        });
+    </script>
 </turbo-frame>
 
-<script>
-    // Initialisation de flatpickr sur l'élément dateRealisation
-    flatpickr("#trace_abstract_dateRealisation", {
-        plugins: [monthSelectPlugin({
-            shorthand: true, // true for 12/2020, false for December 2020
-            dateFormat: "m-Y", // see https://flatpickr.js.org/formatting/
-            altFormat: "F Y",
-        })],
-        locale: "fr",
-    });
-</script>

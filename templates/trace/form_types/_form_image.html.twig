@@ -8,11 +8,11 @@
                     {% if trace.contenu is not empty and trace.type == 'image' %}
                         data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
                     {% else %}
-                        href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'editType'}) }}"
+                        href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'newType'}) }}"
                     {% endif %}
                 {% elseif 'new' in app.request.uri %}
                     href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
-                {% elseif 'edit' in app.request.uri %}
+                {% elseif 'trace/edit' in app.request.uri %}
                     {% if trace.contenu is not empty and trace.type == 'image' %}
                         data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
                     {% else %}
@@ -56,7 +56,7 @@
                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accepter
                                         </button>
                                     </a>
-                                {% elseif 'edit' in app.request.uri %}
+                                {% elseif 'trace/edit' in app.request.uri %}
                                     <a href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                                        class="flex-grow-0" style="border: none;">
                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
@@ -70,7 +70,7 @@
                 </div>
             {% endfor %}
         </div>
-        {% if '/edit' in app.request.uri and trace.type == 'image' %}
+        {% if 'trace/edit' in app.request.uri and trace.type == 'image' %}
             <div class="galerie d-flex flex-wrap justify-content-evenly">
                 {% for data in trace.contenu %}
                     <div class="image_trace_div d-flex flex-column m-4 col-5">

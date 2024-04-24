@@ -550,8 +550,6 @@ class PortfolioUnivController extends BaseController
             case 'saveTrace':
                 $data = $request->request->all();
                 $files = $request->files->all();
-                dump($files);
-
                 $formDatas = $request->request->all()['trace_abstract'];
 
                 $etudiant = $this->getUser()->getEtudiant();
@@ -559,71 +557,46 @@ class PortfolioUnivController extends BaseController
 
                 $trace = new Trace();
 
-                if (isset($files['trace_image']) && !isset($data['img'])) {
-                    $contenu = $files['trace_image']['contenu'];
-                    $contenu = $this->traceImage->sauvegarde($contenu, null);
-                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-                        return is_string($item);
-                    });
-                    $trace->setType($this->traceImage::TYPE);
-                } elseif (isset($data['img']) && !isset($files['trace_image'])) {
-                    $trace->setContenu($data['img']);
-                    $trace->setType($this->traceImage::TYPE);
-                } elseif (isset($data['img']) && isset($files['trace_image'])) {
-                    $contenu = $files['trace_image']['contenu'];
-                    $contenu = $this->traceImage->sauvegarde($contenu, null);
-                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-                        return is_string($item);
-                    });
-                    $contenu['contenu'] = array_merge($contenu['contenu'], $data['img']);
-                    $trace->setType($this->traceImage::TYPE);
-                } elseif (isset($data['trace_lien'])) {
+                if (isset($data['trace_lien'])) {
                     $contenu = $data['trace_lien']['contenu'];
-                    // si une entrée est vide, on la supprime
-                    $contenu = array_filter($contenu, function ($item) {
-                        return $item !== '';
-                    });
                     $contenu = $this->traceLien->sauvegarde($contenu, null);
                     $trace->setType($this->traceLien::TYPE);
-                } elseif (isset($files['trace_pdf']) && !isset($data['pdf'])) {
-                    $contenu = $files['trace_pdf']['contenu'];
-                    $contenu = $this->tracePdf->sauvegarde($contenu, null);
+                } elseif (isset($files['trace_image'])) {
+                    $contenu = $files['trace_image']['contenu'];
+                    $contenu = $this->traceImage->sauvegarde($contenu, null);
                     $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
                         return is_string($item);
                     });
-                    $trace->setType($this->tracePdf::TYPE);
-                } elseif (isset($data['pdf']) && !isset($files['trace_pdf'])) {
-                    $trace->setContenu($data['pdf']);
-                    $trace->setType($this->tracePdf::TYPE);
-                } elseif (isset($data['pdf']) && isset($files['trace_pdf'])) {
-                    $contenu = $files['trace_pdf']['contenu'];
-                    $contenu = $this->tracePdf->sauvegarde($contenu, null);
-                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-                        return is_string($item);
-                    });
-                    $contenu['contenu'] = array_merge($contenu['contenu'], $data['pdf']);
-                    $trace->setType($this->tracePdf::TYPE);
+                    $trace->setType($this->traceImage::TYPE);
                 } elseif (isset($data['trace_video'])) {
                     $contenu = $data['trace_video']['contenu'];
-                    // si une entrée est vide, on la supprime
-                    $contenu = array_filter($contenu, function ($item) {
-                        return $item !== '';
-                    });
                     $contenu = $this->traceVideo->sauvegarde($contenu, null);
                     $trace->setType($this->traceVideo::TYPE);
-                } else {
-                    $trace->setContenu([]);
+                } elseif (isset($files['trace_pdf'])) {
+                    $contenu = $files['trace_pdf']['contenu'];
+                    $contenu = $this->tracePdf->sauvegarde($contenu, null);
+                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                        return is_string($item);
+                    });
+                    $trace->setType($this->tracePdf::TYPE);
                 }
 
-                if ($contenu['success'] === false) {
-                    dump('sauvegarde impossible');
+                if (isset($contenu) && $contenu['success'] === false) {
+                    $this->addFlash('danger', $contenu['error']);
+                    return $this->redirectToRoute('app_trace_new');
                 } else {
-                    $trace->setContenu($contenu['contenu']);
+                    if (isset($contenu)) {
+                        $trace->setContenu($contenu['contenu']);
+                    }
                     $trace->setBibliotheque($bibliotheque);
                     $trace->setDateCreation(new \DateTime());
                     $trace->setLibelle($formDatas['libelle']);
                     $trace->setContexte($formDatas['contexte']);
-                    $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+                    if (!empty($formDatas['dateRealisation'])) {
+                        $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+                    } else {
+                        $trace->setDateRealisation(null);
+                    }
                     $trace->setLegende($formDatas['legende']);
                     $trace->setDescription($formDatas['description']);
                     $this->traceRepository->save($trace, true);
@@ -631,46 +604,48 @@ class PortfolioUnivController extends BaseController
                     // récupérer les compétences stockés dans la session à la construction du formulaire
                     $competences = $request->getSession()->get('competences');
 
-                    // récupérer les compétences qui ont été sélectionnées dans le formulaire
-                    $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
+                    if (isset($request->request->all()['trace_abstract']['competences']) && !empty($request->request->all()['trace_abstract']['competences'])) {
+                        // récupérer les compétences qui ont été sélectionnées dans le formulaire
+                        $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
 
-                    $selectedCompetences = [];
+                        $selectedCompetences = [];
 
-                    $competences = array_flip($competences);
+                        $competences = array_flip($competences);
 
-                    foreach ($submittedCompetenceIds as $id) {
-                        // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
-                        if (isset($competences[$id])) {
-                            $selectedCompetences[$id] = $competences[$id];
+                        foreach ($submittedCompetenceIds as $id) {
+                            // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
+                            if (isset($competences[$id])) {
+                                $selectedCompetences[$id] = $competences[$id];
+                            }
                         }
-                    }
 
-                    $apcNiveaux = [];
-                    $apcApprentissageCritiques = [];
+                        $apcNiveaux = [];
+                        $apcApprentissageCritiques = [];
 
 
-                    foreach ($selectedCompetences as $id => $libelle) {
-                        // vérifier si un ApcNiveau existe avec l'id et le libellé
-                        $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
-                        if ($apcNiveau) {
-                            $apcNiveaux[] = $apcNiveau;
-                            $validation = new Validation();
-                            $validation->setApcNiveau($apcNiveau);
-                            $validation->setTrace($trace);
-                            $validation->setEtat(0);
-                            $validation->setDateCreation(new \DateTime());
-                            $this->validationRepository->save($validation, true);
-                        } else {
-                            // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
-                            $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
-                            if ($apcApprentissageCritique) {
-                                $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                        foreach ($selectedCompetences as $id => $libelle) {
+                            // vérifier si un ApcNiveau existe avec l'id et le libellé
+                            $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                            if ($apcNiveau) {
+                                $apcNiveaux[] = $apcNiveau;
                                 $validation = new Validation();
-                                $validation->setApcApprentissageCritique($apcApprentissageCritique);
+                                $validation->setApcNiveau($apcNiveau);
                                 $validation->setTrace($trace);
                                 $validation->setEtat(0);
                                 $validation->setDateCreation(new \DateTime());
                                 $this->validationRepository->save($validation, true);
+                            } else {
+                                // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
+                                $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                                if ($apcApprentissageCritique) {
+                                    $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                                    $validation = new Validation();
+                                    $validation->setApcApprentissageCritique($apcApprentissageCritique);
+                                    $validation->setTrace($trace);
+                                    $validation->setEtat(0);
+                                    $validation->setDateCreation(new \DateTime());
+                                    $this->validationRepository->save($validation, true);
+                                }
                             }
                         }
                     }

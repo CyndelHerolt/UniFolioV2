@@ -5,7 +5,11 @@
                 <a data-turbo-action="replace" data-turbo-frame="trace-form-content"
                    class="col-12 col-lg-2 p-3 {% if selectedTraceType == constant('CLASS_NAME', typeTrace) %}active{% endif %}"
                         {% if 'portfolio' in app.request.uri %}
-                            href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace), 'step': 'newType'}) }}"
+                            {% if trace.contenu is not empty and trace.type == 'image' %}
+                                data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
+                            {% else %}
+                                href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'editType'}) }}"
+                            {% endif %}
                         {% elseif 'new' in app.request.uri %}
                             href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
                         {% elseif 'edit' in app.request.uri %}
@@ -45,8 +49,11 @@
                             <div class="modal-footer d-flex gap-3">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                                 {% if 'portfolio' in app.request.uri %}
-                                    <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace), 'step': 'newType'}) }}"
-                                       class="flex-grow-0" style="border: none;"><button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accepter</button></a>
+                                    <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'editType'}) }}"
+                                       class="flex-grow-0" style="border: none;">
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accepter
+                                        </button>
+                                    </a>
                                 {% elseif 'edit' in app.request.uri %}
                                     <a href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                                        class="flex-grow-0" style="border: none;">

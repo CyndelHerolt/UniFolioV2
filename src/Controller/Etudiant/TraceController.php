@@ -123,6 +123,7 @@ class TraceController extends BaseController
         } else {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcApprentissageCritiques]);
         }
+
         // Vérifier si un type de trace est stocké dans la session
         //  $selectedTraceType = $request->getSession()->get('selected_trace_type');
         $selectedTraceType = $request->query->get('type', null);
@@ -146,6 +147,7 @@ class TraceController extends BaseController
             }
             $groupedApprentissageCritiques[$niveauId]['critiques'][] = $ac;
         }
+
 
         return $this->render('trace/form.html.twig', [
             'form' => $form->createView(),
@@ -217,10 +219,6 @@ class TraceController extends BaseController
             });
             $trace->setType($this->tracePdf::TYPE);
         }
-//        else {
-//            $this->addFlash('danger', 'Type de trace inconnu');
-//            return $this->redirectToRoute('app_trace_new');
-//        }
 
         if (isset($contenu) && $contenu['success'] === false) {
             $this->addFlash('danger', $contenu['error']);
@@ -298,6 +296,7 @@ class TraceController extends BaseController
     #[Route('/trace/edit/{id}', name: 'app_trace_edit')]
     public function edit(int $id, Request $request): Response
     {
+        $origin = $request->query->get('origin', null);
         $trace = $this->traceRepository->find($id);
         $typesTrace = $this->traceRegistry->getTypeTraces();
         $user = $this->getUser()->getEtudiant();
@@ -409,11 +408,12 @@ class TraceController extends BaseController
             'apcNiveaux' => $apcNiveaux ?? null,
             'apcApprentissageCritiques' => $apcApprentissageCritiques ?? null,
             'groupedApprentissageCritiques' => $groupedApprentissageCritiques ?? null,
+            'origin' => $origin ?? null,
         ]);
     }
 
     #[Route('/trace/{id}/sauvegarde', name: 'app_trace_edit_sauvegarde')]
-    public function sauvegardeEditTrace(?int $id, Request $request): Response
+    public function sauvegardeEditTrace(?int $id, Request $request, ?string $origin): Response
     {
         $data = $request->request->all();
         $files = $request->files->all();
@@ -579,7 +579,12 @@ class TraceController extends BaseController
         }
 
         $this->addFlash('success', 'Trace modifiée avec succès');
-        return $this->redirectToRoute('app_biblio_traces');
+        $origin = $request->query->get('origin', null);
+        if ($origin !== null && $origin === "show") {
+            return $this->redirectToRoute('app_trace_show', ['id' => $id]);
+        } else {
+            return $this->redirectToRoute('app_biblio_traces');
+        }
     }
 
     #[Route('/trace/delete/{id}', name: 'app_trace_delete')]

@@ -76,7 +76,7 @@ class TraceAbstractType extends AbstractType
             ->add('libelle', TextType::class, [
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Veuillez saisir un titre',
+                        'message' => 'Vous devez nommer votre trace pour pouvoir l\'enregistrer',
                     ]),
                     new Length([
                         'max' => 100,
@@ -97,9 +97,6 @@ class TraceAbstractType extends AbstractType
             //----------------------------------------------------------------
             ->add('legende', TextType::class, [
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir une légende',
-                    ]),
                     new Length([
                         'max' => 100,
                         'maxMessage' => 'La légende ne peut pas dépasser 100 caractères',
@@ -113,11 +110,6 @@ class TraceAbstractType extends AbstractType
             ])
             //----------------------------------------------------------------
             ->add('dateRealisation', DateType::class, [
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir une date',
-                    ])
-                ],
                 'format' => 'MM-yyyy',
                 'widget' => 'single_text',
                 'label' => 'Date de réalisation',
@@ -129,11 +121,6 @@ class TraceAbstractType extends AbstractType
             ])
             //----------------------------------------------------------------
             ->add('contexte', TextType::class, [
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir un contexte',
-                    ]),
-                ],
                 'label' => 'Contexte',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => "form-control", 'placeholder' => '...'],
@@ -142,12 +129,7 @@ class TraceAbstractType extends AbstractType
             ])
             //----------------------------------------------------------------
             ->add('description', TextareaType::class, [
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Veuillez saisir votre commentaire',
-                    ]),
-                ],
-                'label' => 'Commentaire',
+                'label' => 'Argumentaire',
                 'label_attr' => ['class' => 'form-label'],
                 'attr' => ['class' => 'tinymce form-control', 'placeholder' => '...', 'rows' => 15, 'id' => 'trace_abstract_description'],
                 'help' => 'Commentez votre trace pour justifier sa pertinence',
@@ -155,12 +137,6 @@ class TraceAbstractType extends AbstractType
                 'required' => false,
             ])
             ->add('competences', ChoiceType::class, [
-                'constraints' => [
-                    new Count([
-                        'min' => 1,
-                        'minMessage' => 'Veuillez sélectionner au moins une compétence',
-                    ]),
-                ],
                 'choices' => $competences, // Use the array with libelle as keys
                 'label_attr' => ['class' => 'form-check-label'],
                 'choice_attr' => function ($choice, $key, $value) {

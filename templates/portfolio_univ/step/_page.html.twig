@@ -1,7 +1,7 @@
 <turbo-frame id="portfolio-form">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">Portfolio</a>
+            <a class="nav-link" aria-current="page" href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'portfolio'}) }}">Portfolio</a>
         </li>
 
         {% if pages is not null %}
@@ -37,7 +37,7 @@
             <div class="col-12 p-2">
                 {{ form_row(form.description) }}
             </div>
-            <button type="submit" class="btn btn-primary-color text-uppercase">Enregistrer les modifications
+            <button type="submit" class="btn btn-primary text-uppercase">Enregistrer les modifications
             </button>
             {{ form_end(form) }}
         {% else %}
@@ -47,7 +47,7 @@
             </div>
             <div class="col-1 p-2 d-flex align-items-center">
                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': page.id, 'edit': true}) }}"
-                   class="btn btn-primary-color text-uppercase">Modifier</a>
+                   class="btn btn-primary text-uppercase">Modifier</a>
             </div>
         {% endif %}
     </div>
@@ -55,7 +55,7 @@
     <div class="row">
         <div class="col-12">
             <div class="btn_group">
-                <button class="btn btn-primary-color text-uppercase m-2" data-bs-toggle="modal"
+                <button class="btn btn-primary text-uppercase m-2" data-bs-toggle="modal"
                         data-bs-target="#staticBackdropAddTraces">
                     Ajouter des traces
                 </button>
@@ -88,7 +88,7 @@
                                             <div class="col-12 d-flex flex-column align-items-center">
                                                 <p class="text-center">Aucune trace disponible.</p>
                                                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
-                                                    <button class="btn btn-secondary-color text-uppercase m-2"
+                                                    <button class="btn btn-secondary text-uppercase m-2"
                                                             data-bs-dismiss="modal">
                                                         Créer une trace
                                                     </button>
@@ -97,11 +97,11 @@
                                         {% endif %}
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                             Annuler
                                         </button>
                                         {% if traces is not empty %}
-                                            <button type="submit" class="btn btn-primary-color" data-bs-dismiss="modal">
+                                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
                                                 Valider
                                             </button>
                                         {% endif %}
@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
-                    <button class="btn btn-primary-color text-uppercase m-2">
+                    <button class="btn btn-primary text-uppercase m-2">
                         Créer une trace
                     </button>
                 </a>
@@ -170,10 +170,10 @@
                                             <p style="color: red">La trace ne sera pas supprimée mais seulement retirée du portfolio.</p>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler
                                             </button>
                                             <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}">
-                                                <button class="btn btn-primary-color" data-bs-dismiss="modal">
+                                                <button class="btn btn-primary" data-bs-dismiss="modal">
                                                     Valider
                                                 </button>
                                             </a>

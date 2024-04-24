@@ -145,12 +145,12 @@
                             <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'editTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer">
                                 <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/>
                             </a>
-                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">
+                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'showTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">
                                 <twig:ux:icon name="bi:eye-fill" width="15" height="auto"/>
                             </a>
-                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="auto-évaluation">
-                                <twig:ux:icon name="bi:sliders" width="15" height="auto"/>
-                            </a>
+{#                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="auto-évaluation">#}
+{#                                <twig:ux:icon name="bi:sliders" width="15" height="auto"/>#}
+{#                            </a>#}
                             <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}" class="delete-link" title="supprimer" data-bs-toggle="modal"
                                data-bs-target="#staticBackdropDelete">
                                 <twig:ux:icon name="bi:trash-fill" width="15" height="auto"/>

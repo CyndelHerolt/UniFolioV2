@@ -66,7 +66,7 @@
             {% endfor %}
         </div>
 
-        {% if 'trace/edit' in app.request.uri and trace.type == 'pdf' %}
+        {% if '/edit' in app.request.uri and trace.type == 'pdf' %}
             {% for data in trace.contenu %}
                 <div class="pdf_trace_div">
                     <p>Pdf déjà dans la DB</p>

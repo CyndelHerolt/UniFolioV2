@@ -70,7 +70,7 @@
                 </div>
             {% endfor %}
         </div>
-        {% if 'trace/edit' in app.request.uri and trace.type == 'image' %}
+        {% if '/edit' in app.request.uri and trace.type == 'image' %}
             <div class="galerie d-flex flex-wrap justify-content-evenly">
                 {% for data in trace.contenu %}
                     <div class="image_trace_div d-flex flex-column m-4 col-5">

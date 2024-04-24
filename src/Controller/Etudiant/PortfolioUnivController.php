@@ -437,6 +437,13 @@ class PortfolioUnivController extends BaseController
 
                 break;
 
+            case 'showTrace':
+                $trace = $this->traceRepository->find($request->query->get('trace'));
+                $page = $this->pageRepository->find($request->query->get('page'));
+                $portfolio = $page->getPortfolio();
+                $form = $this->createForm(PortfolioUnivType::class, $portfolio);
+                break;
+
             case 'newTrace' :
                 $page = $this->pageRepository->find($request->query->get('page'));
 

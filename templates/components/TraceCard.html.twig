@@ -6,15 +6,20 @@
         <div class="card-body">
             <div class="card-infos-min border-bottom">
                 <small>Publiée le : {{ this.trace.dateCreation|date("d-m-Y") }}</small>
-{#                •#}
-                <small>{{ this.trace.contenu|length }}
-                {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+                <small>
+                    {% if this.trace.type is null %}
+                        Type non défini
+                    {% else %}
+                        {{ this.trace.contenu|length }}
+                        {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+                    {% endif %}
                 </small>
             </div>
             <div class="card-competences">
                 {% for validation in this.trace.validations %}
                     {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-                        <small><span class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
+                        <small><span
+                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
                         </small><br>
                     {% else %}
                         <small><span
@@ -23,6 +28,14 @@
                     {% endif %}
                 {% endfor %}
             </div>
+            {% if this.trace.validations is empty or this.trace.contenu is empty or this.trace.contenu is null or this.trace.description is empty or this.trace.description is null or this.trace.contexte is empty or this.trace.contexte is null %}
+                <div class="d-flex justify-content-center">
+                    <small class="text-danger d-flex align-items-center gap-2">
+                        <twig:ux:icon name="bi:exclamation-triangle-fill" width="15px" height="auto"/>
+                        Trace incomplète
+                    </small>
+                </div>
+            {% endif %}
             <div class="d-flex justify-content-center m-3">
                 <a href="{{ path('app_trace_show', {'id': this.trace.id}) }}" class="btn btn-primary text-uppercase">Voir</a>
             </div>

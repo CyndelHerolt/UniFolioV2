@@ -1,5 +1,12 @@
 <div{{ attributes }}>
-    <h2>{{ this.trace.libelle }}</h2>
+    <div class="d-flex align-items-center justify-content-between">
+        <h2>{{ this.trace.libelle }}</h2>
+        <a href="{{ path('app_trace_edit', {'id': this.trace.id, 'origin': 'show'}) }}">
+            <button class="btn btn-tertiary">
+            Modifier
+            </button>
+        </a>
+    </div>
     <div class="card-infos-min border-bottom">
         <small>Publiée le : {{ this.trace.dateCreation|date("d-m-Y") }}</small>
         {% if this.trace.type is null %}
@@ -34,31 +41,32 @@
             {% endif %}
         {% else %}
             <div class="row d-flex justify-content-center">
-                <p class="text-center text-danger">Cette trace n'a pas de type, elle ne contient donc aucun média d'illustration.</p>
+                <p class="text-center text-danger">Cette trace n'a pas de type, elle ne contient donc aucun média
+                    d'illustration.</p>
             </div>
         {% endif %}
         <div class="row" style="margin: 50px 0">
             <div class="border-end" style="width: 150px; margin-top: 15px">
                 {% if this.trace.validations is not empty %}
-                {% for validation in this.trace.validations %}
-                    {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-                        <small><span
-                                    class="ue {{ validation.apcNiveau.apcCompetence.couleur }} p-2">{{ validation.apcNiveau.apcCompetence.nomCourt }}</span>
-                        </small><br>
-                    {% else %}
-                        <small><span
-                                    class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} </span>
-                        </small>
-                    {% endif %}
-                    <br>
-                {% endfor %}
+                    {% for validation in this.trace.validations %}
+                        {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
+                            <small><span
+                                        class="ue {{ validation.apcNiveau.apcCompetence.couleur }} p-2">{{ validation.apcNiveau.apcCompetence.nomCourt }}</span>
+                            </small><br>
+                        {% else %}
+                            <small><span
+                                        class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} </span>
+                            </small>
+                        {% endif %}
+                        <br>
+                    {% endfor %}
                 {% else %}
                     <small class="text-danger">Aucune compétence associée</small>
                 {% endif %}
             </div>
             <div class="col-lg-7 col-12">
                 {% if this.trace.description is not null and this.trace.description is not empty %}
-                {{ this.trace.description|raw }}
+                    {{ this.trace.description|raw }}
                 {% else %}
                     <p class="text-danger">Aucun argumentaire pour cette trace</p>
                 {% endif %}
@@ -66,7 +74,7 @@
             <div class="col-lg-3 col-12 d-flex flex-column align-items-end">
                 <div class="d-flex flex-column" style="max-width: 70%">
                     {% if this.trace.legende is not null and this.trace.legende is not empty %}
-                    <span class="text-muted mt-1">
+                        <span class="text-muted mt-1">
                         {{ this.trace.legende }}
                     </span>
                     {% else %}

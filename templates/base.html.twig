@@ -34,9 +34,9 @@
 <main class="min-vh-100">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert {% if label is defined %}alert-{{ label }}{% else %}alert-warning{% endif %} alert-dismissible fade show alert-popup"
+            <div class="alert {% if label is defined %}alert-{{ label }}{% else %}alert-warning{% endif %} alert-dismissible fade show alert-popup w-100"
                  role="alert"
-                style="z-index: 10">
+                style="z-index: 10; margin: 10px 0; position: absolute;">
                 {{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>

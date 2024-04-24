@@ -404,6 +404,21 @@ class PortfolioUnivController extends BaseController
                     $formType = $this->createForm($formType, $trace);
                     $formType = $formType->createView();
                     $typeTrace = $selectedTraceType::TYPE;
+                } elseif ($trace->getType() !== null) {
+                    $selectedTraceType = $trace->getType();
+                    if ($selectedTraceType === 'image') {
+                        $selectedTraceType = $this->traceImage::CLASS_NAME;
+                    } elseif ($selectedTraceType === 'lien') {
+                        $selectedTraceType = $this->traceLien::CLASS_NAME;
+                    } elseif ($selectedTraceType === 'video') {
+                        $selectedTraceType = $this->traceVideo::CLASS_NAME;
+                    } elseif ($selectedTraceType === 'pdf') {
+                        $selectedTraceType = $this->tracePdf::CLASS_NAME;
+                    }
+                    $formType = $selectedTraceType::FORM;
+                    $formType = $this->createForm($formType, $trace);
+                    $formType = $formType->createView();
+                    $typeTrace = $selectedTraceType::TYPE;
                 } else {
                     $formType = null;
                 }
@@ -518,11 +533,23 @@ class PortfolioUnivController extends BaseController
 
                 return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit, 'type' => $type]);
 
+            case 'editType':
+                $type = $request->query->get('type');
+                $page = $this->pageRepository->find($request->query->get('page'));
+                $trace = $this->traceRepository->find($request->query->get('trace'));
+                $trace->setContenu([]);
+                $this->traceRepository->save($trace, true);
+
+                // Stocker le type de trace dans la session
+                $request->getSession()->set('selected_trace_type', $type);
+
+                $step = 'editTrace';
+
+                return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit, 'type' => $type, 'trace' => $trace->getId()]);
+
             case 'saveTrace':
                 $data = $request->request->all();
                 $files = $request->files->all();
-                dump($files);
-
                 $formDatas = $request->request->all()['trace_abstract'];
 
                 $etudiant = $this->getUser()->getEtudiant();
@@ -552,19 +579,24 @@ class PortfolioUnivController extends BaseController
                         return is_string($item);
                     });
                     $trace->setType($this->tracePdf::TYPE);
-                } else {
-                    dump('type inconnnu');
                 }
 
-                if ($contenu['success'] === false) {
-                    dump('sauvegarde impossible');
+                if (isset($contenu) && $contenu['success'] === false) {
+                    $this->addFlash('danger', $contenu['error']);
+                    return $this->redirectToRoute('app_trace_new');
                 } else {
-                    $trace->setContenu($contenu['contenu']);
+                    if (isset($contenu)) {
+                        $trace->setContenu($contenu['contenu']);
+                    }
                     $trace->setBibliotheque($bibliotheque);
                     $trace->setDateCreation(new \DateTime());
                     $trace->setLibelle($formDatas['libelle']);
                     $trace->setContexte($formDatas['contexte']);
-                    $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+                    if (!empty($formDatas['dateRealisation'])) {
+                        $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+                    } else {
+                        $trace->setDateRealisation(null);
+                    }
                     $trace->setLegende($formDatas['legende']);
                     $trace->setDescription($formDatas['description']);
                     $this->traceRepository->save($trace, true);
@@ -572,46 +604,48 @@ class PortfolioUnivController extends BaseController
                     // récupérer les compétences stockés dans la session à la construction du formulaire
                     $competences = $request->getSession()->get('competences');
 
-                    // récupérer les compétences qui ont été sélectionnées dans le formulaire
-                    $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
+                    if (isset($request->request->all()['trace_abstract']['competences']) && !empty($request->request->all()['trace_abstract']['competences'])) {
+                        // récupérer les compétences qui ont été sélectionnées dans le formulaire
+                        $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
 
-                    $selectedCompetences = [];
+                        $selectedCompetences = [];
 
-                    $competences = array_flip($competences);
+                        $competences = array_flip($competences);
 
-                    foreach ($submittedCompetenceIds as $id) {
-                        // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
-                        if (isset($competences[$id])) {
-                            $selectedCompetences[$id] = $competences[$id];
+                        foreach ($submittedCompetenceIds as $id) {
+                            // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
+                            if (isset($competences[$id])) {
+                                $selectedCompetences[$id] = $competences[$id];
+                            }
                         }
-                    }
 
-                    $apcNiveaux = [];
-                    $apcApprentissageCritiques = [];
+                        $apcNiveaux = [];
+                        $apcApprentissageCritiques = [];
 
 
-                    foreach ($selectedCompetences as $id => $libelle) {
-                        // vérifier si un ApcNiveau existe avec l'id et le libellé
-                        $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
-                        if ($apcNiveau) {
-                            $apcNiveaux[] = $apcNiveau;
-                            $validation = new Validation();
-                            $validation->setApcNiveau($apcNiveau);
-                            $validation->setTrace($trace);
-                            $validation->setEtat(0);
-                            $validation->setDateCreation(new \DateTime());
-                            $this->validationRepository->save($validation, true);
-                        } else {
-                            // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
-                            $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
-                            if ($apcApprentissageCritique) {
-                                $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                        foreach ($selectedCompetences as $id => $libelle) {
+                            // vérifier si un ApcNiveau existe avec l'id et le libellé
+                            $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                            if ($apcNiveau) {
+                                $apcNiveaux[] = $apcNiveau;
                                 $validation = new Validation();
-                                $validation->setApcApprentissageCritique($apcApprentissageCritique);
+                                $validation->setApcNiveau($apcNiveau);
                                 $validation->setTrace($trace);
                                 $validation->setEtat(0);
                                 $validation->setDateCreation(new \DateTime());
                                 $this->validationRepository->save($validation, true);
+                            } else {
+                                // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
+                                $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                                if ($apcApprentissageCritique) {
+                                    $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                                    $validation = new Validation();
+                                    $validation->setApcApprentissageCritique($apcApprentissageCritique);
+                                    $validation->setTrace($trace);
+                                    $validation->setEtat(0);
+                                    $validation->setDateCreation(new \DateTime());
+                                    $this->validationRepository->save($validation, true);
+                                }
                             }
                         }
                     }
@@ -629,6 +663,179 @@ class PortfolioUnivController extends BaseController
                 $edit = false;
 
                 return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
+
+            case 'saveEditTrace':
+                $data = $request->request->all();
+                $files = $request->files->all();
+                $formDatas = $request->request->all()['trace_abstract'];
+                $page = $this->pageRepository->find($request->query->get('page'));
+
+                $etudiant = $this->getUser()->getEtudiant();
+                $bibliotheque = $this->bibliothequeRepository->findOneBy(['etudiant' => $etudiant, 'actif' => true]);
+
+                $trace = $this->traceRepository->find($request->query->get('trace'));
+
+                if (isset($files['trace_image']) && !isset($data['img'])) {
+                    $contenu = $files['trace_image']['contenu'];
+                    $contenu = $this->traceImage->sauvegarde($contenu, null);
+                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                        return is_string($item);
+                    });
+                    $trace->setType($this->traceImage::TYPE);
+                } elseif (isset($data['img']) && !isset($files['trace_image'])) {
+                    $trace->setContenu($data['img']);
+                    $trace->setType($this->traceImage::TYPE);
+                } elseif (isset($data['img']) && isset($files['trace_image'])) {
+                    $contenu = $files['trace_image']['contenu'];
+                    $contenu = $this->traceImage->sauvegarde($contenu, null);
+                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                        return is_string($item);
+                    });
+                    $contenu['contenu'] = array_merge($contenu['contenu'], $data['img']);
+                    $trace->setType($this->traceImage::TYPE);
+                } elseif (isset($data['trace_lien'])) {
+                    $contenu = $data['trace_lien']['contenu'];
+                    // si une entrée est vide, on la supprime
+                    $contenu = array_filter($contenu, function ($item) {
+                        return $item !== '';
+                    });
+                    $contenu = $this->traceLien->sauvegarde($contenu, null);
+                    $trace->setType($this->traceLien::TYPE);
+                } elseif (isset($files['trace_pdf']) && !isset($data['pdf'])) {
+                    $contenu = $files['trace_pdf']['contenu'];
+                    $contenu = $this->tracePdf->sauvegarde($contenu, null);
+                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                        return is_string($item);
+                    });
+                    $trace->setType($this->tracePdf::TYPE);
+                } elseif (isset($data['pdf']) && !isset($files['trace_pdf'])) {
+                    $trace->setContenu($data['pdf']);
+                    $trace->setType($this->tracePdf::TYPE);
+                } elseif (isset($data['pdf']) && isset($files['trace_pdf'])) {
+                    $contenu = $files['trace_pdf']['contenu'];
+                    $contenu = $this->tracePdf->sauvegarde($contenu, null);
+                    $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+                        return is_string($item);
+                    });
+                    $contenu['contenu'] = array_merge($contenu['contenu'], $data['pdf']);
+                    $trace->setType($this->tracePdf::TYPE);
+                } elseif (isset($data['trace_video'])) {
+                    $contenu = $data['trace_video']['contenu'];
+                    // si une entrée est vide, on la supprime
+                    $contenu = array_filter($contenu, function ($item) {
+                        return $item !== '';
+                    });
+                    $contenu = $this->traceVideo->sauvegarde($contenu, null);
+                    $trace->setType($this->traceVideo::TYPE);
+                } else {
+                    $trace->setContenu([]);
+                }
+
+                if (isset($contenu) && $contenu['success'] === false) {
+                    $this->addFlash('danger', $contenu['error']);
+                    return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => 'editTrace', 'page' => $page->getId(), 'trace' => $trace->getId()]);
+                } else {
+                    if (isset($contenu)) {
+                        $trace->setContenu($contenu['contenu']);
+                    }
+                    $trace->setBibliotheque($bibliotheque);
+                    $trace->setDateCreation(new \DateTime());
+                    $trace->setLibelle($formDatas['libelle']);
+                    $trace->setContexte($formDatas['contexte']);
+                    if (!empty($formDatas['dateRealisation'])) {
+                        $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+                    } else {
+                        $trace->setDateRealisation(null);
+                    }
+                    $trace->setLegende($formDatas['legende']);
+                    $trace->setDescription($formDatas['description']);
+                    $this->traceRepository->save($trace, true);
+
+                    // récupérer les compétences stockés dans la session à la construction du formulaire
+                    $competences = $request->getSession()->get('competences');
+
+                    if (isset($request->request->all()['trace_abstract']['competences']) && !empty($request->request->all()['trace_abstract']['competences'])) {
+                        // récupérer les compétences qui ont été sélectionnées dans le formulaire
+                        $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
+
+                        // récupérer toutes les validations pour la trace actuelle
+                        $validations = $this->validationRepository->findBy(['trace' => $trace]);
+
+                        // parcourir chaque validation
+                        foreach ($validations as $validation) {
+                            // obtenir la compétence associée à la validation
+                            $competence = $validation->getApcNiveau() ?? $validation->getApcApprentissageCritique();
+
+                            // vérifier si la compétence a été déselectionnée
+                            if (!in_array($competence->getId(), $submittedCompetenceIds)) {
+                                // si la compétence a été déselectionnée, supprimer la validation
+                                $this->validationRepository->delete($validation, true);
+                            }
+                        }
+
+                        $selectedCompetences = [];
+
+                        $competences = array_flip($competences);
+
+                        foreach ($submittedCompetenceIds as $id) {
+                            // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
+                            if (isset($competences[$id])) {
+                                $selectedCompetences[$id] = $competences[$id];
+                            }
+                        }
+
+                        $apcNiveaux = [];
+                        $apcApprentissageCritiques = [];
+
+
+                        foreach ($selectedCompetences as $id => $libelle) {
+                            // vérifier si un ApcNiveau existe avec l'id et le libellé
+                            $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                            if ($apcNiveau) {
+                                // vérifier si une validation avec cette compétence existe déjà pour cette trace
+                                $existingValidation = $this->validationRepository->findOneBy(['trace' => $trace, 'apcNiveau' => $apcNiveau]);
+                                if (!$existingValidation) {
+                                    // si aucune validation existante n'est trouvée, créez une nouvelle validation
+                                    $validation = new Validation();
+                                    $validation->setApcNiveau($apcNiveau);
+                                    $validation->setTrace($trace);
+                                    $validation->setEtat(0);
+                                    $validation->setDateCreation(new \DateTime());
+                                    $this->validationRepository->save($validation, true);
+                                }
+                            } else {
+                                // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
+                                $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                                if ($apcApprentissageCritique) {
+                                    // vérifier si une validation avec cette compétence existe déjà pour cette trace
+                                    $existingValidation = $this->validationRepository->findOneBy(['trace' => $trace, 'apcApprentissageCritique' => $apcApprentissageCritique]);
+                                    if (!$existingValidation) {
+                                        // si aucune validation existante n'est trouvée, créez une nouvelle validation
+                                        $validation = new Validation();
+                                        $validation->setApcApprentissageCritique($apcApprentissageCritique);
+                                        $validation->setTrace($trace);
+                                        $validation->setEtat(0);
+                                        $validation->setDateCreation(new \DateTime());
+                                        $this->validationRepository->save($validation, true);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        $validations = $this->validationRepository->findBy(['trace' => $trace]);
+                        foreach ($validations as $validation) {
+                            $this->validationRepository->delete($validation, true);
+                        }
+                    }
+                }
+
+                $step = 'page';
+                $edit = false;
+
+//                break;
+                return $this->redirectToRoute('app_portfolio_univ_edit', ['id' => $portfolio->getId(), 'step' => $step, 'page' => $page->getId(), 'edit' => $edit]);
+
+
         }
 
         $pages = $portfolio->getPages();

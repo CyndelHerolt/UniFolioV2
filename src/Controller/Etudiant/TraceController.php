@@ -58,12 +58,11 @@ class TraceController extends BaseController
 
         // si un formulaire est soumis
         if ($request->isMethod('POST')) {
-            // on récupère les données du formulaire
             $data = $request->request->all();
             $files = $request->files->all();
 
-            if (isset($data['libelle'])) {
-                $trace->setLibelle($data['libelle']);
+            if (isset($data['trace_abstract']['libelle'])) {
+                $trace->setLibelle($data['trace_abstract']['libelle']);
             }
 
             $this->traceRepository->save($trace, true);

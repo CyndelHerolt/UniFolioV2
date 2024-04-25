@@ -3,18 +3,23 @@
     <turbo-frame id="trace-content">
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex gap-3 align-items-center">
-        {% if this.edit == false %}
-                <h2>{{ this.trace.libelle }}</h2>
-                <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': true}) }}">
-                    <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
-                </a>
-            {% else %}
-                <form method="post" class="d-flex gap-3">
-                    <input type="text" name="libelle" class="form-control" value="{{ this.trace.libelle }}">
-                    <button class="btn btn-success" type="submit"><twig:ux:icon name="bi:check" width="20px" height="auto" /></button>
-                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': false}) }}" class="btn btn-danger" type="submit"><twig:ux:icon name="bi:x" width="20px" height="auto" /></a>
-                </form>
-            {% endif %}
+                {% if this.edit == false %}
+                    <h2>{{ this.trace.libelle }}</h2>
+                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': true}) }}">
+                        <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
+                    </a>
+                {% else %}
+                    <form method="post" class="d-flex gap-3 align-items-center">
+                        {{ form_row(this.form.libelle) }}
+                        <button class="btn btn-success" type="submit" style="height: fit-content">
+                            <twig:ux:icon name="bi:check" width="20px" height="auto"/>
+                        </button>
+                        <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': false}) }}"
+                           class="btn btn-danger" style="height: fit-content">
+                            <twig:ux:icon name="bi:x" width="20px" height="auto"/>
+                        </a>
+                    </form>
+                {% endif %}
             </div>
         </div>
         <div class="card-infos-min border-bottom">

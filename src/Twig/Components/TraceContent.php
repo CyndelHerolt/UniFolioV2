@@ -13,6 +13,8 @@ final class TraceContent
 
     public ?array $preview = [];
 
+    public ?bool $edit;
+
     public function __construct(
         protected TraceRepository $traceRepository,
     )

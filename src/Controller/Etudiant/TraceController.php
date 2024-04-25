@@ -47,18 +47,46 @@ class TraceController extends BaseController
     }
 
     #[Route('/trace/show/{id}', name: 'app_trace_show')]
-    public function show(?int $id, Request $request): Response
+    public function show(?int $id, ?bool $edit, Request $request): Response
     {
+        $edit = $request->query->get('edit') ?? false;
+
         $trace = $this->traceRepository->find($id);
 
         $portfolio = $this->portfolioUnivRepository->findOneBy(['id' => $request->query->get('portfolio')]);
         $page = $this->pageRepository->findOneBy(['id' => $request->query->get('page')]);
 
+        // si un formulaire est soumis
+        if ($request->isMethod('POST')) {
+            // on récupère les données du formulaire
+            $data = $request->request->all();
+            $files = $request->files->all();
+
+            if (isset($data['libelle'])) {
+                $trace->setLibelle($data['libelle']);
+            }
+
+            $this->traceRepository->save($trace, true);
+        }
+
         return $this->render('trace/show.html.twig', [
             'trace' => $trace,
             'portfolio' => $portfolio ?? null,
             'page' => $page ?? null,
+            'edit' => $edit ?? true,
         ]);
+    }
+
+    #[Route('/trace/show/{id}/edit', name: 'app_trace_show_edit')]
+    public function showEdit(?int $id, ?string $row, ?bool $edit, Request $request): Response
+    {
+        $trace = $this->traceRepository->find($id);
+        $row = $request->query->get('row');
+        $edit = $request->query->get('edit');
+
+        dump($row, $edit);
+
+        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit]);
     }
 
     #[Route('/trace/new', name: 'app_trace_new')]

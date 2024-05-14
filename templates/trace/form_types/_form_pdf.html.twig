@@ -18,6 +18,13 @@
                             {% else %}
                                 href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                             {% endif %}
+                        {% elseif 'trace/show' in app.request.uri %}
+
+                            {% if trace.contenu is not empty and trace.type == 'image' %}
+                                data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
+                            {% else %}
+                                href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
+                            {% endif %}
                         {% endif %}
                 >
                     <twig:ux:icon name="{{ constant('ICON', typeTrace) }}" width="15" height="auto"/>
@@ -58,6 +65,13 @@
                                     <a href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
                                        class="flex-grow-0" style="border: none;">
                                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accepter</button></a>
+                                {% elseif 'trace/show' in app.request.uri %}
+                                    <a href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
+                                       class="flex-grow-0" style="border: none;">
+                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                            Confirmer
+                                        </button>
+                                    </a>
                                 {% endif %}
                             </div>
                         </div>

@@ -47,18 +47,60 @@ class TraceController extends BaseController
     }
 
     #[Route('/trace/show/{id}', name: 'app_trace_show')]
-    public function show(?int $id, Request $request): Response
+    public function show(?int $id, ?bool $edit, Request $request): Response
     {
+        $edit = $request->query->get('edit') ?? false;
+        $row = $request->query->get('row') ?? '';
+
         $trace = $this->traceRepository->find($id);
 
         $portfolio = $this->portfolioUnivRepository->findOneBy(['id' => $request->query->get('portfolio')]);
         $page = $this->pageRepository->findOneBy(['id' => $request->query->get('page')]);
 
+        // si un formulaire est soumis
+        if ($request->isMethod('POST')) {
+            $data = $request->request->all();
+            $files = $request->files->all();
+
+            if (isset($data['trace_abstract']['libelle'])) {
+                $trace->setLibelle($data['trace_abstract']['libelle']);
+            }
+
+            $this->traceRepository->save($trace, true);
+        }
+
         return $this->render('trace/show.html.twig', [
             'trace' => $trace,
             'portfolio' => $portfolio ?? null,
             'page' => $page ?? null,
+            'edit' => $edit ?? true,
+            'row' => $row,
+            'formType' => null,
         ]);
+    }
+
+    #[Route('/trace/show/{id}/edit', name: 'app_trace_show_edit')]
+    public function showEdit(?int $id, ?string $row, ?bool $edit, Request $request): Response
+    {
+        $trace = $this->traceRepository->find($id);
+        $row = $request->query->get('row');
+        $edit = $request->query->get('edit');
+
+        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit, 'row' => $row]);
+    }
+
+
+    #[Route('/trace/show/{id}/edit/{type}', name: 'app_trace_show_edit_type')]
+    public function showEditType(?int $id, $type, Request $request): Response
+    {
+        $trace = $this->traceRepository->find($id);
+        $trace->setContenu([]);
+        $trace->setType($type);
+        $this->traceRepository->save($trace, true);
+        // Stocker le type de trace dans la session
+        $request->getSession()->set('selected_trace_type', $type);
+
+        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => true, 'row' => "type"]);
     }
 
     #[Route('/trace/new', name: 'app_trace_new')]

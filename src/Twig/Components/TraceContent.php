@@ -2,19 +2,39 @@
 
 namespace App\Twig\Components;
 
+use App\Components\Trace\Form\TraceAbstractType;
+use App\Components\Trace\Form\TraceImageType;
+use App\Components\Trace\Form\TraceLienType;
+use App\Components\Trace\Form\TracePdfType;
+use App\Components\Trace\Form\TraceVideoType;
+use App\Components\Trace\TraceRegistry;
+use App\Components\Trace\TypeTrace\TraceImage;
+use App\Components\Trace\TypeTrace\TraceLien;
+use App\Components\Trace\TypeTrace\TracePdf;
+use App\Components\Trace\TypeTrace\TraceVideo;
+use App\Repository\ApcCompetenceRepository;
+use App\Repository\ApcNiveauRepository;
 use App\Repository\TraceRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use GuzzleHttp\Client;
 
 #[AsTwigComponent]
-final class TraceContent
+final class TraceContent extends AbstractController
 {
     public int $id;
 
     public ?array $preview = [];
 
+    public ?bool $edit;
+
+    public ?string $row;
+
     public function __construct(
         protected TraceRepository $traceRepository,
+        protected TraceRegistry $traceRegistry,
+        protected ApcCompetenceRepository $competenceRepository,
+        protected ApcNiveauRepository $apcNiveauRepository,
     )
     {
     }
@@ -85,6 +105,128 @@ final class TraceContent
             'image' => $image,
             'url' => $url,
         ];
+    }
+
+    public function getForm()
+    {
+        $trace = $this->traceRepository->find($this->id);
+
+
+        $typesTrace = $this->traceRegistry->getTypeTraces();
+        $user = $this->getUser()->getEtudiant();
+        $semestre = $user->getSemestre();
+        $annee = $semestre->getAnnee();
+
+        $dept = $user->getSemestre()->getAnnee()->getDiplome()->getDepartement();
+
+        $groupe = $user->getGroupe();
+        foreach ($groupe as $g) {
+            if ($g->getTypeGroupe()->getType() === 'TD') {
+                $parcours = $g->getApcParcours();
+            }
+        }
+
+        $apcApprentissageCritiques = [];
+        $apcNiveaux = [];
+
+        if ($parcours === null) {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
+            $referentiel = $dept->getApcReferentiels();
+            $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
+            $niveaux = [];
+            foreach ($competences as $competence) {
+                $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
+            }
+            // si les apcNiveaux dans niveaux ont pour actif = true
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+            }
+        } else {
+            // ------------récupère tous les apcNiveau de l'année -------------------------
+            $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
+            foreach ($niveaux as $niveau) {
+                if ($niveau->isActif() === true) {
+                    $apcNiveaux[] = $niveau;
+                } else {
+                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
+                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                    }
+                }
+            }
+        }
+
+        if (isset($apcNiveaux)) {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcNiveaux]);
+        } else {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcApprentissageCritiques]);
+        }
+
+        return $form->createView();
+    }
+
+    public function getFormType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+        if ($trace->getType() === "image") {
+            $type = TraceImage::class;
+            $formType = TraceImageType::class;
+        } elseif ($trace->getType() === "lien") {
+            $type = TraceLien::class;
+            $formType = TraceLienType::class;
+        } elseif ($trace->getType() === "pdf") {
+            $type = TracePdf::class;
+            $formType = TracePdfType::class;
+        } elseif ($trace->getType() === "video") {
+            $type = TraceVideo::class;
+            $formType = TraceVideoType::class;
+        } else {
+            $type = TraceAbstractType::class;
+        }
+
+//        $formType = $type::FORM;
+        $formType = $this->createForm($formType, $trace);
+        $formType = $formType->createView();
+        $typeTrace = $type::TYPE;
+
+            return $formType;
+    }
+
+    public function getSelectedTraceType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+        if ($trace->getType() === "image") {
+            $type = TraceImage::class;
+        } elseif ($trace->getType() === "lien") {
+            $type = TraceLien::class;
+        } elseif ($trace->getType() === "pdf") {
+            $type = TracePdf::class;
+        } elseif ($trace->getType() === "video") {
+            $type = TraceVideo::class;
+        } else {
+            $type = TraceAbstractType::class;
+        }
+
+        return $type;
+    }
+
+    public function getType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+
+        return $trace->getType();
+    }
+
+    public function getTypesTraces()
+    {
+        return $this->traceRegistry->getTypeTraces();
     }
 
     public function getTrace()

@@ -50,6 +50,7 @@ class TraceController extends BaseController
     public function show(?int $id, ?bool $edit, Request $request): Response
     {
         $edit = $request->query->get('edit') ?? false;
+        $row = $request->query->get('row') ?? '';
 
         $trace = $this->traceRepository->find($id);
 
@@ -73,6 +74,8 @@ class TraceController extends BaseController
             'portfolio' => $portfolio ?? null,
             'page' => $page ?? null,
             'edit' => $edit ?? true,
+            'row' => $row,
+            'formType' => null,
         ]);
     }
 
@@ -83,9 +86,21 @@ class TraceController extends BaseController
         $row = $request->query->get('row');
         $edit = $request->query->get('edit');
 
-        dump($row, $edit);
+        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit, 'row' => $row]);
+    }
 
-        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit]);
+
+    #[Route('/trace/show/{id}/edit/{type}', name: 'app_trace_show_edit_type')]
+    public function showEditType(?int $id, $type, Request $request): Response
+    {
+        $trace = $this->traceRepository->find($id);
+        $trace->setContenu([]);
+        $trace->setType($type);
+        $this->traceRepository->save($trace, true);
+        // Stocker le type de trace dans la session
+        $request->getSession()->set('selected_trace_type', $type);
+
+        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => true, 'row' => "type"]);
     }
 
     #[Route('/trace/new', name: 'app_trace_new')]

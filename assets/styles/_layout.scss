@@ -416,7 +416,9 @@
 
     .active {
       border: solid 2px var(--primary-color);
-      //background-color: lighten(var(--primary-color), 24%);
+      // le rendre inselectionnable
+      pointer-events: none;
+
 
       i {
         color: var(--primary-color);

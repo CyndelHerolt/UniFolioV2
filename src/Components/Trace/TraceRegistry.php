@@ -14,15 +14,22 @@ class TraceRegistry
     public const TAG_TYPE_TRACE = 'trace.type';
 
     private array $typesTrace = [];
+    private array $typesTracesForm = [];
 
     public function registerTypeTrace($name, AbstractTrace $typeTrace): void
     {
         $this->typesTrace[$name] = $typeTrace;
+        $this->typesTracesForm['trace_'.$typeTrace::TYPE] = $typeTrace;
     }
 
     public function getTypeTrace($name): AbstractTrace
     {
         return $this->typesTrace[$name];
+    }
+
+    public function getTypeTraceFromForm($name): AbstractTrace
+    {
+        return $this->typesTracesForm[$name];
     }
 
     public function getTypeTraces(): array

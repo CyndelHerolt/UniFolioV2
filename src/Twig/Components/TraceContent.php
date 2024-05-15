@@ -8,6 +8,7 @@ use App\Components\Trace\Form\TraceLienType;
 use App\Components\Trace\Form\TracePdfType;
 use App\Components\Trace\Form\TraceVideoType;
 use App\Components\Trace\TraceRegistry;
+use App\Components\Trace\TypeTrace\AbstractTrace;
 use App\Components\Trace\TypeTrace\TraceImage;
 use App\Components\Trace\TypeTrace\TraceLien;
 use App\Components\Trace\TypeTrace\TracePdf;
@@ -175,21 +176,9 @@ final class TraceContent extends AbstractController
     public function getFormType()
     {
         $trace = $this->traceRepository->find($this->id);
-        if ($trace->getType() === "image") {
-            $type = TraceImage::class;
-            $formType = TraceImageType::class;
-        } elseif ($trace->getType() === "lien") {
-            $type = TraceLien::class;
-            $formType = TraceLienType::class;
-        } elseif ($trace->getType() === "pdf") {
-            $type = TracePdf::class;
-            $formType = TracePdfType::class;
-        } elseif ($trace->getType() === "video") {
-            $type = TraceVideo::class;
-            $formType = TraceVideoType::class;
-        } else {
-            $type = TraceAbstractType::class;
-        }
+
+        $type = $this->traceRegistry->getTypeTrace($trace->getType());
+        $formType = $type::FORM;
 
 //        $formType = $type::FORM;
         $formType = $this->createForm($formType, $trace);
@@ -202,17 +191,7 @@ final class TraceContent extends AbstractController
     public function getSelectedTraceType()
     {
         $trace = $this->traceRepository->find($this->id);
-        if ($trace->getType() === "image") {
-            $type = TraceImage::class;
-        } elseif ($trace->getType() === "lien") {
-            $type = TraceLien::class;
-        } elseif ($trace->getType() === "pdf") {
-            $type = TracePdf::class;
-        } elseif ($trace->getType() === "video") {
-            $type = TraceVideo::class;
-        } else {
-            $type = TraceAbstractType::class;
-        }
+        $type = $trace->getType();
 
         return $type;
     }
@@ -227,6 +206,11 @@ final class TraceContent extends AbstractController
     public function getTypesTraces()
     {
         return $this->traceRegistry->getTypeTraces();
+    }
+
+    public function getTypeTrace($name)
+    {
+        return $this->traceRegistry->getTypeTrace($name);
     }
 
     public function getTrace()

@@ -5,7 +5,7 @@
                 <a data-turbo-action="replace" data-turbo-frame="trace-form-content"
                    class="col-12 col-lg-2 p-3 {% if selectedTraceType == constant('CLASS_NAME', typeTrace) %}active{% endif %}"
                         {% if 'portfolio' in app.request.uri %}
-                            {% if trace.contenu is not empty and trace.type == 'image' %}
+                            {% if trace.contenu is not empty and trace.type == 'lien' %}
                                 data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
                             {% else %}
                                 href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'newType'}) }}"
@@ -20,7 +20,7 @@
                             {% endif %}
                         {% elseif 'trace/show' in app.request.uri %}
 
-                            {% if trace.contenu is not empty and trace.type == 'image' %}
+                            {% if trace.contenu is not empty and trace.type == 'lien' %}
                                 data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
                             {% else %}
                                 href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"

@@ -93,7 +93,7 @@
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {% include('trace/form_types/_form_'~type~'.html.twig') %}
+                                {% include('trace/form_types/_form_'~constant('TYPE', selectedTraceType)~'.html.twig') %}
                             {% endif %}
                         </turbo-frame>
 

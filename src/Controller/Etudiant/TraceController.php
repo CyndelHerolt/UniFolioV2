@@ -19,6 +19,7 @@ use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
+use App\Service\DataUserSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,8 +43,12 @@ class TraceController extends BaseController
         private readonly BibliothequeRepository             $bibliothequeRepository,
         private readonly PortfolioUnivRepository            $portfolioUnivRepository,
         private readonly PageRepository                     $pageRepository,
+        private readonly DataUserSessionService             $dataUserSessionService,
     )
     {
+        parent::__construct(
+            $this->dataUserSessionService,
+        );
     }
 
     #[Route('/trace/show/{id}', name: 'app_trace_show')]
@@ -56,6 +61,11 @@ class TraceController extends BaseController
 
         $portfolio = $this->portfolioUnivRepository->findOneBy(['id' => $request->query->get('portfolio')]);
         $page = $this->pageRepository->findOneBy(['id' => $request->query->get('page')]);
+
+        $type = $trace->getType();
+
+        $formType = $type::FORM;
+        $classType = $type::CLASS_NAME;
 
         // si un formulaire est soumis
         if ($request->isMethod('POST')) {
@@ -75,7 +85,8 @@ class TraceController extends BaseController
             'page' => $page ?? null,
             'edit' => $edit ?? true,
             'row' => $row,
-            'formType' => null,
+            'formType' => $formType ?? null,
+            'classType' => $classType ?? null,
         ]);
     }
 
@@ -94,8 +105,10 @@ class TraceController extends BaseController
     public function showEditType(?int $id, $type, Request $request): Response
     {
         $trace = $this->traceRepository->find($id);
+//        $typeTrace = $type::TYPE;
+        $typeTrace = $this->traceRegistry->getTypeTrace($type);
         $trace->setContenu([]);
-        $trace->setType($type);
+        $trace->setType($typeTrace::class);
         $this->traceRepository->save($trace, true);
         // Stocker le type de trace dans la session
         $request->getSession()->set('selected_trace_type', $type);
@@ -168,7 +181,11 @@ class TraceController extends BaseController
 
         // Vérifier si un type de trace est stocké dans la session
         //  $selectedTraceType = $request->getSession()->get('selected_trace_type');
-        $selectedTraceType = $request->query->get('type', null);
+        if ($request->query->get('type')) {
+            $selectedTraceType = $this->traceRegistry->getTypeTrace($request->query->get('type'));
+        } else {
+            $selectedTraceType = null;
+        }
         if ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
             $formType = $this->createForm($formType, $trace);
@@ -238,37 +255,58 @@ class TraceController extends BaseController
 
         $trace = new Trace();
 
-        if (isset($data['trace_lien'])) {
-            $contenu = $data['trace_lien']['contenu'];
-            $contenu = $this->traceLien->sauvegarde($contenu, null);
-            $trace->setType($this->traceLien::TYPE);
-        } elseif (isset($files['trace_image'])) {
-            $contenu = $files['trace_image']['contenu'];
-            $contenu = $this->traceImage->sauvegarde($contenu, null);
-            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-                return is_string($item);
-            });
-            $trace->setType($this->traceImage::TYPE);
-        } elseif (isset($data['trace_video'])) {
-            $contenu = $data['trace_video']['contenu'];
-            $contenu = $this->traceVideo->sauvegarde($contenu, null);
-            $trace->setType($this->traceVideo::TYPE);
-        } elseif (isset($files['trace_pdf'])) {
-            $contenu = $files['trace_pdf']['contenu'];
-            $contenu = $this->tracePdf->sauvegarde($contenu, null);
-            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-                return is_string($item);
-            });
-            $trace->setType($this->tracePdf::TYPE);
-        }
+        $merge = array_merge(array_keys($data), array_keys($files));
 
-        if (isset($contenu) && $contenu['success'] === false) {
-            $this->addFlash('danger', $contenu['error']);
+//        dd(array_keys($data), array_keys($files));
+//        dd($data, $files);
+
+        $typeTraceForm = array_diff($merge, ['trace_abstract']);
+//        $key = array_keys($typeTraceForm);
+
+//        dd($typeTraceForm);
+
+        $key = $typeTraceForm[array_key_first($typeTraceForm)];
+
+        $typeTrace = $this->traceRegistry->getTypeTraceFromForm($key);
+
+//        dd($typeTrace);
+
+        $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
+
+
+        $sauvegarde = $typeTrace->sauvegarde($contenu, null);
+        $trace->setType($typeTrace::class);
+
+
+//        if (isset($data['trace_lien'])) {
+//            $contenu = $data['trace_lien']['contenu'];
+//            $contenu = $this->traceLien->sauvegarde($contenu, null);
+//            $trace->setType($this->traceLien::TYPE);
+//        } elseif (isset($files['trace_image'])) {
+//            $contenu = $files['trace_image']['contenu'];
+//            $contenu = $this->traceImage->sauvegarde($contenu, null);
+//            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+//                return is_string($item);
+//            });
+//            $trace->setType($this->traceImage::TYPE);
+//        } elseif (isset($data['trace_video'])) {
+//            $contenu = $data['trace_video']['contenu'];
+//            $contenu = $this->traceVideo->sauvegarde($contenu, null);
+//            $trace->setType($this->traceVideo::TYPE);
+//        } elseif (isset($files['trace_pdf'])) {
+//            $contenu = $files['trace_pdf']['contenu'];
+//            $contenu = $this->tracePdf->sauvegarde($contenu, null);
+//            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
+//                return is_string($item);
+//            });
+//            $trace->setType($this->tracePdf::TYPE);
+//        }
+
+        if ($sauvegarde['success'] === false) {
+            $this->addFlash('danger', $sauvegarde['error']);
             return $this->redirectToRoute('app_trace_new');
         } else {
-            if (isset($contenu)) {
-                $trace->setContenu($contenu['contenu']);
-            }
+            $trace->setContenu($sauvegarde['contenu']);
             $trace->setBibliotheque($bibliotheque);
             $trace->setDateCreation(new \DateTime());
             $trace->setLibelle($formDatas['libelle']);
@@ -405,15 +443,7 @@ class TraceController extends BaseController
             $typeTrace = $selectedTraceType::TYPE;
         } elseif ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();
-            if ($selectedTraceType === 'image') {
-                $selectedTraceType = $this->traceImage::CLASS_NAME;
-            } elseif ($selectedTraceType === 'lien') {
-                $selectedTraceType = $this->traceLien::CLASS_NAME;
-            } elseif ($selectedTraceType === 'video') {
-                $selectedTraceType = $this->traceVideo::CLASS_NAME;
-            } elseif ($selectedTraceType === 'pdf') {
-                $selectedTraceType = $this->tracePdf::CLASS_NAME;
-            }
+            $selectedTraceType = $this->traceRegistry->getTypeTrace($selectedTraceType);
             $formType = $selectedTraceType::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
@@ -444,7 +474,7 @@ class TraceController extends BaseController
             'form' => $form->createView(),
             'typesTrace' => $typesTrace,
             'trace' => $trace,
-            'type' => $typeTrace ?? null,
+//            'type' => $typeTrace ?? null,
             'formType' => $formType ?? null,
             'selectedTraceType' => $selectedTraceType ?? null,
             'apcNiveaux' => $apcNiveaux ?? null,
@@ -472,10 +502,10 @@ class TraceController extends BaseController
             $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
                 return is_string($item);
             });
-            $trace->setType($this->traceImage::TYPE);
+            $trace->setType($this->traceImage::CLASS_NAME);
         } elseif (isset($data['img']) && !isset($files['trace_image'])) {
             $trace->setContenu($data['img']);
-            $trace->setType($this->traceImage::TYPE);
+            $trace->setType($this->traceImage::CLASS_NAME);
         } elseif (isset($data['img']) && isset($files['trace_image'])) {
             $contenu = $files['trace_image']['contenu'];
             $contenu = $this->traceImage->sauvegarde($contenu, null);
@@ -483,7 +513,7 @@ class TraceController extends BaseController
                 return is_string($item);
             });
             $contenu['contenu'] = array_merge($contenu['contenu'], $data['img']);
-            $trace->setType($this->traceImage::TYPE);
+            $trace->setType($this->traceImage::CLASS_NAME);
         } elseif (isset($data['trace_lien'])) {
             $contenu = $data['trace_lien']['contenu'];
             // si une entrée est vide, on la supprime
@@ -491,17 +521,17 @@ class TraceController extends BaseController
                 return $item !== '';
             });
             $contenu = $this->traceLien->sauvegarde($contenu, null);
-            $trace->setType($this->traceLien::TYPE);
+            $trace->setType($this->traceLien::CLASS_NAME);
         } elseif (isset($files['trace_pdf']) && !isset($data['pdf'])) {
             $contenu = $files['trace_pdf']['contenu'];
             $contenu = $this->tracePdf->sauvegarde($contenu, null);
             $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
                 return is_string($item);
             });
-            $trace->setType($this->tracePdf::TYPE);
+            $trace->setType($this->tracePdf::CLASS_NAME);
         } elseif (isset($data['pdf']) && !isset($files['trace_pdf'])) {
             $trace->setContenu($data['pdf']);
-            $trace->setType($this->tracePdf::TYPE);
+            $trace->setType($this->tracePdf::CLASS_NAME);
         } elseif (isset($data['pdf']) && isset($files['trace_pdf'])) {
             $contenu = $files['trace_pdf']['contenu'];
             $contenu = $this->tracePdf->sauvegarde($contenu, null);
@@ -509,7 +539,7 @@ class TraceController extends BaseController
                 return is_string($item);
             });
             $contenu['contenu'] = array_merge($contenu['contenu'], $data['pdf']);
-            $trace->setType($this->tracePdf::TYPE);
+            $trace->setType($this->tracePdf::CLASS_NAME);
         } elseif (isset($data['trace_video'])) {
             $contenu = $data['trace_video']['contenu'];
             // si une entrée est vide, on la supprime
@@ -517,7 +547,7 @@ class TraceController extends BaseController
                 return $item !== '';
             });
             $contenu = $this->traceVideo->sauvegarde($contenu, null);
-            $trace->setType($this->traceVideo::TYPE);
+            $trace->setType($this->traceVideo::CLASS_NAME);
         } else {
             $trace->setContenu([]);
         }

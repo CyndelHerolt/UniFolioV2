@@ -35,74 +35,72 @@
             {% endif %}
         </div>
         <div class="card-body">
+            <turbo-frame id="trace-form-content">
+                {% if this.edit == false or row != "type" %}
 
-            {#     Si on est pas en mode edit       #}
-            {% if this.edit == false or row != "type" %}
+                    {#     If media       #}
+                    {% if this.trace.contenu is not null and this.trace.contenu is not empty %}
+                        <div class="row d-flex justify-content-center">
+                            {% include('/partials/trace/_' ~ constant('TYPE', this.typeTrace(this.type)) ~ '_content.html.twig') %}
+                        </div>
 
-                {#     Si la trace a bien un media d'illustration       #}
-                {% if this.trace.contenu is not null and this.trace.contenu is not empty %}
-                    <div class="row d-flex justify-content-center">
-                        {% if this.trace.type == 'lien' %}
-                            {% include('/partials/trace/_lien_content.html.twig') %}
-                        {% elseif this.trace.type == 'image' %}
-                            {% include('/partials/trace/_image_content.html.twig') %}
-                        {% elseif this.trace.type == 'video' %}
-                            {% include('/partials/trace/_video_content.html.twig') %}
-                        {% elseif this.trace.type == 'pdf' %}
-                            {% include('/partials/trace/_pdf_content.html.twig') %}
-                        {% endif %}
-                    </div>
+                        {#     If !media       #}
+                    {% else %}
+                        <div class="row d-flex justify-content-center">
+                            <p class="text-center text-danger">Cette trace ne contient pas de média d'illustration.</p>
+                        </div>
+                    {% endif %}
 
-                    {#     Si la trace n'a pas de media d'illustration       #}
-                {% else %}
-                    <div class="row d-flex justify-content-center">
-                        <p class="text-center text-danger">Cette trace ne contient pas de média d'illustration.</p>
-                    </div>
-                {% endif %}
+                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'type', 'edit': true}) }}">
+                        <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
+                    </a>
 
-
-                <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'type', 'edit': true}) }}">
-                    <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
-                </a>
-
-                {#     Si on est en mode edit       #}
-            {% else %}
-
-                {#     Si la trace a un media d'illustration       #}
-                {% if this.trace.contenu is not null and this.trace.contenu is not empty %}
-
-                    {% set trace = this.trace %}
-                    {% set formType = this.formType %}
-                    {% set typesTrace = this.typesTraces %}
-                    {% set selectedTraceType = this.selectedTraceType %}
-                    {% include('trace/form_types/_form_'~this.type~'.html.twig') %}
-
+                    {#     If edit       #}
                 {% else %}
 
-                    <div class="types row p-2">
-                        {% for type in this.typesTraces %}
-                            <a
-                                    href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', type), 'id': this.trace.id}) }}"
-                                    data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                    class="col-12 col-lg-2 p-3"
-                                    {% if this.selectedTraceType == constant('CLASS_NAME', type) %}
-                                        style="background-color: #f8f9fa;"
-                                    {% endif %}
-                            >
-                                <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
-                                              length="auto"/>
-                                <div>
-                                    <strong>{{ type.display }}</strong>
-                                    <br>
-                                    <small>{{ constant('CONSTRAINT', type) }}</small>
-                                </div>
-                            </a>
-                        {% endfor %}
-                    </div>
+                    {#     If  media       #}
+                    {% if this.trace.type is not null and this.trace.type is not empty %}
 
+                        {% set trace = this.trace %}
+                        {% set formType = this.formType %}
+                        {% set typesTrace = this.typesTraces %}
+                        {% set selectedTraceType = this.selectedTraceType %}
+                        {% include('trace/form_types/_form_'~constant('TYPE', this.typeTrace(this.type))~'.html.twig') %}
+
+
+                        <h2>{{ this.selectedTraceType }}</h2>
+
+                    {% else %}
+
+                        <div class="types row p-2">
+                            {% for type in this.typesTraces %}
+                                <a
+                                        href="{{ path('app_trace_show_edit_type', {'type': constant('TYPE', type), 'id': this.trace.id}) }}"
+                                        data-turbo-action="replace" data-turbo-frame="trace-form-content"
+                                        class="col-12 col-lg-2 p-3"
+                                        {% if this.selectedTraceType == constant('TYPE', type) %}
+                                            style="background-color: #f8f9fa;"
+                                        {% endif %}
+                                >
+                                    <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
+                                                  length="auto"/>
+                                    <div>
+                                        <strong>{{ type.display }}</strong>
+                                        <br>
+                                        <small>{{ constant('CONSTRAINT', type) }}</small>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                            <h2>{{ this.selectedTraceType }}</h2>
+                        </div>
+                    {% endif %}
+
+                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': false}) }}"
+                       class="btn btn-danger" style="height: fit-content">
+                        <twig:ux:icon name="bi:x" width="20px" height="auto"/>
+                    </a>
                 {% endif %}
-            {% endif %}
-
+            </turbo-frame>
 
             <div class="row" style="margin: 50px 0">
                 <div class="border-end" style="width: 150px; margin-top: 15px">

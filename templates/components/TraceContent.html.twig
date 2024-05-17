@@ -72,7 +72,7 @@
                         <div class="types row p-2">
                             {% for type in this.typesTraces %}
                                 <a
-                                        href="{{ path('app_trace_show_edit_type', {'type': constant('TYPE', type), 'id': this.trace.id}) }}"
+                                        href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', type), 'id': this.trace.id}) }}"
                                         data-turbo-action="replace" data-turbo-frame="trace-form-content"
                                         class="col-12 col-lg-2 p-3"
                                         {% if this.selectedTraceType == constant('TYPE', type) %}

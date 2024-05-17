@@ -19,6 +19,7 @@ use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
+use App\Service\CompetencesService;
 use App\Service\DataUserSessionService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +45,7 @@ class TraceController extends BaseController
         private readonly PortfolioUnivRepository            $portfolioUnivRepository,
         private readonly PageRepository                     $pageRepository,
         private readonly DataUserSessionService             $dataUserSessionService,
+        private readonly CompetencesService                 $competencesService,
     )
     {
         parent::__construct(
@@ -119,84 +121,39 @@ class TraceController extends BaseController
     #[Route('/trace/new', name: 'app_trace_new')]
     public function new(Request $request): Response
     {
+        $user = $this->getUser();
+
         $typesTrace = $this->traceRegistry->getTypeTraces();
-        $user = $this->getUser()->getEtudiant();
 
-        $semestre = $user->getSemestre();
-        $annee = $semestre->getAnnee();
-
-        $dept = $user->getSemestre()->getAnnee()->getDiplome()->getDepartement();
-
-        $groupe = $user->getGroupe();
-        foreach ($groupe as $g) {
-            if ($g->getTypeGroupe()->getType() === 'TD') {
-                $parcours = $g->getApcParcours();
-            }
-        }
-
-        $apcApprentissageCritiques = [];
-        $apcNiveaux = [];
-
-        if ($parcours === null) {
-            // ------------récupère tous les apcNiveau de l'année -------------------------
-            $referentiel = $dept->getApcReferentiels();
-            $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
-            $niveaux = [];
-            foreach ($competences as $competence) {
-                $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
-            }
-            // si les apcNiveaux dans niveaux ont pour actif = true
-            foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
-                    $apcNiveaux[] = $niveau;
-                } else {
-                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
-                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
-                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
-                    }
-                }
-            }
-        } else {
-            // ------------récupère tous les apcNiveau de l'année -------------------------
-            $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
-            foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
-                    $apcNiveaux[] = $niveau;
-                } else {
-                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
-                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
-                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
-                    }
-                }
-//                dd($apcApprentissageCritiques);
-            }
-        }
+        $competences = $this->competencesService->getCompetences($user);
 
         $trace = new Trace();
-        if (isset($apcNiveaux)) {
-            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcNiveaux]);
+        if (!empty($competences['apcNiveaux'])) {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);
         } else {
-            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $apcApprentissageCritiques]);
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissageCritiques'] ?? null]);
         }
 
-        // Vérifier si un type de trace est stocké dans la session
-        //  $selectedTraceType = $request->getSession()->get('selected_trace_type');
-        if ($request->query->get('type')) {
-            $selectedTraceType = $this->traceRegistry->getTypeTrace($request->query->get('type'));
-        } else {
-            $selectedTraceType = null;
-        }
+        // todo: code dupliqué dans edit
+        // Vérifier si un type de trace a été passé en paramètre
+        $selectedTraceType = $request->query->get('type', null);
         if ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
             $typeTrace = $selectedTraceType::TYPE;
+        } elseif ($trace->getType() !== null) {
+            $selectedTraceType = $trace->getType();
+            $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+            $typeTrace = $this->traceRegistry->getTypeTrace($selectedTraceType)::TYPE;
         } else {
             $formType = null;
         }
 
         $groupedApprentissageCritiques = [];
-        foreach ($apcApprentissageCritiques as $ac) {
+        foreach ($competences['apcApprentissageCritiques'] as $ac) {
             $niveauId = $ac->getApcNiveau()->getId();
             if (!isset($groupedApprentissageCritiques[$niveauId])) {
                 $groupedApprentissageCritiques[$niveauId] = [
@@ -211,8 +168,9 @@ class TraceController extends BaseController
         return $this->render('trace/form.html.twig', [
             'form' => $form->createView(),
             'typesTrace' => $typesTrace,
+
             'trace' => $trace,
-            'type' => $typeTrace ?? null,
+            'typeTrace' => $typeTrace ?? null,
             'formType' => $formType ?? null,
             'selectedTraceType' => $selectedTraceType ?? null,
             'apcNiveaux' => $apcNiveaux ?? null,
@@ -443,11 +401,11 @@ class TraceController extends BaseController
             $typeTrace = $selectedTraceType::TYPE;
         } elseif ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();
-            $selectedTraceType = $this->traceRegistry->getTypeTrace($selectedTraceType);
-            $formType = $selectedTraceType::FORM;
+//            $selectedTraceType = $this->traceRegistry->getTypeTrace($selectedTraceType);
+            $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
-            $typeTrace = $selectedTraceType::TYPE;
+            $typeTrace = $this->traceRegistry->getTypeTrace($selectedTraceType)::TYPE;
         } else {
             $formType = null;
         }
@@ -473,6 +431,7 @@ class TraceController extends BaseController
         return $this->render('trace/form.html.twig', [
             'form' => $form->createView(),
             'typesTrace' => $typesTrace,
+            'typeTrace' => $typeTrace ?? null,
             'trace' => $trace,
 //            'type' => $typeTrace ?? null,
             'formType' => $formType ?? null,

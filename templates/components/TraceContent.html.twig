@@ -67,9 +67,6 @@
                         {% set selectedTraceType = this.selectedTraceType %}
                         {% include('trace/form_types/_form_'~constant('TYPE', this.typeTrace(this.type))~'.html.twig') %}
 
-
-                        <h2>{{ this.selectedTraceType }}</h2>
-
                     {% else %}
 
                         <div class="types row p-2">
@@ -91,7 +88,6 @@
                                     </div>
                                 </a>
                             {% endfor %}
-                            <h2>{{ this.selectedTraceType }}</h2>
                         </div>
                     {% endif %}
 

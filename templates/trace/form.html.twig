@@ -33,15 +33,8 @@
                         {% endif %}
                     </div>
 
-                    {% if 'new' in app.request.uri %}
-                        {{ form_start(form, {'action': path('app_trace_new_sauvegarde'), 'attr': {'enctype': 'multipart/form-data'}}) }}
-                    {% else %}
-                        {% if origin is not null and origin == 'show' %}
-                            {{ form_start(form, {'action': path('app_trace_edit_sauvegarde', {'id': trace.id, 'origin':origin}), 'attr': {'enctype': 'multipart/form-data'}}) }}
-                        {% else %}
-                            {{ form_start(form, {'action': path('app_trace_edit_sauvegarde', {'id': trace.id}), 'attr': {'enctype': 'multipart/form-data'}}) }}
-                        {% endif %}
-                    {% endif %}
+                    {{ form_start(form, {'action': path('app_trace_save', {'trace': trace.id}),'attr': {'enctype': 'multipart/form-data'}}) }}
+
                     {{ form_errors(form) }}
 
                     <div class="visually-hidden">
@@ -60,37 +53,7 @@
                             {{ form_row(form.dateRealisation) }}
                         </div>
 
-                        <turbo-frame id="trace-form-content" class="form-control p-4">
-                            <label>Contenu média</label>
-                            {% if formType is null %}
-                                <div class="types row p-2">
-                                    {% for type in typesTrace %}
-                                        <a
-                                                {% if 'new' in app.request.uri %}
-                                                    href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', type)}) }}"
-                                                {% else %}
-                                                    href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', type), 'id': trace.id}) }}"
-                                                {% endif %}
-                                                data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                                class="col-12 col-lg-2 p-3"
-                                                {% if selectedTraceType == constant('CLASS_NAME', type) %}
-                                                    style="background-color: #f8f9fa;"
-                                                {% endif %}
-                                        >
-                                            <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
-                                                          length="auto"/>
-                                            <div>
-                                                <strong>{{ type.display }}</strong>
-                                                <br>
-                                                <small>{{ constant('CONSTRAINT', type) }}</small>
-                                            </div>
-                                        </a>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                {% include('trace/form_types/_form_'~typeTrace~'.html.twig') %}
-                            {% endif %}
-                        </turbo-frame>
+                        {{ include('partials/trace/_type_trace_form.html.twig') }}
 
                         <div class="col-12 p-2">
                             {{ form_row(form.legende) }}

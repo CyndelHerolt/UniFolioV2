@@ -94,11 +94,26 @@ class TraceController extends BaseController
     }
 
     #[Route('/trace/change/type', name: 'app_trace_change_type')]
-    public function changeType(Request $request): void
+    public function changeType(Request $request): Response
     {
         $type = $request->query->get('type');
-        // set the type in the session
+
+        // stocker le type de trace dans la session
         $request->getSession()->set('selected_trace_type', $type);
+
+        if ($request->query->get('trace')) {
+            $trace = $this->traceRepository->find($request->query->get('trace'));
+            $trace->setContenu([]);
+            $trace->setType($type);
+            $this->traceRepository->save($trace, true);
+        }
+
+        // récupérer le nom de la route émettrice
+        $referer = $request->headers->get('referer');
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
+
+        // retourner au referer
+        return $this->redirect($referer . '?type=' . $selectedTraceType);
     }
 
     #[Route('/trace/show/{id}/edit', name: 'app_trace_show_edit')]
@@ -111,24 +126,7 @@ class TraceController extends BaseController
         return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit, 'row' => $row]);
     }
 
-
-    // todo: à revoir
-    #[Route('/trace/show/{id}/edit/{type}', name: 'app_trace_show_edit_type')]
-    public function showEditType(?int $id, $type, Request $request): Response
-    {
-        $trace = $this->traceRepository->find($id);
-//        $typeTrace = $type::TYPE;
-        $typeTrace = $this->traceRegistry->getTypeTrace($type);
-        $trace->setContenu([]);
-        $trace->setType($typeTrace::class);
-        $this->traceRepository->save($trace, true);
-        // Stocker le type de trace dans la session
-//        $request->getSession()->set('selected_trace_type', $type);
-
-        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => true, 'row' => "type"]);
-    }
-
-    // todo: à revoir
+    // todo: refactor
     #[Route('/trace/new', name: 'app_trace_new')]
     public function new(Request $request): Response
     {
@@ -146,7 +144,9 @@ class TraceController extends BaseController
 
         // todo: code dupliqué dans edit
         // Vérifier si un type de trace a été passé en paramètre
-        $selectedTraceType = $request->query->get('type', null);
+//        $selectedTraceType = $request->query->get('type', null);
+        $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
+
         if ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
             $formType = $this->createForm($formType, $trace);
@@ -176,149 +176,139 @@ class TraceController extends BaseController
         ]);
     }
 
-    // todo: à revoir
-    #[Route('/trace/new/{type}', name: 'app_trace_new_type')]
-    public function newType($type, Request $request): Response
+    #[Route('/trace/save', name: 'app_trace_save')]
+    public function save(Request $request)
     {
-        // Stocker le type de trace dans la session
-        $request->getSession()->set('selected_trace_type', $type);
 
-        return $this->redirectToRoute('app_trace_new', ['type' => $type]);
-    }
-
-    // todo: à revoir
-    #[Route('/trace/edit/{id}/{type}', name: 'app_trace_edit_type')]
-    public function editType(?int $id, $type, Request $request): Response
-    {
-        $trace = $this->traceRepository->find($id);
-        $trace->setContenu([]);
-        $this->traceRepository->save($trace, true);
-        // Stocker le type de trace dans la session
-        $request->getSession()->set('selected_trace_type', $type);
-
-        return $this->redirectToRoute('app_trace_edit', ['type' => $type, 'id' => $id]);
-    }
-
-    // todo: à revoir
-    #[Route('/trace/sauvegarde', name: 'app_trace_new_sauvegarde')]
-    public function sauvegardeNewTrace(Request $request): Response
-    {
-        $data = $request->request->all();
-        $files = $request->files->all();
-        $formDatas = $request->request->all()['trace_abstract'];
+        if ($request->query->get('trace') !== null) {
+            $trace = $this->traceRepository->find($request->query->get('trace'));
+        } else {
+            $trace = new Trace();
+        }
 
         $etudiant = $this->getUser()->getEtudiant();
         $bibliotheque = $this->bibliothequeRepository->findOneBy(['etudiant' => $etudiant, 'actif' => true]);
 
-        $trace = new Trace();
+        $data = $request->request->all();
+        $files = $request->files->all();
+        $formDatas = $request->request->all()['trace_abstract'];
 
-        $merge = array_merge(array_keys($data), array_keys($files));
+        // on réunit les clés des tableaux $data et $files
+        $typeDatas = array_merge(array_keys($data), array_keys($files));
 
-//        dd(array_keys($data), array_keys($files));
-//        dd($data, $files);
-
-        $typeTraceForm = array_diff($merge, ['trace_abstract']);
-//        $key = array_keys($typeTraceForm);
-
+        // on récupère la clé du type de trace
+        $typeTraceForm = array_diff($typeDatas, ['trace_abstract']);
 //        dd($typeTraceForm);
 
-        $key = $typeTraceForm[array_key_first($typeTraceForm)];
+        if (!empty($typeTraceForm)) {
+            // on récupère la première clé du tableau
+            $key = $typeTraceForm[array_key_first($typeTraceForm)];
 
-        $typeTrace = $this->traceRegistry->getTypeTraceFromForm($key);
+            // on récupère le type de trace correspondant à la clé
+            $typeTrace = $this->traceRegistry->getTypeTraceFromForm($key);
 
-        $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
+            if (isset($data[$key]['contenu']) || isset($files[$key]['contenu'])) {
+                // on récupère le contenu du type de trace
+                $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
 
-        $sauvegarde = $typeTrace->sauvegarde($contenu, null);
-        $trace->setType($typeTrace::class);
+                $existingContenu = $data[$key] ?? null;
+                $sauvegarde = $typeTrace->sauvegarde($contenu);
+                if ($existingContenu) {
+                    if ($sauvegarde['success'] === true) {
+                        $content = array_merge($sauvegarde['contenu'], $existingContenu);
+                    } else {
+                        $this->addFlash('danger', $sauvegarde['error']);
+                        // récupérer le nom de la route émettrice
+                        $referer = $request->headers->get('referer');
+                        // retourner au referer
+                        return $this->redirect($referer);
+                    }
+                } else {
+                    if ($sauvegarde['success'] === true) {
+                        $content = $sauvegarde['contenu'];
+                    } else {
+                        $this->addFlash('danger', $sauvegarde['error']);
+                        // récupérer le nom de la route émettrice
+                        $referer = $request->headers->get('referer');
+                        $selectedTraceType = $request->getSession()->get('selected_trace_type');
 
-
-//        if (isset($data['trace_lien'])) {
-//            $contenu = $data['trace_lien']['contenu'];
-//            $contenu = $this->traceLien->sauvegarde($contenu, null);
-//            $trace->setType($this->traceLien::TYPE);
-//        } elseif (isset($files['trace_image'])) {
-//            $contenu = $files['trace_image']['contenu'];
-//            $contenu = $this->traceImage->sauvegarde($contenu, null);
-//            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-//                return is_string($item);
-//            });
-//            $trace->setType($this->traceImage::TYPE);
-//        } elseif (isset($data['trace_video'])) {
-//            $contenu = $data['trace_video']['contenu'];
-//            $contenu = $this->traceVideo->sauvegarde($contenu, null);
-//            $trace->setType($this->traceVideo::TYPE);
-//        } elseif (isset($files['trace_pdf'])) {
-//            $contenu = $files['trace_pdf']['contenu'];
-//            $contenu = $this->tracePdf->sauvegarde($contenu, null);
-//            $contenu['contenu'] = array_filter($contenu['contenu'], function ($item) {
-//                return is_string($item);
-//            });
-//            $trace->setType($this->tracePdf::TYPE);
-//        }
-
-        if ($sauvegarde['success'] === false) {
-            $this->addFlash('danger', $sauvegarde['error']);
-            return $this->redirectToRoute('app_trace_new');
-        } else {
-            $trace->setContenu($sauvegarde['contenu']);
-            $trace->setBibliotheque($bibliotheque);
-            $trace->setDateCreation(new \DateTime());
-            $trace->setLibelle($formDatas['libelle']);
-            $trace->setContexte($formDatas['contexte']);
-            if (!empty($formDatas['dateRealisation'])) {
-                $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
-            } else {
-                $trace->setDateRealisation(null);
-            }
-            $trace->setLegende($formDatas['legende']);
-            $trace->setDescription($formDatas['description']);
-            $this->traceRepository->save($trace, true);
-
-            // récupérer les compétences stockées dans la session à la construction du formulaire
-            $competences = $request->getSession()->get('competences');
-
-            if (isset($request->request->all()['trace_abstract']['competences']) && !empty($request->request->all()['trace_abstract']['competences'])) {
-                // récupérer les compétences qui ont été sélectionnées dans le formulaire
-                $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
-
-                $selectedCompetences = [];
-
-                $competences = array_flip($competences);
-
-                foreach ($submittedCompetenceIds as $id) {
-                    // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
-                    if (isset($competences[$id])) {
-                        $selectedCompetences[$id] = $competences[$id];
+                        // retourner au referer
+                        return $this->redirect($referer . '?type=' . $selectedTraceType);
                     }
                 }
+            } else {
+                if (isset($data[$key])) {
+                    $content = $data[$key];
+                } else {
+                    $content = [];
+                }
+            }
+            $trace->setType($typeTrace::class);
 
-                $apcNiveaux = [];
-                $apcApprentissageCritiques = [];
+        } else {
+            $typeTrace = $trace->getType();
+            $content = [];
+            $trace->setType($typeTrace);
+        }
+
+        $trace->setContenu($content);
+        $trace->setBibliotheque($bibliotheque);
+        $trace->setDateCreation(new \DateTime());
+        $trace->setLibelle($formDatas['libelle']);
+        $trace->setContexte($formDatas['contexte']);
+        if (!empty($formDatas['dateRealisation'])) {
+            $trace->setDateRealisation(\DateTime::createFromFormat('m-Y', $formDatas['dateRealisation']));
+        } else {
+            $trace->setDateRealisation(null);
+        }
+        $trace->setLegende($formDatas['legende']);
+        $trace->setDescription($formDatas['description']);
+        $this->traceRepository->save($trace, true);
+
+        // récupérer les compétences stockées dans la session à la construction du formulaire
+        $competences = $request->getSession()->get('competences');
+
+        if (isset($request->request->all()['trace_abstract']['competences']) && !empty($request->request->all()['trace_abstract']['competences'])) {
+            // récupérer les compétences qui ont été sélectionnées dans le formulaire
+            $submittedCompetenceIds = $request->request->all()['trace_abstract']['competences'];
+
+            $selectedCompetences = [];
+
+            $competences = array_flip($competences);
+
+            foreach ($submittedCompetenceIds as $id) {
+                // recouper les compétences sélectionnées avec les compétences stockées dans la session pour récupérer les libellés et les id
+                if (isset($competences[$id])) {
+                    $selectedCompetences[$id] = $competences[$id];
+                }
+            }
+
+            $apcNiveaux = [];
+            $apcApprentissageCritiques = [];
 
 
-                foreach ($selectedCompetences as $id => $libelle) {
-                    // vérifier si un ApcNiveau existe avec l'id et le libellé
-                    $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
-                    if ($apcNiveau) {
-                        $apcNiveaux[] = $apcNiveau;
+            foreach ($selectedCompetences as $id => $libelle) {
+                // vérifier si un ApcNiveau existe avec l'id et le libellé
+                $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                if ($apcNiveau) {
+                    $apcNiveaux[] = $apcNiveau;
+                    $validation = new Validation();
+                    $validation->setApcNiveau($apcNiveau);
+                    $validation->setTrace($trace);
+                    $validation->setEtat(0);
+                    $validation->setDateCreation(new \DateTime());
+                    $this->validationRepository->save($validation, true);
+                } else {
+                    // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
+                    $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
+                    if ($apcApprentissageCritique) {
+                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
                         $validation = new Validation();
-                        $validation->setApcNiveau($apcNiveau);
+                        $validation->setApcApprentissageCritique($apcApprentissageCritique);
                         $validation->setTrace($trace);
                         $validation->setEtat(0);
                         $validation->setDateCreation(new \DateTime());
                         $this->validationRepository->save($validation, true);
-                    } else {
-                        // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
-                        $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
-                        if ($apcApprentissageCritique) {
-                            $apcApprentissageCritiques[] = $apcApprentissageCritique;
-                            $validation = new Validation();
-                            $validation->setApcApprentissageCritique($apcApprentissageCritique);
-                            $validation->setTrace($trace);
-                            $validation->setEtat(0);
-                            $validation->setDateCreation(new \DateTime());
-                            $this->validationRepository->save($validation, true);
-                        }
                     }
                 }
             }
@@ -327,7 +317,8 @@ class TraceController extends BaseController
         return $this->redirectToRoute('app_biblio_traces');
     }
 
-    // todo: à revoir
+
+    // todo: refactor
     #[Route('/trace/edit/{id}', name: 'app_trace_edit')]
     public function edit(int $id, Request $request): Response
     {
@@ -382,7 +373,7 @@ class TraceController extends BaseController
         ]);
     }
 
-    // todo: à revoir
+    // todo: refactor
     #[Route('/trace/{id}/sauvegarde', name: 'app_trace_edit_sauvegarde')]
     public function sauvegardeEditTrace(?int $id, Request $request, ?string $origin): Response
     {

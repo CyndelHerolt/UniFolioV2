@@ -1,9 +1,15 @@
-<turbo-frame id="type-trace-form" class="form-control p-4">
+<turbo-frame id="type-trace-form">
     <label>Contenu média</label>
 
     <div class="types row p-2">
         {% for type in typesTrace %}
-            <a href="{{ path('app_trace_change_type') }}" class="col-12 col-lg-2 p-3">
+            <a
+                    {% if trace.contenu is null or trace.contenu is empty %}
+                        href="{{ path('app_trace_change_type', {'type': constant('CLASS_NAME', type) }) }}"
+                    {% else %}
+                        data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', type) }}"
+                    {% endif %}
+                    class="col-12 col-lg-2 p-3 {% if selectedTraceType == constant('CLASS_NAME', type) %}active{% endif %}">
                 <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
                               length="auto"/>
                 <div>
@@ -12,7 +18,48 @@
                     <small>{{ constant('CONSTRAINT', type) }}</small>
                 </div>
             </a>
+
+
+            <!-- Modal -->
+            <div class="modal fade" id="typeModal{{ constant('TYPE', type) }}" tabindex="-1"
+                 aria-labelledby="typeModal{{ constant('TYPE', type) }}Label"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="typeModal{{ constant('TYPE', type) }}Label">
+                                Modification du type de trace</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex flex-column align-items-center gap-4">
+                            <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
+                            <p class="text-danger">Attention, cette action est irréversible !</p>
+
+                            <p class="w-75">
+                                Si vous changez le type de trace, les médias existants seront perdus. Êtes-vous
+                                sûr de vouloir continuer ?
+                            </p>
+                        </div>
+                        <div class="modal-footer d-flex gap-3">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <a href="{{ path('app_trace_change_type', {'type': constant('CLASS_NAME', type), 'trace': trace.id }) }}"
+                               class="flex-grow-0" style="border: none;">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                    Confirmer
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+
+        {% for type in typesTrace %}
+            {% if selectedTraceType is not null and selectedTraceType == constant('CLASS_NAME', type) %}
+                {% include('trace/form_types/_form_'~constant('TYPE', type)~'.html.twig') %}
+            {% endif %}
         {% endfor %}
     </div>
-
 </turbo-frame>

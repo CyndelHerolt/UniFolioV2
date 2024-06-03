@@ -1,0 +1,18 @@
+<turbo-frame id="type-trace-form" class="form-control p-4">
+    <label>Contenu média</label>
+
+    <div class="types row p-2">
+        {% for type in typesTrace %}
+            <a href="{{ path('app_trace_change_type') }}" class="col-12 col-lg-2 p-3">
+                <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
+                              length="auto"/>
+                <div>
+                    <strong>{{ type.display }}</strong>
+                    <br>
+                    <small>{{ constant('CONSTRAINT', type) }}</small>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+
+</turbo-frame>

@@ -2,19 +2,33 @@
 
 namespace App\Twig\Components;
 
+use App\Components\Trace\Form\TraceAbstractType;
+use App\Components\Trace\TraceRegistry;
+use App\Repository\ApcCompetenceRepository;
+use App\Repository\ApcNiveauRepository;
 use App\Repository\TraceRepository;
+use App\Service\CompetencesService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use GuzzleHttp\Client;
 
 #[AsTwigComponent]
-final class TraceContent
+final class TraceContent extends AbstractController
 {
     public int $id;
 
     public ?array $preview = [];
 
+    public ?bool $edit = false;
+
+    public ?string $row;
+
     public function __construct(
         protected TraceRepository $traceRepository,
+        protected TraceRegistry $traceRegistry,
+        protected ApcCompetenceRepository $competenceRepository,
+        protected ApcNiveauRepository $apcNiveauRepository,
+        protected CompetencesService $competencesService
     )
     {
     }
@@ -87,11 +101,70 @@ final class TraceContent
         ];
     }
 
+    public function getForm()
+    {
+        $trace = $this->traceRepository->find($this->id);
+
+
+        $typesTrace = $this->traceRegistry->getTypeTraces();
+        $user = $this->getUser();
+
+        $competences = $this->competencesService->getCompetences($user);
+
+        if (isset($apcNiveaux)) {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);
+        } else {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
+        }
+
+        return $form->createView();
+    }
+
+    public function getFormType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+
+        $type = $this->traceRegistry->getTypeTrace($trace->getType());
+        $formType = $type::FORM;
+
+//        $formType = $type::FORM;
+        $formType = $this->createForm($formType, $trace);
+        $formType = $formType->createView();
+        $typeTrace = $type::TYPE;
+
+            return $formType;
+    }
+
+    public function getSelectedTraceType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+        $type = $trace->getType();
+
+        return $type;
+    }
+
+    public function getType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+
+        return $trace->getType();
+    }
+
+    public function getTypesTraces()
+    {
+        return $this->traceRegistry->getTypeTraces();
+    }
+
+    public function getTypeTrace($name)
+    {
+        return $this->traceRegistry->getTypeTrace($name);
+    }
+
     public function getTrace()
     {
         $trace = $this->traceRepository->find($this->id);
 
-        if ($trace->getType() === "lien") {
+        if ($trace->getType() === "App\Components\Trace\TypeTrace\TraceLien") {
             $this->preview = [];
             foreach ($trace->getContenu() as $url) {
                 $this->preview[] = $this->getLinkPreview($url);

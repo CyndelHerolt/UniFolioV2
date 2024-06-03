@@ -6,28 +6,31 @@
     {% endblock %}
 
 {% block main %}
-    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_biblio_traces') }}" class="link">Bibliothèque de traces</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Trace {{ trace.libelle }}</li>
-        </ol>
-    </nav>
+    {% import 'macros/breadcrumbs.twig' as breadcrumb_macros %}
+    {{ breadcrumb_macros.breadcrumbs([
+        {'name': 'Accueil', 'url': '/'},
+        {'name': 'Dashboard', 'url': '/etudiant/dashboard'},
+        {'name': 'Bibliothèque de traces', 'url': '/etudiant/bibliotheque/traces'},
+        {'name': 'Trace ' ~ trace.libelle, 'url': null}
+    ]) }}
+
     <section class="container-custom min-vh-100 section-pt">
         <article class="row content-article">
             <div class="card col-12 p-5">
                 {% if portfolio is not null %}
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item breadcrumb-item-secondary"><a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id}) }}">Retour au portfolio</a></li>
-                            <li class="breadcrumb-item breadcrumb-item-secondary" aria-current="page">{{ page.libelle }}</li>
+                            <li class="breadcrumb-item breadcrumb-item-secondary"><a
+                                        href="{{ path('app_portfolio_univ_show', {'id': portfolio.id}) }}">Retour au
+                                    portfolio</a></li>
+                            <li class="breadcrumb-item breadcrumb-item-secondary"
+                                aria-current="page">{{ page.libelle }}</li>
                         </ol>
                     </nav>
 
 
                 {% endif %}
-                <twig:TraceContent id="{{ trace.id }}" edit="{{ edit }}" row="{{ row }}" />
+                <twig:TraceContent id="{{ trace.id }}" edit="{{ edit }}" row="{{ row }}"/>
             </div>
         </article>
     </section>

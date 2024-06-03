@@ -164,7 +164,7 @@ final class TraceContent extends AbstractController
     {
         $trace = $this->traceRepository->find($this->id);
 
-        if ($trace->getType() === "lien") {
+        if ($trace->getType() === "App\Components\Trace\TypeTrace\TraceLien") {
             $this->preview = [];
             foreach ($trace->getContenu() as $url) {
                 $this->preview[] = $this->getLinkPreview($url);

@@ -56,12 +56,12 @@ class TraceImage extends AbstractTrace
                 }
                     $fileName = uniqid() . '.' . $image->guessExtension();
                     $image->move($_ENV['PATH_FILES'], $fileName);
-                    $contenu[] = $_ENV['SRC_FILES'] . '/' . $fileName;
+                    $content[] = $_ENV['SRC_FILES'] . '/' . $fileName;
             }
         } else {
             return ['success' => false, 'error' => 'Le contenu est vide'];
         }
 
-        return ['success' => true, 'contenu' => $contenu];
+        return ['success' => true, 'contenu' => $content];
     }
 }

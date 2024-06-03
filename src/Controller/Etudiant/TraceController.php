@@ -93,6 +93,14 @@ class TraceController extends BaseController
         ]);
     }
 
+    #[Route('/trace/change/type', name: 'app_trace_change_type')]
+    public function changeType(Request $request): void
+    {
+        $type = $request->query->get('type');
+        // set the type in the session
+        $request->getSession()->set('selected_trace_type', $type);
+    }
+
     #[Route('/trace/show/{id}/edit', name: 'app_trace_show_edit')]
     public function showEdit(?int $id, ?string $row, ?bool $edit, Request $request): Response
     {
@@ -104,6 +112,7 @@ class TraceController extends BaseController
     }
 
 
+    // todo: à revoir
     #[Route('/trace/show/{id}/edit/{type}', name: 'app_trace_show_edit_type')]
     public function showEditType(?int $id, $type, Request $request): Response
     {
@@ -114,11 +123,12 @@ class TraceController extends BaseController
         $trace->setType($typeTrace::class);
         $this->traceRepository->save($trace, true);
         // Stocker le type de trace dans la session
-        $request->getSession()->set('selected_trace_type', $type);
+//        $request->getSession()->set('selected_trace_type', $type);
 
         return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => true, 'row' => "type"]);
     }
 
+    // todo: à revoir
     #[Route('/trace/new', name: 'app_trace_new')]
     public function new(Request $request): Response
     {
@@ -166,6 +176,7 @@ class TraceController extends BaseController
         ]);
     }
 
+    // todo: à revoir
     #[Route('/trace/new/{type}', name: 'app_trace_new_type')]
     public function newType($type, Request $request): Response
     {
@@ -175,6 +186,7 @@ class TraceController extends BaseController
         return $this->redirectToRoute('app_trace_new', ['type' => $type]);
     }
 
+    // todo: à revoir
     #[Route('/trace/edit/{id}/{type}', name: 'app_trace_edit_type')]
     public function editType(?int $id, $type, Request $request): Response
     {
@@ -187,6 +199,7 @@ class TraceController extends BaseController
         return $this->redirectToRoute('app_trace_edit', ['type' => $type, 'id' => $id]);
     }
 
+    // todo: à revoir
     #[Route('/trace/sauvegarde', name: 'app_trace_new_sauvegarde')]
     public function sauvegardeNewTrace(Request $request): Response
     {
@@ -213,10 +226,7 @@ class TraceController extends BaseController
 
         $typeTrace = $this->traceRegistry->getTypeTraceFromForm($key);
 
-//        dd($typeTrace);
-
         $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
-
 
         $sauvegarde = $typeTrace->sauvegarde($contenu, null);
         $trace->setType($typeTrace::class);
@@ -264,7 +274,7 @@ class TraceController extends BaseController
             $trace->setDescription($formDatas['description']);
             $this->traceRepository->save($trace, true);
 
-            // récupérer les compétences stockés dans la session à la construction du formulaire
+            // récupérer les compétences stockées dans la session à la construction du formulaire
             $competences = $request->getSession()->get('competences');
 
             if (isset($request->request->all()['trace_abstract']['competences']) && !empty($request->request->all()['trace_abstract']['competences'])) {
@@ -317,6 +327,7 @@ class TraceController extends BaseController
         return $this->redirectToRoute('app_biblio_traces');
     }
 
+    // todo: à revoir
     #[Route('/trace/edit/{id}', name: 'app_trace_edit')]
     public function edit(int $id, Request $request): Response
     {
@@ -371,6 +382,7 @@ class TraceController extends BaseController
         ]);
     }
 
+    // todo: à revoir
     #[Route('/trace/{id}/sauvegarde', name: 'app_trace_edit_sauvegarde')]
     public function sauvegardeEditTrace(?int $id, Request $request, ?string $origin): Response
     {

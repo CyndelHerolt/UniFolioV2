@@ -5,7 +5,11 @@
         {% for type in typesTrace %}
             <a
                     {% if trace.contenu is null or trace.contenu is empty %}
-                        href="{{ path('app_trace_change_type', {'type': constant('CLASS_NAME', type) }) }}"
+                        {% if 'portfolio' in app.request.uri %}
+                            href="{{ path('app_portfolio_univ_edit_trace_type', {'page': page.id, 'type': constant('CLASS_NAME', type), 'step': 'newType'}) }}"
+                        {% else %}
+                            href="{{ path('app_trace_change_type', {'type': constant('CLASS_NAME', type) }) }}"
+                        {% endif %}
                     {% else %}
                         data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', type) }}"
                     {% endif %}
@@ -18,7 +22,6 @@
                     <small>{{ constant('CONSTRAINT', type) }}</small>
                 </div>
             </a>
-
 
             <!-- Modal -->
             <div class="modal fade" id="typeModal{{ constant('TYPE', type) }}" tabindex="-1"

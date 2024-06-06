@@ -1,59 +1,53 @@
-<turbo-frame id="portfolio-form">
-    <ul class="nav nav-tabs">
-        <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'portfolio'}) }}">Portfolio</a>
-        </li>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link" aria-current="page"
+           href="{{ path('app_portfolio_univ_edit_portfolio', {'id': portfolio.id }) }}">Portfolio</a>
+    </li>
 
-        {% if pages is not null %}
-            {% for pageA in pages|sort((a, b) => a.ordre <=> b.ordre) %}
-                <li class="nav-item" value="{{ pageA.id }}">
-                    <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page"
-                       href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': pageA.id, 'edit': false}) }}">{{ pageA.libelle }}</a>
-                </li>
-            {% endfor %}
-        {% endif %}
+    {% if portfolio.pages is not null %}
+        {% for pageA in portfolio.pages|sort((a, b) => a.ordre <=> b.ordre) %}
+            <li class="nav-item" value="{{ pageA.id }}">
+                <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page"
+                   href="{{ path('app_portfolio_univ_edit_page', {'id': pageA.id, 'edit': false}) }}">{{ pageA.libelle }}</a>
+            </li>
+        {% endfor %}
+    {% endif %}
 
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newPage'}) }}">Ajouter
-                une page</a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_portfolio_univ_edit_new_page', {'id': portfolio.id}) }}">Ajouter
+            une page</a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="#">Cv</a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Cv</a>
+    </li>
 
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
-                quitter</a>
-        </li>
-    </ul>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
+            quitter</a>
+    </li>
+</ul>
 
-    <div class="row">
-        {% if edit == true %}
-            {{ form_start(form, {'action': path('app_portfolio_univ_edit', {'id': portfolio.id, 'step': 'page', 'page': page.id})}) }}
-            <div class="col-12 p-2">
-                {{ form_row(form.libelle) }}
-            </div>
-            <div class="col-12 p-2">
-                {{ form_row(form.description) }}
-            </div>
-            <button type="submit" class="btn btn-primary text-uppercase">Enregistrer les modifications
-            </button>
-            {{ form_end(form) }}
-        {% else %}
-            <div class="col-10 p-2">
-                <h2>{{ page.libelle }}</h2>
-                <em>{{ page.description }}</em>
-            </div>
-            <div class="col-1 p-2 d-flex align-items-center">
-                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': page.id, 'edit': true}) }}"
-                   class="btn btn-primary text-uppercase">Modifier</a>
-            </div>
-        {% endif %}
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-12">
+<div class="row">
+
+    <turbo-frame id="page-form">
+    <div class="col-10 p-2">
+            <h2>{{ page.libelle }}</h2>
+            <em>{{ page.description }}</em>
+        </div>
+        <div class="col-1 p-2 d-flex align-items-center gap-3">
+            <a href="{{ path('app_portfolio_univ_edit_page', {'id': page.id, 'edit': true}) }}"
+               class="btn btn-primary text-uppercase">Modifier</a>
+            <a href="{{ path('app_portfolio_univ_edit_delete_page', {'id': page.id}) }}"
+               class="btn btn-secondary text-uppercase">Supprimer</a>
+        </div>
+    </turbo-frame>
+
+</div>
+<hr>
+<div class="row">
+    <div class="col-12">
+        <turbo-frame id="trace-form" action="replace">
             <div class="btn_group">
                 <button class="btn btn-primary text-uppercase m-2" data-bs-toggle="modal"
                         data-bs-target="#staticBackdropAddTraces">
@@ -71,23 +65,23 @@
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'addTrace', 'page': page.id}) }}"
+                                <form action=""
                                       method="post">
                                     <div class="row">
                                         {% if traces is not empty %}
-                                        {% for trace in traces|sort((a, b) => a.dateCreation <=> b.dateCreation) %}
-                                            <div class="col-lg-4">
-                                                <input type="checkbox" class="btn-check" id="trace{{ trace.id }}"
-                                                       name="traces[]" value="{{ trace.id }}" autocomplete="off">
-                                                <label class="btn btn-light" for="trace{{ trace.id }}">
-                                                    <twig:TraceCard id="{{ trace.id }}"/>
-                                                </label>
-                                            </div>
-                                        {% endfor %}
+                                            {% for trace in traces|sort((a, b) => a.dateCreation <=> b.dateCreation) %}
+                                                <div class="col-lg-4">
+                                                    <input type="checkbox" class="btn-check" id="trace{{ trace.id }}"
+                                                           name="traces[]" value="{{ trace.id }}" autocomplete="off">
+                                                    <label class="btn btn-light" for="trace{{ trace.id }}">
+                                                        <twig:TraceCard id="{{ trace.id }}"/>
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
                                         {% else %}
                                             <div class="col-12 d-flex flex-column align-items-center">
                                                 <p class="text-center">Aucune trace disponible.</p>
-                                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
+                                                <a href="{{ path('app_portfolio_univ_edit_add_trace', {'id': page.id}) }}">
                                                     <button class="btn btn-secondary text-uppercase m-2"
                                                             data-bs-dismiss="modal">
                                                         Créer une trace
@@ -111,80 +105,82 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'newTrace', 'page': page.id}) }}">
+                <a href="{{ path('app_portfolio_univ_edit_add_trace', {'id': page.id}) }}">
                     <button class="btn btn-primary text-uppercase m-2">
                         Créer une trace
                     </button>
                 </a>
             </div>
-            <div class="row d-flex flex-column g-5 mt-3">
-                {% for trace in tracesPage %}
-                    <div class="col-12">
-                        <twig:TracePortfolioPreview id="{{ trace.id }}"/>
-                        <div class="d-flex flex-row justify-content-evenly align-items-center bg-light p-3">
-                            {% set currentTracePage = trace.tracePages|filter(tracePage => tracePage.page == page)|first %}
-                            {% if currentTracePage.ordre != 1 %}
-                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'upTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="déplacer vers le haut">
-                                    <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/>
-                                </a>
-                            {% else %}
-                                <button class="btn p-0 m-0 border-0" disabled>
-                                    <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/>
-                                </button>
-                            {% endif %}
-                            {% set totalTraces = tracesPage|length %}
-                            {% if currentTracePage.ordre != totalTraces %}
-                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'downTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="déplacer vers le bas">
-                                    <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
-                                </a>
-                            {% else %}
-                                <button class="btn p-0 m-0 border-0" disabled>
-                                    <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
-                                </button>
-                            {% endif %}
-                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'editTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer">
-                                <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/>
-                            </a>
-                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'showTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">
-                                <twig:ux:icon name="bi:eye-fill" width="15" height="auto"/>
-                            </a>
-{#                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="auto-évaluation">#}
-{#                                <twig:ux:icon name="bi:sliders" width="15" height="auto"/>#}
-{#                            </a>#}
-                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}" class="delete-link" title="supprimer" data-bs-toggle="modal"
-                               data-bs-target="#staticBackdropDelete">
-                                <twig:ux:icon name="bi:trash-fill" width="15" height="auto"/>
-                            </a>
-                            <!-- Modal Delete -->
-                            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
-                                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous retirer cette trace du portfolio
-                                                ?</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p style="color: red">La trace ne sera pas supprimée mais seulement retirée du portfolio.</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler
-                                            </button>
-                                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}">
-                                                <button class="btn btn-primary" data-bs-dismiss="modal">
-                                                    Valider
-                                                </button>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
+        </turbo-frame>
+
+
+        <div class="row d-flex flex-column g-5 mt-3">
+            {% for trace in tracesPage %}
+                <div class="col-12">
+                    <twig:TracePortfolioPreview id="{{ trace.id }}"/>
+                    {#                        <div class="d-flex flex-row justify-content-evenly align-items-center bg-light p-3"> #}
+                    {#                            {% set currentTracePage = trace.tracePages|filter(tracePage => tracePage.page == page)|first %} #}
+                    {#                            {% if currentTracePage.ordre != 1 %} #}
+                    {#                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'upTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="déplacer vers le haut"> #}
+                    {#                                    <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/> #}
+                    {#                                </a> #}
+                    {#                            {% else %} #}
+                    {#                                <button class="btn p-0 m-0 border-0" disabled> #}
+                    {#                                    <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/> #}
+                    {#                                </button> #}
+                    {#                            {% endif %} #}
+                    {#                            {% set totalTraces = tracesPage|length %} #}
+                    {#                            {% if currentTracePage.ordre != totalTraces %} #}
+                    {#                                <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'downTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="déplacer vers le bas"> #}
+                    {#                                    <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/> #}
+                    {#                                </a> #}
+                    {#                            {% else %} #}
+                    {#                                <button class="btn p-0 m-0 border-0" disabled> #}
+                    {#                                    <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/> #}
+                    {#                                </button> #}
+                    {#                            {% endif %} #}
+                    {#                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'editTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer"> #}
+                    {#                                <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/> #}
+                    {#                            </a> #}
+                    {#                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'showTrace', 'page': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="voir"> #}
+                    {#                                <twig:ux:icon name="bi:eye-fill" width="15" height="auto"/> #}
+                    {#                            </a> #}
+                    {#                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="auto-évaluation"> #}
+                    {#                                <twig:ux:icon name="bi:sliders" width="15" height="auto"/> #}
+                    {#                            </a> #}
+                    {#                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}" class="delete-link" title="supprimer" data-bs-toggle="modal" #}
+                    {#                               data-bs-target="#staticBackdropDelete"> #}
+                    {#                                <twig:ux:icon name="bi:trash-fill" width="15" height="auto"/> #}
+                    {#                            </a> #}
+                    {#                            <!-- Modal Delete --> #}
+                    {#                            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static" #}
+                    {#                                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"> #}
+                    {#                                <div class="modal-dialog"> #}
+                    {#                                    <div class="modal-content"> #}
+                    {#                                        <div class="modal-header"> #}
+                    {#                                            <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous retirer cette trace du portfolio #}
+                    {#                                                ?</h5> #}
+                    {#                                            <button type="button" class="btn-close" data-bs-dismiss="modal" #}
+                    {#                                                    aria-label="Close"></button> #}
+                    {#                                        </div> #}
+                    {#                                        <div class="modal-body"> #}
+                    {#                                            <p style="color: red">La trace ne sera pas supprimée mais seulement retirée du portfolio.</p> #}
+                    {#                                        </div> #}
+                    {#                                        <div class="modal-footer"> #}
+                    {#                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler #}
+                    {#                                            </button> #}
+                    {#                                            <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'deleteTrace', 'page': page.id, 'trace': trace.id}) }}"> #}
+                    {#                                                <button class="btn btn-primary" data-bs-dismiss="modal"> #}
+                    {#                                                    Valider #}
+                    {#                                                </button> #}
+                    {#                                            </a> #}
+                    {#                                        </div> #}
+                    {#                                    </div> #}
+                    {#                                </div> #}
+                    {#                            </div> #}
+                    {#                        </div> #}
+                </div>
+            {% endfor %}
         </div>
     </div>
-</turbo-frame>
+</div>

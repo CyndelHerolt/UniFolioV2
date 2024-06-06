@@ -21,14 +21,16 @@ use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
 use App\Service\CompetencesService;
 use App\Service\DataUserSessionService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 #[Route('/etudiant')]
 class TraceController extends BaseController
 {
+
+    use TargetPathTrait;
 
     public function __construct(
         private readonly ApcNiveauRepository                $apcNiveauRepository,
@@ -219,6 +221,8 @@ class TraceController extends BaseController
                         $content = array_merge($sauvegarde['contenu'], $existingContenu);
                     } else {
                         $this->addFlash('danger', $sauvegarde['error']);
+                        //todo: service check referer/site domain
+
                         // récupérer le nom de la route émettrice
                         $referer = $request->headers->get('referer');
                         // retourner au referer

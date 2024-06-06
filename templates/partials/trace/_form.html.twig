@@ -1,0 +1,47 @@
+<turbo-frame id="trace-form">
+    {{ form_start(form) }}
+
+    {{ form_errors(form) }}
+
+    <div class="visually-hidden">
+        {{ form_row(form.date_creation) }}
+        {{ form_row(form.date_modification) }}
+    </div>
+
+    <div class="row">
+        <div class="col-12 p-2">
+            {{ form_row(form.libelle) }}
+        </div>
+        <div class="col-6 p-2">
+            {{ form_row(form.contexte) }}
+        </div>
+        <div class="col-6 p-2">
+            {{ form_row(form.dateRealisation) }}
+        </div>
+
+        {{ include('partials/trace/_type_trace_form.html.twig') }}
+
+        <div class="col-12 p-2">
+            {{ form_row(form.legende) }}
+        </div>
+        <div class="col-12 p-2">
+            {{ form_row(form.description) }}
+        </div>
+        <div class="col-12 p-2">
+            <h5>Compétences relatives à cette trace <span style="color: red">*</span></h5>
+            {% block choice_widget_expanded %}
+                <div class="competence-bloc">
+                    {% for child in form.competences %}
+                        <div class="competence-choice">
+                            {{ form_widget(child) }}
+                            {{ form_label(child) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endblock %}
+        </div>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
+    {{ form_end(form) }}
+</turbo-frame>

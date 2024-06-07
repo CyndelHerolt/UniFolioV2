@@ -21,64 +21,74 @@
                     <div class="card-header d-flex justify-content-between">
                         {% if 'edit' in app.request.uri %}
                             <h2>Edition de la trace "{{ trace.libelle }}"</h2>
-{#                            {% if origin is not null and origin == 'show' %}#}
-{#                                <a href="{{ path('app_trace_show', {'id': trace.id}) }}">#}
-{#                                    <button class="btn btn-primary">#}
-{#                                        Retour à la trace#}
-{#                                    </button>#}
-{#                                </a>#}
-{#                            {% endif %}#}
+                            {#                            {% if origin is not null and origin == 'show' %} #}
+                            {#                                <a href="{{ path('app_trace_show', {'id': trace.id}) }}"> #}
+                            {#                                    <button class="btn btn-primary"> #}
+                            {#                                        Retour à la trace #}
+                            {#                                    </button> #}
+                            {#                                </a> #}
+                            {#                            {% endif %} #}
                         {% else %}
                             <h2>Création d'une trace</h2>
                         {% endif %}
                     </div>
 
                     <turbo-frame id="trace-form">
-                    {{ form_start(form, {'action': path('app_trace_save', {'trace': trace.id}),'attr': {'enctype': 'multipart/form-data'}}) }}
+                        {{ form_start(form, {'action': path('app_trace_save', {'trace': trace.id}),'attr': {'enctype': 'multipart/form-data'}}) }}
 
-                    {{ form_errors(form) }}
+                        {{ form_errors(form) }}
 
-                    <div class="visually-hidden">
-                        {{ form_row(form.date_creation) }}
-                        {{ form_row(form.date_modification) }}
-                    </div>
-
-                    <div class="row">
-                        <div class="col-12 p-2">
-                            {{ form_row(form.libelle) }}
-                        </div>
-                        <div class="col-6 p-2">
-                            {{ form_row(form.contexte) }}
-                        </div>
-                        <div class="col-6 p-2">
-                            {{ form_row(form.dateRealisation) }}
+                        <div class="visually-hidden">
+                            {{ form_row(form.date_creation) }}
+                            {{ form_row(form.date_modification) }}
                         </div>
 
-                        {{ include('partials/trace/_type_trace_form.html.twig') }}
+                        <div class="row">
+                            <div class="col-12 p-2">
+                                {{ form_row(form.libelle) }}
+                            </div>
+                            <div class="col-6 p-2">
+                                {{ form_row(form.contexte) }}
+                            </div>
+                            <div class="col-6 p-2">
+                                {{ form_row(form.dateRealisation) }}
+                            </div>
 
-                        <div class="col-12 p-2">
-                            {{ form_row(form.legende) }}
+                            {{ include('partials/trace/_type_trace_form.html.twig') }}
+
+                            <div class="col-12 p-2">
+                                {{ form_row(form.legende) }}
+                            </div>
+                            <div class="col-12 p-2">
+                                {{ form_row(form.description) }}
+                            </div>
+                            <div class="col-12 p-2">
+                                <h5>Compétences relatives à cette trace <span style="color: red">*</span></h5>
+                                {% block choice_widget_expanded %}
+                                    <div class="competence-bloc">
+                                        {% for child in form.competences %}
+                                            <div class="competence-choice">
+                                                {{ form_widget(child) }}
+                                                {{ form_label(child) }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endblock %}
+                            </div>
                         </div>
-                        <div class="col-12 p-2">
-                            {{ form_row(form.description) }}
-                        </div>
-                        <div class="col-12 p-2">
-                            <h5>Compétences relatives à cette trace <span style="color: red">*</span></h5>
-                            {% block choice_widget_expanded %}
-                                <div class="competence-bloc">
-                                    {% for child in form.competences %}
-                                        <div class="competence-choice">
-                                            {{ form_widget(child) }}
-                                            {{ form_label(child) }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endblock %}
-                        </div>
-                    </div>
-                    <hr>
-                    <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
-                    {{ form_end(form) }}
+                        <hr>
+                        <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
+                        <a
+
+                                {% if 'portfolio' in app.request.uri %}
+                                href="{{ path('app_portfolio_univ_edit_page', {'id': page.id}) }}"
+                                {% else %}
+                                href="{{ path('app_trace_show', {'id': trace.id}) }}"
+                                {% endif %}
+                        >
+                            <button type="button" class="btn btn-primary text-uppercase">Annuler</button>
+                        </a>
+                        {{ form_end(form) }}
                     </turbo-frame>
                 </div>
             </article>

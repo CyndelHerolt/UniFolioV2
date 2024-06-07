@@ -54,6 +54,18 @@ class TraceController extends BaseController
         );
     }
 
+    #[Route('/traces', name: 'app_biblio_traces')]
+    public function index(): Response
+    {
+        if ($this->isGranted('ROLE_ETUDIANT')) {
+
+            return $this->render('trace/index.html.twig');
+
+        } else {
+            return $this->render('security/accessDenied.html.twig');
+        }
+    }
+
     #[Route('/trace/show/{id}', name: 'app_trace_show')]
     public function show(?int $id, ?bool $edit, Request $request): Response
     {

@@ -78,18 +78,16 @@
                         </div>
                         <hr>
                         <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
-                        <a
-
-                                {% if 'portfolio' in app.request.uri %}
-                                href="{{ path('app_portfolio_univ_edit_page', {'id': page.id}) }}"
-                                {% else %}
-                                href="{{ path('app_trace_show', {'id': trace.id}) }}"
-                                {% endif %}
-                        >
-                            <button type="button" class="btn btn-primary text-uppercase">Annuler</button>
-                        </a>
+                        {% if 'portfolio' in app.request.uri %}
+                            <a href="{{ path('app_portfolio_univ_edit_page', {'id': page.id}) }}">
+                                <button type="button" class="btn btn-primary text-uppercase">Annuler</button>
+                            </a>
+                        {% endif %}
                         {{ form_end(form) }}
                     </turbo-frame>
+                    <a href="{{ path('app_biblio_traces') }}">
+                        <button type="button" class="btn btn-primary text-uppercase">Annuler</button>
+                    </a>
                 </div>
             </article>
             <aside class="col-lg-4 col-12">

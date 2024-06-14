@@ -281,13 +281,11 @@ class PortfolioUnivController extends BaseController
         ]);
     }
 
-    //todo: corriger l'ensemble de la logique
     #[Route('/edit/page/{page}/trace/type', name: 'app_portfolio_univ_edit_trace_type')]
     public function editPortfolioTraceType(Request $request, ?int $page): Response
     {
         $type = $request->query->get('type');
-        dump($request->query->get('trace'));
-        $trace = $this->traceRepository->find($request->query->get('trace'));
+        $page = $this->pageRepository->find($page);
 
         // stocker le type de trace dans la session
         $request->getSession()->set('selected_trace_type', $type);
@@ -297,6 +295,25 @@ class PortfolioUnivController extends BaseController
             $trace->setContenu([]);
             $trace->setType($type);
             $this->traceRepository->save($trace, true);
+        } else {
+            $trace = new Trace();
+        }
+
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
+
+        if ($selectedTraceType !== null) {
+            $formType = $selectedTraceType::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+            $typeTrace = $selectedTraceType::TYPE;
+        } elseif ($trace->getType() !== null) {
+            $selectedTraceType = $trace->getType();
+            $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+            $typeTrace = $this->traceRegistry->getTypeTrace($selectedTraceType)::TYPE;
+        } else {
+            $formType = null;
         }
 
         $typesTrace = $this->traceRegistry->getTypeTraces();
@@ -305,7 +322,10 @@ class PortfolioUnivController extends BaseController
             'page' => $page,
             'typesTrace' => $typesTrace,
             'type' => $type,
-            'trace' => $trace
+            'trace' => $trace ?? new Trace(),
+            'selectedTraceType' => $selectedTraceType,
+            'formType' => $formType,
+            'typeTrace' => $typeTrace,
         ]);
     }
 

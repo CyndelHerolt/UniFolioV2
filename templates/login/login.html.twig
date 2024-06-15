@@ -11,13 +11,10 @@
         <div class="row justify-content-center w-100">
             <div class="card col-6">
                 <article class="p-5">
-                    <div class="corner-img">
-                        <img src="{{ asset('images/registration.png') }}" alt="illustration d'inscription">
-                    </div>
                     <div class="form-alone">
                         <div class="form-header">
                             <h2 class="form-title text-center text-uppercase">Connexion</h2>
-                            <p class="form-text">
+                            <p>
                                 N'oubliez pas, vous devez être inscrit et avoir vérifié votre compte pour pouvoir vous
                                 connecter.
                             </p>
@@ -68,9 +65,9 @@
                         </form>
                         <div class="form-footer">
                             <p class="text-center p-0 m-0">
-                                <a href="{{ path('app_verify_resend_email') }}" class=" form-text">Renvoyer le mail de vérification de compte</a>
+                                <a href="{{ path('app_verify_resend_email') }}">Renvoyer le mail de vérification de compte</a>
                             </p>
-                            <p class="text-center form-text">Vous n'avez pas encore créé votre compte ? <a
+                            <p class="text-center">Vous n'avez pas encore créé votre compte ? <a
                                         href="{{ path('app_register') }}">Inscription</a></p>
                         </div>
                     </div>

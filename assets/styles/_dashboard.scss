@@ -1,0 +1,33 @@
+.home-panel {
+
+  .card {
+    padding: $large-padding;
+    text-decoration: none;
+
+    img {
+      width: 10rem;
+    }
+
+    h2 {
+      text-transform: uppercase;
+      font-size: $h4-size;
+      font-weight: $bold;
+    }
+
+    .dashboard-illu {
+      position: absolute;
+      bottom: -1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .panel_link {
+    transition: ease-in-out transform 0.3s;
+
+    &:hover {
+      transform: scale(1.02);
+      transition: ease-in-out transform 0.3s;
+    }
+  }
+}

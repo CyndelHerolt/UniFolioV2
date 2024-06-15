@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
 import './js/a11y.js';
 import './js/tinymce.js';
+import './js/theme.js';
 
 // une fois que tout est chargé
 document.addEventListener('DOMContentLoaded', (event) => {

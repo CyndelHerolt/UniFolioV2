@@ -1,19 +1,29 @@
-// COLORS
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
+// COLORS
 :root {
-  --primary-color: #9a68da;
-  --secondary-color: #FFE483;
-  --tertiary-color: #f6e5ff;
-  --quartenary-color: #ffc608;
-  --primary-color-dark: #7D4ABE;
+  --primary-color: #69387D;
+  --primary-medium-color: #9a66b2;
+  --primary-light-color: #EDECF7;
+  --secondary-color: #F9E37B;
 
   --white: #FFFF;
   --black: rgb(35, 35, 35);
 
-  --text-light-color: #f6f6f6;
-  --text-dark-color: #3a3a3a;
+  --text-color: #54477B;
+  --text-light-color: #ffffff;
+  --text-dark-color: #54477B;
+  --link-color: var(--primary-medium-color);
 
-  --bg-color: #FFFCF3;
+  --bg-color: #E6E4EB;
+  --bg-card-color: #F7F7F7;
+}
+
+body.dark-theme {
+  --bg-color: #202020;
+  --bg-card-color: #282739;
+  --text-color: #efefef;
+  --link-color: #d6d5ff;
 }
 
 $c1: rgb(156, 43, 38);
@@ -44,26 +54,30 @@ $c4Text: rgb(255, 255, 255);
 $c5Text: rgb(255, 255, 255);
 $c6Text: rgb(77, 82, 89);
 
-$c1TextLight:rgb(77, 82, 89);
+$c1TextLight: rgb(77, 82, 89);
 $c2TextLight: rgb(77, 82, 89);
 $c3TextLight: rgb(77, 82, 89);
 $c4TextLight: rgb(77, 82, 89);
 $c5TextLight: rgb(77, 82, 89);
 $c6TextLight: rgb(77, 82, 89);
 
-$c1TextMedium:rgb(255, 255, 255);
+$c1TextMedium: rgb(255, 255, 255);
 $c2TextMedium: rgb(77, 82, 89);
 $c3TextMedium: rgb(77, 82, 89);
 $c4TextMedium: rgb(255, 255, 255);
 $c5TextMedium: rgb(255, 255, 255);
 $c6TextMedium: rgb(77, 82, 89);
 
+// TEXT FONT
+
+$primary-font: 'Lato', sans-serif;
+
 // TEXT SIZES
 
 $small-text: 0.8rem;
-$medium-text: 1rem;
-$large-text: 1.2rem;
-$extra-large-text: 1.5rem;
+$medium-text: 1.5rem;
+$large-text: 2.5rem;
+$extra-large-text: 3.5rem;
 
 $h1-size: 2.5rem;
 $h2-size: 2rem;
@@ -78,6 +92,7 @@ $light: 300;
 $regular: 400;
 $medium: 500;
 $bold: 700;
+$extra-bold: 900;
 
 // MARGINS
 
@@ -102,7 +117,7 @@ $extra-large-radius: 40px;
 
 // SHADOWS
 
-$small-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
-$medium-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
-$large-shadow: 0px 0px 20px 0px rgba(0,0,0,0.75);
-$extra-large-shadow: 0px 0px 40px 0px rgba(0,0,0,0.75);
+$small-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.5);
+$medium-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+$large-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+$extra-large-shadow: 0px 0px 40px 0px rgba(0, 0, 0, 0.5);

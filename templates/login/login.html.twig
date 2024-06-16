@@ -9,16 +9,13 @@
 
     <section class="container-custom d-flex justify-content-center align-items-center min-vh-100 section_banner">
         <div class="row justify-content-center w-100">
-            <div class="card col-6">
+            <div class="card col-lg-6 col-12">
                 <article class="p-5">
-                    <div class="corner-img">
-                        <img src="{{ asset('images/registration.png') }}" alt="illustration d'inscription">
-                    </div>
                     <div class="form-alone">
                         <div class="form-header">
                             <h2 class="form-title text-center text-uppercase">Connexion</h2>
-                            <p class="form-text">
-                                N'oubliez pas, vous devez être inscrit et avoir vérifié votre compte pour pouvoir vous
+                            <p class="text-center">
+                                Vous devez être inscrit et avoir vérifié votre compte pour pouvoir vous
                                 connecter.
                             </p>
                         </div>
@@ -33,12 +30,12 @@
                                             href="{{ path('app_logout') }}">Logout</a>
                                 </div>
                             {% endif %}
-                            <div class="form-input-group">
+                            <div class="form-input-group m-3">
                                 <label for="username">Login URCA</label>
                                 <input type="text" value="{{ last_username }}" name="_username" id="username"
                                        class="form-control" autocomplete="username" required autofocus>
                             </div>
-                            <div class="form-input-group">
+                            <div class="form-input-group m-3">
                                 <label for="password">Mot de passe</label>
                                 <input type="password" name="_password" id="password" class="form-control"
                                        autocomplete="current-password" required>
@@ -52,25 +49,25 @@
                             {#            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality. #}
                             {#            See https://symfony.com/doc/current/security/remember_me.html #}
 
-                            <div class="form-input-group">
+                            <div class="form-input-group m-3">
                                 <div class="checkbox mb-3">
                                     <label>
-                                        <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                                        <input type="checkbox" class="form-check-input" name="_remember_me"> Se souvenir de moi
                                     </label>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-center align-items-center m-3">
-                            <button class="btn btn-primary" type="submit">
+                            <button class="primary-btn" type="submit">
                                 Se connecter
                             </button>
                             </div>
                         </form>
                         <div class="form-footer">
-                            <p class="text-center p-0 m-0">
-                                <a href="{{ path('app_verify_resend_email') }}" class=" form-text">Renvoyer le mail de vérification de compte</a>
+                            <p class="text-center p-0 m-3">
+                                <a href="{{ path('app_verify_resend_email') }}">Renvoyer le mail de vérification de compte</a>
                             </p>
-                            <p class="text-center form-text">Vous n'avez pas encore créé votre compte ? <a
+                            <p class="text-center">Vous n'avez pas encore créé votre compte ? <a
                                         href="{{ path('app_register') }}">Inscription</a></p>
                         </div>
                     </div>

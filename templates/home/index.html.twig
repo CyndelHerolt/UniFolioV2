@@ -7,7 +7,41 @@
 
 {% block main %}
 
-    <section class="container-custom d-flex justify-content-center align-items-center min-vh-100">
-        <h1>HELLO</h1>
+    <section class="landing d-flex justify-content-between">
+        <article>
+            <div class="logo_bg" style="background-image: url({{ asset('images/logo_bg.png') }})"></div>
+            <h1><span>Simplifier</span> la création et l'évaluation des portfolios universitaires</h1>
+            {# quickly highlight key product use cases #}
+            <p>Centralisez les portfolios, améliorez la collaboration de l'équipe pédagogique et suivez les progrès des
+                étudiants au cours de leur parcours universitaire.</p>
+        </article>
+        <aside class="overflow-hidden" style="background-image: url({{ asset('images/illu_landing.png') }})">
+        </aside>
+    </section>
+
+    <section class="demo">
+        <div class="card">
+            <img src="{{ asset('images/unifolio_preview.png') }}" alt="demo">
+            <div class="demo_actions">
+                <h3>Quelle démo veux-tu visionner ?</h3>
+                <small>Choisis le profil qui t'intéresse</small>
+                <div>
+                    <button class="btn btn-primary">Etudiant</button>
+                    <button class="btn btn-primary">Enseignant</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="card w-100">
+            <h3>Référentiel de compétences</h3>
+        </div>
+        <div class="card w-100">
+            <h3>Barème de notation</h3>
+        </div>
+        <div class="card w-100">
+            <h3>Retours pédagogiques</h3>
+        </div>
     </section>
 {% endblock %}

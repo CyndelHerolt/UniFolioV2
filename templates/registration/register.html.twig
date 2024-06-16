@@ -7,14 +7,10 @@
 
 {% block main %}
 
-    <section class="container-custom d-flex justify-content-center align-items-center min-vh-100 pt-5 section_banner">
+    <section class="container-custom d-flex justify-content-center align-items-center min-vh-100 section_banner">
         <div class="row justify-content-center w-100">
             <div class="card flex-row w-50">
                 <article class="p-5">
-                    <div class="corner-img">
-                        <img src="{{ asset('images/registration.png') }}" alt="illustration d'inscription">
-                    </div>
-
                     <div class="form-alone">
                         <div class="form-header">
                             <h2 class="form-title text-center text-uppercase">Inscription</h2>
@@ -29,10 +25,10 @@
                         {{ form_errors(registrationForm) }}
 
                         {{ form_start(registrationForm) }}
-                        <div class="form-input-group">
+                        <div class="form-input-group m-3">
                             {{ form_row(registrationForm.username) }}
                         </div>
-                        <div class="form-input-group">
+                        <div class="form-input-group m-3">
                             {{ form_row(registrationForm.plainPassword) }}
                             {% if registrationForm.plainPassword.vars.errors|length > 0 %}
                                 <div class="invalid-feedback">
@@ -40,20 +36,22 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="form-input-group">
+                        <div class="form-input-group m-3">
                             <label for="pwd2">
                                 Saisir de nouveau le mot de passe
                             </label>
                             <input class="form-control" type="password" name="pwd2" id="pwd2" placeholder="">
                         </div>
-                        <div class="form-input-group">
+                        <div class="form-input-group m-3">
                             <label for="registration_form_agreeTerms" class="required">J'accepte les <a href="">conditions d'utilisation</a></label>
                             {{ form_widget(registrationForm.agreeTerms) }}
                         </div>
-                        <button class="btn btn-primary align-self-center" type="submit">S'inscrire</button>
+                        <div class="d-flex justify-content-center align-items-center m-3">
+                        <button class="primary-btn" type="submit">S'inscrire</button>
+                        </div>
                         {{ form_end(registrationForm) }}
                         <div class="form-footer">
-                            <p class="text-center form-text">Vous êtes déjà inscrit ? <a href="{{ path('app_login') }}">Connexion</a></p>
+                            <p class="text-center">Vous êtes déjà inscrit ? <a href="{{ path('app_login') }}">Connexion</a></p>
                         </div>
                     </div>
                 </article>

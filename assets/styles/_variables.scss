@@ -13,6 +13,7 @@
   --text-color: #54477B;
   --text-light-color: #ffffff;
   --text-dark-color: #54477B;
+  --link-color: var(--primary-medium-color);
 
   --bg-color: #E6E4EB;
   --bg-card-color: #F7F7F7;
@@ -22,6 +23,7 @@ body.dark-theme {
   --bg-color: #202020;
   --bg-card-color: #282739;
   --text-color: #efefef;
+  --link-color: #d6d5ff;
 }
 
 $c1: rgb(156, 43, 38);

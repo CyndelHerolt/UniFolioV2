@@ -25,7 +25,7 @@ body {
         justify-content: center;
         width: 40px;
         height: 40px;
-        padding: 10px;
+        padding: 5px;
         background-color: white;
         border-radius: 5px;
         margin-right: 3rem;
@@ -50,7 +50,7 @@ body {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: var(--text-light-color);
+            color: var(--text-light-color) !important;
             transition: 0.3s;
 
             &:hover {
@@ -69,8 +69,22 @@ body {
     }
   }
 
+  .dropdown-menu {
+    background-color: var(--bg-card-color);
+
+    .dropdown-item {
+      color: var(--text-color) !important;
+
+        &:hover {
+            background-color: var(--primary-light-color);
+            color: var(--text-dark-color) !important;
+        }
+    }
+  }
+
+
   section {
-    padding: 8rem;
+    padding: 10rem;
   }
 
   .card {
@@ -80,6 +94,10 @@ body {
     border-radius: $medium-radius;
     padding: $large-padding;
     margin: $medium-margin auto;
+
+    .card-header {
+      background-color: transparent;
+    }
   }
 
   footer {
@@ -115,4 +133,26 @@ body {
     transition: 0.3s;
     background-color: darken(#EDECF7FF, 10%);
   }
+}
+
+.help-text {
+  font-weight: $light;
+  margin: $small-margin 0;
+  opacity: .8;
+}
+
+h1 {
+  font-size: $h1-size;
+  font-weight: $extra-bold;
+}
+
+h2 {
+  font-size: $h2-size;
+  font-weight: $extra-bold;
+}
+
+a {
+  color: var(--link-color) !important;
+  text-decoration: none;
+  transition: 0.3s;
 }

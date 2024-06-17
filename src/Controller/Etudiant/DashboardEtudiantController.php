@@ -8,8 +8,11 @@ use App\Repository\BibliothequeRepository;
 use App\Repository\PortfolioPersoRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
+use Pagerfanta\Adapter\ArrayAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -29,7 +32,7 @@ class DashboardEtudiantController extends BaseController
     }
 
     #[Route('/dashboard', name: 'app_dashboard_etudiant')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
         // Vérifier que l'utilisateur est connecté sinon on le redirige vers la page d'erreur
         if (!$this->security->getUser()) {
@@ -46,6 +49,19 @@ class DashboardEtudiantController extends BaseController
         $portfoliosUniv = $this->portfolioUnivRepository->findBy(['etudiant' => $etudiant]);
         $portfoliosPerso = $this->portfolioPersoRepository->findBy(['etudiant' => $etudiant]);
         $portfolios = array_merge($portfoliosUniv, $portfoliosPerso);
+
+        // Créer un adaptateur pour Pagerfanta en utilisant le tableau des portfolios
+        $adapter = new ArrayAdapter($portfolios);
+
+        // Créer une instance de Pagerfanta avec l'adaptateur
+        $pagerfanta = new Pagerfanta($adapter);
+
+        // Définir le nombre maximum d'éléments par page
+        $pagerfanta->setMaxPerPage(4);
+
+        // Définir la page actuelle
+        $pagerfanta->setCurrentPage($request->query->get('page', 1));
+
 
         // Récupérer évals et commentaires
         $retourPedagogiques = [];
@@ -84,7 +100,7 @@ class DashboardEtudiantController extends BaseController
         return $this->render('dashboard_etudiant/index.html.twig', [
             'retourPedagogiques' => $retourPedagogiques,
             'traces' => $traces,
-            'portfolios' => $portfolios,
+            'portfolios' => $pagerfanta,
             'typesTrace' => $typesTrace,
         ]);
     }

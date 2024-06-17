@@ -54,7 +54,18 @@ body {
             transition: 0.3s;
 
             &:hover {
-              color: var(--text-light-color);
+              color: var(--secondary-color) !important;
+
+              div {
+                color: var(--secondary-color) !important;
+              }
+
+              svg {
+
+                path {
+                  color: var(--secondary-color);
+                }
+              }
             }
 
             svg {
@@ -63,8 +74,26 @@ body {
                 color: var(--text-light-color);
               }
             }
+
+            div {
+              color: var(--text-light-color);
+            }
           }
         }
+      }
+    }
+  }
+
+  .breadcrumb-container {
+    position: absolute;
+    top: 7rem;
+    left: 5rem;
+
+    li {
+      color: var(--text-color) !important;
+
+      &:before {
+        color: var(--text-color) !important;
       }
     }
   }
@@ -75,10 +104,10 @@ body {
     .dropdown-item {
       color: var(--text-color) !important;
 
-        &:hover {
-            background-color: var(--primary-light-color);
-            color: var(--text-dark-color) !important;
-        }
+      &:hover {
+        background-color: var(--primary-light-color);
+        color: var(--text-dark-color) !important;
+      }
     }
   }
 
@@ -97,6 +126,13 @@ body {
 
     .card-header {
       background-color: transparent;
+    }
+
+    .card-footer {
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
   }
 
@@ -135,6 +171,26 @@ body {
   }
 }
 
+.nav-btn {
+  background-color: var(--primary-color);
+  color: var(--text-light-color);
+  font-weight: $bold;
+  padding: $small-padding;
+  border-radius: $small-radius;
+  transition: 0.3s;
+
+  path {
+    transition: 0.3s;
+    color: var(--text-light-color);
+  }
+
+  &:hover {
+    transition: 0.3s;
+    background-color: darken(#69387DFF, 10%);
+  }
+
+}
+
 .help-text {
   font-weight: $light;
   margin: $small-margin 0;
@@ -147,12 +203,25 @@ h1 {
 }
 
 h2 {
-  font-size: $h2-size;
-  font-weight: $extra-bold;
+  font-size: $h2-size !important;
+  font-weight: $extra-bold !important;
+  text-transform: uppercase;
 }
 
 a {
   color: var(--link-color) !important;
   text-decoration: none;
   transition: 0.3s;
+
+  &:hover {
+    color: var(--link-hover-color) !important;
+  }
+}
+
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  margin: $medium-margin 0;
+  gap: 1rem;
 }

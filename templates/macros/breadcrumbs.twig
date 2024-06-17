@@ -1,5 +1,5 @@
 {% macro breadcrumbs(items, pages) %}
-    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
+    <nav aria-label="breadcrumb" class="breadcrumb-container">
         <ol class="breadcrumb">
             {% for item in items %}
                 <li class="breadcrumb-item{% if loop.last %} active{% endif %}"{% if loop.last %} aria-current="page"{% endif %}>

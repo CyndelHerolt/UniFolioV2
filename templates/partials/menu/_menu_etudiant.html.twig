@@ -8,58 +8,79 @@
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
-        <div class="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{{ path('app_dashboard_etudiant') }}">Dashboard</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex flex-row" href="#" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false">
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{{ path('app_dashboard_etudiant') }}">
+                    <twig:ux:icon name="fa6-solid:house" width="15" height="15"/>
+                    Dashboard</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    <twig:ux:icon name="bi:collection-fill" width="15" height="15"/>
+                    <div class=" d-flex flex-row align-items-center gap-1">
                         Bibliothèque
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ path('app_biblio_traces') }}">Traces</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_biblio_portfolio_univ') }}">Portfolios universitaires</a></li>
-                        <li><a class="dropdown-item" href="#">Portfolios personnels</a></li>
-                        <li><a class="dropdown-item" href="#">CV</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Bilan pédagogique</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex flex-row gap-2" href="#">Documentation <twig:ux:icon name="mingcute:external-link-line" width="10" height="10"/></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link d-flex flex-row gap-2" href="#">Référentiel de compétences <twig:ux:icon name="mingcute:external-link-line" width="10" height="10"/></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item" data-bs-theme="dark">
-                    <button class="nav-link">
-                        <span class="icon" id="theme-icon"> </span>
-                    </button>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex flex-row" href="#" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Accessibilité
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li class="dropdown-header">Taille de la police</li>
-                        <li><a class="dropdown-item" href="#">Réduire</a></li>
-                        <li><a class="dropdown-item" href="#">Réinitialiser</a></li>
-                        <li><a class="dropdown-item" href="#">Augmenter</a></li>
-                        <li class="dropdown-header">Mode d'affichage</li>
-                        <li><a class="dropdown-item" href="#">Dyslexie</a></li>
-                        <li class="dropdown-item contrast-view">Vue contrastée</li>
-                        <li><a class="dropdown-item" href="#">Mode sombre</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
-                </li>
-            </ul>
-        </div>
+                        <twig:ux:icon name="bi:caret-down-fill" width="8" height="8"/>
+                    </div>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ path('app_biblio_traces') }}">Traces</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_biblio_portfolio_univ') }}">Portfolios
+                            universitaires</a></li>
+                    <li><a class="dropdown-item" href="#">Portfolios personnels</a></li>
+                    <li><a class="dropdown-item" href="#">CV</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <twig:ux:icon name="solar:chart-2-bold" width="15" height="15"/>
+                    Bilan pédagogique</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <twig:ux:icon name="bi:patch-question-fill" width="15" height="15"/>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        Documentation
+                        <twig:ux:icon name="mingcute:external-link-line" width="10" height="10"/>
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <twig:ux:icon name="mdi:list-box" width="15" height="15"/>
+                    <div class="d-flex flex-row gap-1 align-items-center">
+                        Référentiel de compétences
+                        <twig:ux:icon name="mingcute:external-link-line" width="10" height="10"/>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        <ul class="navbar-nav">
+            <li class="nav-item" data-bs-theme="dark">
+                <button class="nav-link">
+                    <span class="icon" id="theme-icon"> </span>
+                </button>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex flex-row" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    Accessibilité
+                </a>
+                <ul class="dropdown-menu">
+                    <li class="dropdown-header">Taille de la police</li>
+                    <li><a class="dropdown-item" href="#">Réduire</a></li>
+                    <li><a class="dropdown-item" href="#">Réinitialiser</a></li>
+                    <li><a class="dropdown-item" href="#">Augmenter</a></li>
+                    <li class="dropdown-header">Mode d'affichage</li>
+                    <li><a class="dropdown-item" href="#">Dyslexie</a></li>
+                    <li class="dropdown-item contrast-view">Vue contrastée</li>
+                    <li><a class="dropdown-item" href="#">Mode sombre</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+            </li>
+        </ul>
+    </div>
 </nav>

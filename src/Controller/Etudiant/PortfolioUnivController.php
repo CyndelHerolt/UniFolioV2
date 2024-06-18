@@ -237,8 +237,8 @@ class PortfolioUnivController extends BaseController
         return $this->redirectToRoute('app_portfolio_univ_edit_portfolio', ['id' => $page->getPortfolio()->getId()]);
     }
 
-    #[Route('/edit/page/{id}/add/trace', name: 'app_portfolio_univ_edit_add_trace')]
-    public function editPortfolioAddTrace(Request $request, ?int $id): Response
+    #[Route('/edit/page/{id}/new/trace', name: 'app_portfolio_univ_edit_new_trace')]
+    public function editPortfolioNewTrace(Request $request, ?int $id): Response
     {
         $page = $this->pageRepository->find($id);
         $edit = false;
@@ -329,6 +329,26 @@ class PortfolioUnivController extends BaseController
             'formType' => $formType,
             'typeTrace' => $typeTrace,
         ]);
+    }
+
+    #[Route('/edit/page/{id}/add/trace', name: 'app_portfolio_univ_edit_add_trace')]
+    public function editPortfolioAddTrace(Request $request, ?int $id): Response
+    {
+        $page = $this->pageRepository->find($id);
+        $traces = $request->request->all()['traces'];
+
+        foreach ($traces as $traceId) {
+            $trace = $this->traceRepository->find($traceId);
+
+            $tracePage = new TracePage();
+            $tracePage->setPage($page);
+            $tracePage->setTrace($trace);
+            $tracePage->setOrdre(count($page->getTracePages()) + 1);
+
+            $this->tracePageRepository->save($tracePage, true);
+        }
+
+        return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
     }
 
 

@@ -169,6 +169,14 @@ body {
     transition: 0.3s;
     background-color: darken(#EDECF7FF, 10%);
   }
+
+  &.active {
+    background-color: darken(#EDECF7FF, 10%);
+  }
+
+  &.disabled {
+    pointer-events: none;
+  }
 }
 
 .secondary-btn {
@@ -238,6 +246,64 @@ body {
     background-color: darken(#69387DFF, 10%);
   }
 
+}
+
+.btn-info {
+  background-color: var(--primary-light-color);
+  color: var(--text-dark-color);
+  font-weight: $bold;
+  padding: $small-padding $medium-padding;
+  border-radius: $small-radius;
+  border: solid 1px var(--primary-color);
+  transition: 0.3s;
+
+  path {
+    transition: 0.3s;
+    color: var(--text-dark-color);
+  }
+
+  &:hover {
+    transition: 0.3s;
+    background-color: darken(#EDECF7FF, 10%);
+  }
+}
+.btn-warning {
+  background-color: #FEF2C9;
+  color: #BCA860;
+  font-weight: $bold;
+  padding: $small-padding $medium-padding;
+  border-radius: $small-radius;
+  border: solid 1px #f6ba4b;
+  transition: 0.3s;
+
+  path {
+    transition: 0.3s;
+    color: #cb9737;
+  }
+
+  &:hover {
+    transition: 0.3s;
+    background-color: darken(#FEF2C9, 10%);
+  }
+}
+.btn-danger {
+  background-color: #FCEAEA;
+  color: #EF6975;
+  font-weight: $bold;
+  padding: $small-padding $medium-padding;
+  border-radius: $small-radius;
+  border: solid 1px #EF6975;
+  transition: 0.3s;
+
+  path {
+    transition: 0.3s;
+    color: #EF6975;
+  }
+
+  &:hover {
+    transition: 0.3s;
+    background-color: darken(#FCEAEA, 10%);
+  }
 }
 
 .help-text {
@@ -417,8 +483,8 @@ table {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 75px;
-  height: 75px;
+  width: 50px;
+  height: 50px;
 }
 
 .circular-chart {
@@ -429,15 +495,15 @@ table {
 
 .circle-bg {
   fill: none;
-  stroke: #eee; // Couleur du cercle de fond
-  stroke-width: 2.8;
+  stroke: var(--primary-light-color);
+  stroke-width: 5;
 }
 
 .circle {
   fill: none;
   stroke: var(--primary-medium-color); // Couleur de la barre de progression
-  stroke-width: 2.8;
-  stroke-linecap: round;
+  stroke-width: 5;
+  stroke-linecap: square;
   animation: progress 1s ease-out forwards;
 }
 
@@ -451,4 +517,5 @@ table {
   fill: var(--text-color);
   font-size: 0.5em;
   text-anchor: middle;
+  font-weight: $extra-bold;
 }

@@ -1,28 +1,28 @@
 <turbo-frame id="portfolio-form">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Portfolio</a>
+            <a class="nav-link active" aria-current="page" data-turbo="false" href="#">Portfolio</a>
         </li>
 
         {% if portfolio.pages is not null %}
             {% for pageA in portfolio.pages|sort((a, b) => a.ordre <=> b.ordre) %}
                 <li class="nav-item" value="{{ pageA.id }}">
-                    <a class="nav-link" aria-current="page"
+                    <a class="nav-link" aria-current="page" data-turbo="false"
                        href="{{ path('app_portfolio_univ_edit_page', {'id': pageA.id}) }}">{{ pageA.libelle }}</a>
                 </li>
             {% endfor %}
         {% endif %}
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_portfolio_univ_edit_new_page', {'id': portfolio.id}) }}">Ajouter une page</a>
+            <a class="nav-link" data-turbo="false" href="{{ path('app_portfolio_univ_edit_new_page', {'id': portfolio.id}) }}">Ajouter une page</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="#">Cv</a>
+            <a class="nav-link" data-turbo="false" href="#">Cv</a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
+            <a class="nav-link" data-turbo="false" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
                 quitter</a>
         </li>
     </ul>

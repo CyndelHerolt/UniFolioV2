@@ -115,6 +115,11 @@
                         {% endif %}
                     </ul>
                 </div>
+            {% else %}
+                <div class="pill-success d-flex align-items-center gap-1">
+                    Trace complète
+                    <twig:ux:icon name="bi:check-circle-fill" width="15" height="15"/>
+                </div>
             {% endif %}
         </td>
         <td>

@@ -11,7 +11,15 @@
         {% for item in items %}
             <tr>
                 {% for key, value in item %}
-                    <td>{{ value }}</td>
+                    {% if key == 'Visibilité' %}
+                        <td>
+                            <div class="{{ value == 'Public' ? 'pill-success' : 'pill-warning' }} {{ loop.first ? 'table-primary-text' : '' }}">{{ value }}</div>
+                        </td>
+                    {% elseif key == 'Année' %}
+                        <td>{{ value != null ? value : '**' }}</td>
+                    {% else %}
+                        <td class="{{ loop.first ? 'table-primary-text' : '' }}">{{ value }}</td>
+                    {% endif %}
                 {% endfor %}
             </tr>
         {% endfor %}

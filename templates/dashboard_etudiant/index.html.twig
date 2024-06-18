@@ -16,7 +16,7 @@
 
         {% set portfolioItems = [] %}
         {% for portfolio in portfolios.currentPageResults %}
-            {% if portfolio.annee %}
+            {% if portfolio.annee is defined %}
                 {% set type = 'Universitaire' %}
             {% else %}
                 {% set type = 'Personnel' %}
@@ -32,7 +32,7 @@
                 'Libellé': portfolio.libelle,
                 'Type': type,
                 'Visibilité': visibilite,
-                'Année': portfolio.annee.libelle,
+                'Année': portfolio.annee.libelle ?? null,
                 'Dernière modification': portfolio.dateModification|date('d/m/Y'),
             }]) %}
         {% endfor %}

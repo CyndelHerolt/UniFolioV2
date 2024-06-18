@@ -177,6 +177,7 @@
         </div>
 
         <div class="card-body">
+            {% if this.allTraces is not empty %}
             <table>
                 <thead>
                 <tr>
@@ -192,17 +193,16 @@
                     <th>Actions</th>
                 </thead>
                 <tbody>
-                {% if this.allTraces is not empty %}
                     {% for trace in this.allTraces %}
                         <twig:TraceBiblioCard id="{{ trace.id }}"/>
                     {% endfor %}
+                </tbody>
+            </table>
                 {% else %}
                     <div class="alert alert-warning col-6 text-center m-auto mt-5 mb-4" role="alert">
                         Aucune trace n'a été trouvée.
                     </div>
                 {% endif %}
-                </tbody>
-            </table>
         </div>
     </div>
 

@@ -19,16 +19,18 @@
                    data-model="selectedTraces[]"
                    value="{{ this.trace.id }}"/>
         </td>
-        <td class="d-flex flex-column gap-1">
-            <div class="pill">
-                {% if this.type is null %}
-                    Type non défini
-                {% else %}
-                    {{ this.trace.contenu|length }}
-                    {{ this.type }}{% if this.trace.contenu|length > 1 %}s{% endif %}
-                {% endif %}
+        <td>
+            <div class="d-flex flex-column gap-1">
+                <div class="pill">
+                    {% if this.type is null %}
+                        Type non défini
+                    {% else %}
+                        {{ this.trace.contenu|length }}
+                        {{ this.type }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+                    {% endif %}
+                </div>
+                <p class="table-primary-text">{{ this.trace.libelle }}</p>
             </div>
-            <p class="table-primary-text">{{ this.trace.libelle }}</p>
         </td>
         <td>
             {{ this.trace.dateModification|date('d/m/Y') }}
@@ -81,7 +83,87 @@
             </div>
         </td>
         <td>
+            {% if this.trace.validations is empty or this.trace.contenu is empty or this.trace.contenu is null or this.trace.description is empty or this.trace.description is null or this.trace.contexte is empty or this.trace.contexte is null %}
+                <div class="pill-danger d-flex align-items-center gap-1 dropdown-toggle" data-bs-toggle="dropdown"
+                     aria-expanded="false" style="cursor: pointer">
+                    <twig:ux:icon name="bi:exclamation-triangle-fill" width="15px" height="auto"/>
+                    Trace incomplète
+                    <ul class="dropdown-menu p-3">
+                        {% if this.trace.validations is empty %}
+                            <li class="text-danger mb-2 mt-2">
+                                Aucune compétence liée
+                            </li>
 
+                        {% endif %}
+                        {% if this.trace.contenu is empty or this.trace.contenu is null %}
+                            <li class="text-danger mb-2 mt-2">
+                                Aucun média d'illustration
+                            </li>
+
+                        {% endif %}
+                        {% if this.trace.description is empty or this.trace.description is null %}
+                            <li class="text-danger mb-2 mt-2">
+                                Aucun argumentaire
+                            </li>
+
+                        {% endif %}
+                        {% if this.trace.contexte is empty or this.trace.contexte is null %}
+                            <li class="text-danger mb-2 mt-2">
+                                Pas de contexte renseigné
+                            </li>
+
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        </td>
+        <td>
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_trace_show', {'id': this.trace.id}) }}">
+                <button class="btn-info d-flex justify-content-center align-items-center">
+                    <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
+                </button>
+                </a>
+                <a href="{{ path('app_trace_edit', {'id': this.trace.id}) }}">
+                <button class="btn-warning d-flex justify-content-center align-items-center">
+                    <twig:ux:icon name="bi:pencil-square" width="15" height="15"/>
+                </button>
+                </a>
+                <button class="btn-danger d-flex justify-content-center align-items-center" data-bs-toggle="modal"
+                        data-bs-target="#delete{{ this.trace.id }}Modal">
+                    <twig:ux:icon name="bi:x-square-fill" width="15" height="15"/>
+                </button>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="delete{{ this.trace.id }}Modal" tabindex="-1"
+                 aria-labelledby="delete{{ this.trace.id }}ModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="delete{{ this.trace.id }}ModalLabel">Supprimer une
+                                trace</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex flex-column align-items-center gap-4">
+                            <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
+                            <p class="text-danger">Attention, cette action est irréversible !</p>
+
+                            <p>
+                                La trace "{{ this.trace.libelle }}" va être supprimée. Êtes-vous sûr de vouloir
+                                continuer ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <a href="{{ path('app_trace_delete', {'id': this.trace.id}) }}">
+                                <button type="button" class="btn btn-primary">Confirmer</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </td>
     </tr>
 </div>

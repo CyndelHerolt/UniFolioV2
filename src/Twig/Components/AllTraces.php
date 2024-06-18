@@ -71,6 +71,17 @@ final class AllTraces
     }
 
     #[LiveAction]
+    public function selectAll(): void
+    {
+        // si toutes les traces sont déjà sélectionnées, on les déselectionne
+        if (count($this->selectedTraces) === count($this->allTraces)) {
+            $this->selectedTraces = [];
+        } else {
+            $this->selectedTraces = array_map(fn(Trace $trace) => $trace->getId(), $this->allTraces);
+        }
+    }
+
+    #[LiveAction]
     public function changeCompetences()
     {
         $this->allTraces = $this->getAllTrace();

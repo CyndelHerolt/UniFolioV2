@@ -114,7 +114,7 @@
 
                     <div class="annees-btn d-flex align-items-baseline">
                         {% for bibliotheque in app.user.etudiant.bibliotheques %}
-                            <button class="tertiary-btn
+                            <button class="primary-btn
                 {% if this.selectedAnnee == bibliotheque.annee.id %}
                 active disabled  {% endif %}"
                                     data-model="selectedAnnee"

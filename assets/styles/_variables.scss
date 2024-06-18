@@ -5,7 +5,7 @@
   --primary-color: #69387D;
   --primary-medium-color: #9a66b2;
   --primary-light-color: #EDECF7;
-  --secondary-color: #F9E37B;
+  --secondary-color: #FFEDC0;
 
   --white: #FFFF;
   --black: rgb(35, 35, 35);
@@ -17,28 +17,30 @@
 
   --bg-color: #E6E4EB;
   --bg-card-color: #F7F7F7;
+  --bg-light-color: #EDECF7;
 }
 
 body.dark-theme {
   --bg-color: #202020;
   --bg-card-color: #282739;
+  --bg-light-color: #2B2A44;
   --text-color: #efefef;
   --link-color: #d6d5ff;
 }
 
-$c1: rgb(156, 43, 38);
+$c1: #EF6975;
 $c2: rgb(208, 119, 64);
-$c3: rgb(229, 185, 77);
-$c4: rgb(65, 108, 63);
-$c5: rgb(43, 76, 118);
-$c6: rgb(127, 31, 83);
+$c3: #BCA860;
+$c4: #61BC60;
+$c5: #6074BC;
+$c6: #7F1F53FF;
 
-$c1Light: rgba(156, 43, 38, 0.2);
-$c2Light: rgba(208, 119, 64, 0.2);
-$c3Light: rgba(229, 185, 77, 0.2);
-$c4Light: rgba(65, 108, 63, 0.2);
-$c5Light: rgba(43, 76, 118, 0.2);
-$c6Light: rgba(127, 31, 83, 0.2);
+$c1Light: #FCEAEA;
+$c2Light: #fee4c9;
+$c3Light: #FEF2C9;
+$c4Light: #E1FAE9;
+$c5Light: #E1F1FA;
+$c6Light: rgb(250, 221, 237);
 
 $c1Medium: rgba(156, 43, 38, 0.6);
 $c2Medium: rgba(208, 119, 64, 0.6);
@@ -47,27 +49,6 @@ $c4Medium: rgba(65, 108, 63, 0.6);
 $c5Medium: rgba(43, 76, 118, 0.6);
 $c6Medium: rgba(127, 31, 83, 0.6);
 
-$c1Text: rgb(255, 255, 255);
-$c2Text: rgb(43, 38, 38);
-$c3Text: rgb(43, 38, 38);
-$c4Text: rgb(255, 255, 255);
-$c5Text: rgb(255, 255, 255);
-$c6Text: rgb(77, 82, 89);
-
-$c1TextLight: rgb(77, 82, 89);
-$c2TextLight: rgb(77, 82, 89);
-$c3TextLight: rgb(77, 82, 89);
-$c4TextLight: rgb(77, 82, 89);
-$c5TextLight: rgb(77, 82, 89);
-$c6TextLight: rgb(77, 82, 89);
-
-$c1TextMedium: rgb(255, 255, 255);
-$c2TextMedium: rgb(77, 82, 89);
-$c3TextMedium: rgb(77, 82, 89);
-$c4TextMedium: rgb(255, 255, 255);
-$c5TextMedium: rgb(255, 255, 255);
-$c6TextMedium: rgb(77, 82, 89);
-
 // TEXT FONT
 
 $primary-font: 'Lato', sans-serif;
@@ -75,8 +56,8 @@ $primary-font: 'Lato', sans-serif;
 // TEXT SIZES
 
 $small-text: 0.8rem;
-$medium-text: 1.5rem;
-$large-text: 2.5rem;
+$medium-text: 1.15rem;
+$large-text: 2rem;
 $extra-large-text: 3.5rem;
 
 $h1-size: 2.5rem;

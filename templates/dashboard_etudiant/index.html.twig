@@ -33,13 +33,15 @@
                 'Type': type,
                 'Visibilité': visibilite,
                 'Année': portfolio.annee.libelle,
-                'Dernière modification': portfolio.dateModification|date('d/m/Y H:i'),
+                'Dernière modification': portfolio.dateModification|date('d/m/Y'),
             }]) %}
         {% endfor %}
 
         <article class="portfolios">
             <div class="card">
-                <h2>Portfolios</h2>
+                <div class="card-header">
+                    <h2>Portfolios</h2>
+                </div>
                 {% import 'macros/table.twig' as table_macros %}
                 {{ table_macros.table(portfolioItems) }}
 

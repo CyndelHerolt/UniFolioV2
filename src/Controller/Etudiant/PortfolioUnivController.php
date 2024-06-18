@@ -128,6 +128,7 @@ class PortfolioUnivController extends BaseController
             $portfolio->setAnnee($this->getUser()->getEtudiant()->getSemestre()->getAnnee());
             $portfolio->setVisibilite($form->get('visibilite')->getData());
             $portfolio->setDateCreation(new \DateTime('now'));
+            $portfolio->setDateModification(new \DateTime('now'));
             $portfolio->setOptSearch($form->get('optSearch')->getData());
 
             $this->portfolioUnivRepository->save($portfolio, true);
@@ -165,6 +166,7 @@ class PortfolioUnivController extends BaseController
                 $portfolio->setBanniere($_ENV['SRC_FILES'] . '/banniere.jpg');
             }
             $portfolio->setVisibilite($form->get('visibilite')->getData());
+            $portfolio->setDateModification(new \DateTime('now'));
             $portfolio->setOptSearch($form->get('optSearch')->getData());
 
             $this->portfolioUnivRepository->save($portfolio, true);

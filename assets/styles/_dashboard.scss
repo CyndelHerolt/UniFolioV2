@@ -15,6 +15,7 @@
     }
 
     .dashboard-illu {
+      width: 50%;
       position: absolute;
       bottom: -1.25rem;
       left: 50%;
@@ -34,30 +35,5 @@
 
 .dashboard {
 
-  table {
-    width: 100%;
 
-    thead {
-      text-align: left;
-      font-weight: $bold;
-      border-radius: $small-radius;
-      background-color: var(--bg-color);
-
-      tr {
-
-        th {
-          padding: $large-padding;
-        }
-      }
-    }
-
-    tbody {
-      tr {
-
-        td {
-          padding: $large-padding;
-        }
-      }
-    }
-  }
 }

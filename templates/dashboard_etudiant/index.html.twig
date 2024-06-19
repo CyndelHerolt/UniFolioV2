@@ -6,121 +6,69 @@
     {% endblock %}
 
 {% block main %}
-    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-        </ol>
-    </nav>
-    <section class="container-custom min-vh-100 section-pt">
-        <article class="row content-article">
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <a class="card p-4 col-lg-11 col-12 h-100 panel_link"
-                   href="{{ path('app_portfolio_univ_new') }}">
-                    <div class="card-header ps-5">
-                        <div class="corner-img-card">
-                            <img src="{{ asset('images/portfolio2.png') }}" alt="illustration d'inscription">
-                        </div>
-                        <h2 class="card-title text-uppercase text-center pl-3">Créer un portfolio universitaire</h2>
-                    </div>
-                    <div class="card-body">
-                        <p>Créez votre portfolio universitaire articulé autour des compétences de votre formation.</p>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <a class="card p-4 col-lg-11 col-12 h-100 panel_link"
-                   href="{{ path('app_trace_new') }}">
-                    <div class="card-header ps-5">
-                        <div class="corner-img-card">
-                            <img src="{{ asset('images/trace2.png') }}" alt="illustration d'inscription">
-                        </div>
-                        <h2 class="card-title text-uppercase text-center">Créer une trace</h2>
-                    </div>
-                    <div class="card-body">
-                        <p>Rédigez de brèves traces qui illustreront l'acquisition de vos compétences universitaires au
-                            sein de votre portfolio universitaire.</p>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <a class="card p-4 col-lg-11 col-12 h-100 panel_link"
-                   href="">
-                    <div class="card-header ps-5">
-                        <div class="corner-img-card">
-                            <img src="{{ asset('images/portfolio2.png') }}" alt="illustration d'inscription">
-                        </div>
-                        <h2 class="card-title text-uppercase text-center w-100">Créer un portfolio de présentation</h2>
-                    </div>
-                    <div class="card-body">
-                        <p>Construisez un portfolio à votre image à l’aide de l’éditeur. Ici, pas de compétences ni
-                            d’évaluation.</p>
-                    </div>
-                </a>
-            </div>
-        </article>
+    {% import 'macros/breadcrumbs.twig' as breadcrumb_macros %}
+    {{ breadcrumb_macros.breadcrumbs([
+        {'name': 'Accueil', 'url': '/'},
+        {'name': 'Dashboard', 'url': null}
+    ]) }}
 
-        <article class="row content-article">
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <div class="card p-4 col-11 h-100"
-                     href="">
-                    <div class="card-header">
-                        <h2 class="card-title text-center text-uppercase">Derniers retours pédagogiques</h2>
-                        <em>Les derniers commentaires et dernières validations de compétences.</em>
-                    </div>
-                    <div class="card-body d-flex justify-content-center">
-                        {% if retourPedagogiques is not empty %}
-                            {% for retour in retourPedagogiques %}
-                                <twig:RetourPedagogiqueCard/>
-                            {% endfor %}
-                        {% else %}
-                            <div class="d-flex justify-content-center align-items-center">
-                                <small class="text-center">Aucun retour pédagogique pour le moment.</small>
-                            </div>
-                        {% endif %}
-                    </div>
+    <section class="container-custom dashboard">
+
+        {% set portfolioItems = [] %}
+        {% for portfolio in portfolios.currentPageResults %}
+            {% if portfolio.annee is defined %}
+                {% set type = 'Universitaire' %}
+            {% else %}
+                {% set type = 'Personnel' %}
+            {% endif %}
+
+            {% if portfolio.visibilite == 1 %}
+                {% set visibilite = 'Public' %}
+            {% else %}
+                {% set visibilite = 'Privé' %}
+            {% endif %}
+
+            {% set portfolioItems = portfolioItems|merge([{
+                'Libellé': portfolio.libelle,
+                'Type': type,
+                'Visibilité': visibilite,
+                'Année': portfolio.annee.libelle ?? null,
+                'Dernière modification': portfolio.dateModification|date('d/m/Y'),
+            }]) %}
+        {% endfor %}
+
+        <article class="portfolios">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Portfolios</h2>
                 </div>
-            </div>
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <div class="card p-4 col-11 h-100"
-                     href="">
-                    <div class="card-header">
-                        <h2 class="card-title text-center text-uppercase">Dernières traces créées</h2>
-                        <em>Les dernières traces que vous avez créées et les compétences associées.</em>
-                    </div>
-                    <div class="card-body row g-3 d-flex justify-content-center flex-column">
-                        {% if traces is not empty %}
-                            {% for trace in traces %}
-                                <twig:TraceCard id="{{ trace.id }}"/>
-                            {% endfor %}
-                        {% else %}
-                            <div class="d-flex justify-content-center align-items-center">
-                                <small class="text-center">Aucune trace créée pour le moment.</small>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-12 d-flex justify-content-center">
-                <div class="card p-4 col-11 h-100"
-                     href="">
-                    <div class="card-header">
-                        <h2 class="card-title text-center text-uppercase">Derniers portfolios créés</h2>
-                        <em>Vos derniers porfolios créés, universitaires et personnels.</em>
-                    </div>
-                    <div class="card-body d-flex justify-content-center">
-                        {% if portfolios is not empty %}
-                            {% for portfolio in portfolios %}
-                                <div class="col-12">
-                                    <twig:PortfolioCard id="{{ portfolio.id }}"/>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="d-flex justify-content-center align-items-center">
-                                <small class="text-center">Aucun portfolio créé pour le moment.</small>
-                            </div>
-                        {% endif %}
-                    </div>
+                {% import 'macros/table.twig' as table_macros %}
+                {{ table_macros.table(portfolioItems) }}
+
+                <div class="card-footer">
+                    <small>{{ portfolios.currentPageResults|length }} portfolio(s) sur {{ portfolios.nbResults }}
+                        affiché(s)</small>
+                    {% if portfolios.haveToPaginate %}
+                        <div class="navigation">
+                            {% if portfolios.hasPreviousPage %}
+                                <a href="{{ path('app_dashboard_etudiant', {'page': portfolios.previousPage}) }}">
+                                    <button class="nav-btn">
+                                        <twig:ux:icon name="material-symbols:arrow-left" width="15" height="15"/>
+                                    </button>
+                                </a>
+                            {% endif %}
+
+                            <span>{{ portfolios.currentPage }} / {{ portfolios.nbPages }}</span>
+
+                            {% if portfolios.hasNextPage %}
+                                <a href="{{ path('app_dashboard_etudiant', {'page': portfolios.nextPage}) }}">
+                                    <button class="nav-btn">
+                                        <twig:ux:icon name="material-symbols:arrow-right" width="15" height="15"/>
+                                    </button>
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </article>

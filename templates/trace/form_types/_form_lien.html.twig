@@ -1,94 +1,11 @@
 <turbo-frame id="trace-form-content">
     <div {{ stimulus_controller('typeCollection') }}>
-        <div class="types row p-2">
-            {% for typeTrace in typesTrace %}
-                <a data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                   class="col-12 col-lg-2 p-3 {% if selectedTraceType == constant('CLASS_NAME', typeTrace) %}active{% endif %}"
-                        {% if 'portfolio' in app.request.uri %}
-                            {% if trace.contenu is not empty and trace.type == 'image' %}
-                                data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
-                            {% else %}
-                                href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'newType'}) }}"
-                            {% endif %}
-                        {% elseif 'new' in app.request.uri %}
-                            href="{{ path('app_trace_new_type', {'type': constant('CLASS_NAME', typeTrace)}) }}"
-                        {% elseif 'trace/edit' in app.request.uri %}
-                            {% if trace.contenu is not empty and trace.type == 'lien' %}
-                                data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
-                            {% else %}
-                                href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
-                            {% endif %}
-                        {% elseif 'trace/show' in app.request.uri %}
 
-                            {% if trace.contenu is not empty and trace.type == 'image' %}
-                                data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', typeTrace) }}"
-                            {% else %}
-                                href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
-                            {% endif %}
-                        {% endif %}
-                >
-                    <twig:ux:icon name="{{ constant('ICON', typeTrace) }}" width="15" height="auto"/>
-                    <div>
-                        <strong>{{ typeTrace.display }}</strong>
-                        <br>
-                        <small>{{ constant('CONSTRAINT', typeTrace) }}</small>
-                    </div>
-                </a>
-
-                <!-- Modal -->
-                <div class="modal fade" id="typeModal{{ constant('TYPE', typeTrace) }}" tabindex="-1"
-                     aria-labelledby="typeModal{{ constant('TYPE', typeTrace) }}Label"
-                     aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="typeModal{{ constant('TYPE', typeTrace) }}Label">
-                                    Modification du type de trace</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body d-flex flex-column align-items-center gap-4">
-                                <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
-                                <p class="text-danger">Attention, cette action est irréversible !</p>
-                                <p class="w-75">
-                                    Si vous changez le type de trace, les médias déjà ajoutés seront perdus. Êtes-vous
-                                    sûr de vouloir continuer ?
-                                </p>
-                            </div>
-                            <div class="modal-footer d-flex gap-3">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                {% if 'portfolio' in app.request.uri %}
-                                        <a href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id, 'page': page.id, 'type': constant('CLASS_NAME', typeTrace),'trace': trace.id, 'step': 'editType'}) }}"
-                                           class="flex-grow-0" style="border: none;">
-                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                                Accepter
-                                            </button>
-                                        </a>
-                                {% elseif 'trace/edit' in app.request.uri %}
-                                    <a href="{{ path('app_trace_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
-                                       class="flex-grow-0" style="border: none;">
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Accepter
-                                        </button>
-                                    </a>
-                                {% elseif 'trace/show' in app.request.uri %}
-                                    <a href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', typeTrace), 'id': trace.id}) }}"
-                                       class="flex-grow-0" style="border: none;">
-                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
-                                            Confirmer
-                                        </button>
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-        {% if trace.type == 'lien' %}
+{#        {% if trace.type == 'lien' %}#}
             {{ form_widget(formType.contenu) }}
-        {% else %}
-            {{ form_widget(formType.contenu, { 'attr': {'class': 'visually-hidden'} }) }}
-        {% endif %}
+{#        {% else %}#}
+{#            {{ form_widget(formType.contenu, { 'attr': {'class': 'visually-hidden'} }) }}#}
+{#        {% endif %}#}
         <div data-typeCollection-target="input" class="trace-content-input">
         </div>
         <button type="button" class="btn btn-primary add-lien" data-action="typeCollection#addLien">

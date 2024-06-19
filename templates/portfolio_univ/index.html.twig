@@ -6,13 +6,13 @@
     {% endblock %}
 
 {% block main %}
-    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Bibliothèque de portfolios universitaires</li>
-        </ol>
-    </nav>
+    {% import 'macros/breadcrumbs.twig' as breadcrumb_macros %}
+    {{ breadcrumb_macros.breadcrumbs([
+        {'name': 'Accueil', 'url': '/'},
+        {'name': 'Dashboard', 'url': '/etudiant/dashboard'},
+        {'name': 'Bibliothèque de portfolios universitaires', 'url': null}
+    ]) }}
+
     <section class="container-custom min-vh-100 section-pt">
         <article class="row content-article">
             <twig:AllPortfolios />

@@ -10,6 +10,7 @@ use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
 use App\Repository\TraceRepository;
+use App\Service\CompetencesService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveAction;
@@ -50,67 +51,34 @@ final class AllTraces
         protected BibliothequeRepository             $bibliothequeRepository,
         protected TraceRepository                    $traceRepository,
         protected AnneeRepository                    $anneeRepository,
+        protected CompetencesService                 $competencesService,
     )
     {
-        $user = $this->security->getUser()->getEtudiant();
-        $semestre = $user->getSemestre();
-        $annee = $semestre->getAnnee();
+        $user = $this->security->getUser();
+        $annee = $user->getEtudiant()->getSemestre()->getAnnee();
 
-        $dept = $user->getSemestre()->getAnnee()->getDiplome()->getDepartement();
+        $competences = $this->competencesService->getCompetences($user);
 
-        $groupe = $user->getGroupe();
-        foreach ($groupe as $g) {
-            if ($g->getTypeGroupe()->getType() === 'TD') {
-                $parcours = $g->getApcParcours();
-            }
-        }
-
-        $apcApprentissageCritiques = [];
-        $apcNiveaux = [];
-
-        if ($parcours === null) {
-            // ------------récupère tous les apcNiveau de l'année -------------------------
-            $referentiel = $dept->getApcReferentiels();
-            $competences = $this->apcCompetenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
-            $niveaux = [];
-            foreach ($competences as $competence) {
-                $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
-            }
-            // si les apcNiveaux dans niveaux ont pour actif = true
-            foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
-                    $apcNiveaux[] = $niveau;
-                } else {
-                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
-                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
-                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
-                    }
-                }
-            }
+        if (isset($competences['apcNiveaux'])) {
+            $this->competences = $competences['apcNiveaux'];
         } else {
-            // ------------récupère tous les apcNiveau de l'année -------------------------
-            $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
-            foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
-                    $apcNiveaux[] = $niveau;
-                } else {
-                    // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
-                    foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
-                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
-                    }
-                }
-            }
-        }
-
-        if (isset($apcNiveaux)) {
-            $this->competences = $apcNiveaux;
-        } else {
-            $this->competences = $apcApprentissageCritiques;
+            $this->competences = $competences['apcApprentissagesCritiques'];
         }
 
         $this->selectedAnnee = $annee->getId();
 
         $this->allTraces = $this->getAllTrace();
+    }
+
+    #[LiveAction]
+    public function selectAll(): void
+    {
+        // si toutes les traces sont déjà sélectionnées, on les déselectionne
+        if (count($this->selectedTraces) === count($this->allTraces)) {
+            $this->selectedTraces = [];
+        } else {
+            $this->selectedTraces = array_map(fn(Trace $trace) => $trace->getId(), $this->allTraces);
+        }
     }
 
     #[LiveAction]

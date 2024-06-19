@@ -22,3 +22,6 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###fichiers media de tests###
+/public/files_directory/

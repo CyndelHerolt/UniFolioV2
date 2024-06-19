@@ -1,0 +1,15 @@
+<turbo-frame id="page-form">
+    {{ form_start(form, {'action': path('app_portfolio_univ_edit_page', {'id': page.id})}) }}
+    <div class="col-12 p-2">
+        {{ form_row(form.libelle) }}
+    </div>
+    <div class="col-12 p-2">
+        {{ form_row(form.description) }}
+    </div>
+    <button type="submit" class="btn btn-primary text-uppercase">Enregistrer les modifications
+    </button>
+    <a href="{{ path('app_portfolio_univ_edit_page', {'id': page.id, 'edit': false}) }}">
+        <button class="btn btn-secondary text-uppercase">Annuler</button>
+    </a>
+    {{ form_end(form) }}
+</turbo-frame>

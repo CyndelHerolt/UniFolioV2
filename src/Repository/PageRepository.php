@@ -30,6 +30,15 @@ class PageRepository extends ServiceEntityRepository
         }
     }
 
+    public function delete(Page $entity, $flush): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 //    /**
 //     * @return Page[] Returns an array of Page objects
 //     */

@@ -1,100 +1,79 @@
-.c1bg {
-  background-color: $c1Light;
-  //padding: 5px 15px;
-}
-
 .c1 {
-  background-color: $c1;
-  //padding: 5px 15px;
-  color: var(--text-light-color);
-}
-
-.c1txt {
+  background-color: $c1Light;
   color: $c1;
-}
+  border: solid 2px $c1;
 
-.c2bg {
-  background-color: $c2Light;
-  //padding: 5px 15px;
+  svg {
+
+    path {
+      color: $c1;
+    }
+  }
 }
 
 .c2 {
-  background-color: $c2;
-  //padding: 5px 15px;
-  color: var(--text-light-color);
-}
-
-.c2txt {
+  background-color: $c2Light;
   color: $c2;
-}
+  border: solid 2px $c2;
 
-.c3bg {
-  background-color: $c3Light;
-  //padding: 5px 15px;
+  svg {
+
+    path {
+      color: $c2;
+    }
+  }
 }
 
 .c3 {
-  background-color: $c3;
-  //padding: 5px 15px;
-  color: var(--text-light-color);
-}
-
-.c3txt {
+  background-color: $c3Light;
   color: $c3;
-}
+  border: solid 2px $c3;
 
-.c4bg {
-  background-color: $c4Light;
-  //padding: 5px 15px;
+  svg {
+
+    path {
+      color: $c3;
+    }
+  }
 }
 
 .c4 {
-  background-color: $c4;
-  //padding: 5px 15px;
-  color: var(--text-light-color);
-}
-
-.c4txt {
+  background-color: $c4Light;
   color: $c4;
-}
+  border: solid 2px $c4;
 
-.c5bg {
-  background-color: $c5Light;
-  //padding: 5px 15px;
+  svg {
+
+    path {
+      color: $c4;
+    }
+  }
 }
 
 .c5 {
-  background-color: $c5;
-  //padding: 5px 15px;
-  color: var(--text-light-color);
-}
-
-.c5txt {
+  background-color: $c5Light;
   color: $c5;
-}
+  border: solid 2px $c5;
 
-.c6bg {
-  background-color: $c6Light;
-  //padding: 5px 15px;
+  svg {
+
+    path {
+      color: $c5;
+    }
+  }
 }
 
 .c6 {
-  background-color: $c6;
-  //padding: 5px 15px;
-  color: var(--text-light-color);
-}
-
-.c6txt {
+  background-color: $c6Light;
   color: $c6;
-}
+  border: solid 2px $c6;
 
-article {
-  height: max-content;
-}
+  svg {
 
-aside {
-  max-height: 100%;
-  overflow-y: auto;
+    path {
+      color: $c6;
+    }
+  }
 }
 
 .apc-card {

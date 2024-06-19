@@ -1,0 +1,10 @@
+{% macro onglets(items) %}
+    <ul class="nav nav-tabs">
+        {% for item in items %}
+            <li class="nav-item">
+                <a class="nav-link{% if item.active %} active{% endif %}" aria-current="page"
+                   href="{{ item.url }}">{{ item.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}

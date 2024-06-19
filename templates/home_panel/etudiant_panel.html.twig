@@ -7,52 +7,55 @@
 
 {% block main %}
 
-    <section class="container-custom d-flex flex-column justify-content-center align-items-center min-vh-100">
-{#        <img src="{{ asset('images/unifolio_logo.png') }}" alt="logo unifolio" class="logo_panel">#}
-        <div class="row justify-content-center w-100 h-100">
-            <div class="card col-lg-3 col-12 panel panel_secondary flex-column align-items-center justify-content-center p-5 m-2">
-                <h2 class="text-uppercase panel-title">dashboard</h2>
-                <ul>
-                    <li>Tes portfolios et traces</li>
-                    <li>Des retours pédagogiques</li>
-                    <li>Un suivi de l'évaluation</li>
-                </ul>
-                <a href="{{ path('app_dashboard_etudiant') }}" class="panel-btn-dashboard">
-                    <button class="btn btn-primary btn-primary-color text-uppercase">
-                        Accéder
+    <section class="container-custom d-flex justify-content-center align-items-center min-vh-100">
+        <article class="home-panel d-flex justify-content-center flex-wrap gap-3">
+            <div class="card dashboard m-0 text-center col-lg-5 col-12 d-flex flex-column gap-3 align-items-center">
+                <h2>Dashboard</h2>
+                <p class="w-75">Le point d’entrée de votre espace. Visualisation et création des portfolios et
+                    traces</p>
+                <a href="{{ path('app_dashboard_etudiant') }}">
+                    <button class="primary-btn">
+                        Accéder au dashboard
                     </button>
                 </a>
-                <img class="illu_dashboard" src="{{ asset('images/dashboard2.png') }}" alt="">
+                <div>
+                    <img src="{{ asset('images/dashboard.png') }}" alt="illustration de l'accès au dashboard"
+                         class="dashboard-illu">
+                </div>
             </div>
-            <div class="d-flex flex-column justify-content-between col-lg-4 col-12">
-                <div class="row">
-                    <a class="card panel panel_primary g-2 p-3 m-2 col-lg-5 panel_link d-flex flex-column align-items-center justify-content-between"
-                       href="">
-                        <img class="illu_panel" src="{{ asset('images/portfolio2.png') }}" alt="">
-                        <h2 class="text-uppercase panel-title">créer un portfolio</h2>
+            <div class="group-card d-flex flex-column gap-3 col-lg-6 col-12">
+                <div class="d-flex gap-3">
+                    <a href="{{ path('app_portfolio_univ_new') }}"
+                       class="card w-100 m-0 text-center d-flex flex-column align-items-center gap-3 panel_link">
+                        <div>
+                            <img src="{{ asset('images/portfolio.png') }}" alt="illustration de l'accès au dashboard">
+                        </div>
+                        <h2>Créer un portfolio</h2>
                     </a>
-                    <a class="card panel panel_secondary g-2 p-3 m-2 col-lg-5 panel_link d-flex flex-column align-items-center justify-content-between"
-                       href="{{ path('app_trace_new') }}">
-                        <img class="illu_panel" src="{{ asset('images/trace2.png') }}" alt="">
-                        <h2 class="text-uppercase panel-title">créer une trace</h2>
+                    <a href="{{ path('app_trace_new') }}"
+                       class="card w-100 m-0 text-center d-flex flex-column align-items-center gap-3 panel_link">
+                        <div>
+                            <img src="{{ asset('images/trace.png') }}" alt="illustration de l'accès au dashboard">
+                        </div>
+                        <h2>Créer une trace</h2>
                     </a>
                 </div>
-                <div class="row h-100">
-                    <div class="card panel panel_tertiary g-2 p-3 m-2 col-lg-12 d-flex flex-row align-items-center">
-                        <img class="illu_panel" src="{{ asset('images/documentation2.png') }}" alt="">
-                        <div class="panel_content">
-                            <h2 class="text-uppercase panel-title">Comment ça marche ?</h2>
-                            <p>Explore la documentation</p>
-                            <a class="nav-link" href="https://portfolio-doc.iut-troyes.univ-reims.fr" target="_blank">
-                                <button class="btn btn-primary btn-primary-color text-uppercase">
-                                    Découvrir
-                                </button>
-                            </a>
-                        </div>
+                <div class="card m-0 d-flex flex-row gap-3 align-items-center">
+                    <div>
+                        <img src="{{ asset('images/documentation.png') }}" alt="illustration de l'accès au dashboard">
+                    </div>
+                    <div>
+                        <h2>Comment ça marche ?</h2>
+                        <p>Explore la documentation</p>
+                        <a href="https://portfolio-doc.iut-troyes.univ-reims.fr" target="_blank">
+                            <button class="primary-btn">
+                                Découvrir
+                                <twig:ux:icon name="mingcute:external-link-line" width="10" height="10"/>
+                            </button>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-
+        </article>
     </section>
 {% endblock %}

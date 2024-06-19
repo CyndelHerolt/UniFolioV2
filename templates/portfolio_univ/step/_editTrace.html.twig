@@ -5,8 +5,8 @@
                href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'portfolio'}) }}">Portfolio</a>
         </li>
 
-        {% if pages is not null %}
-            {% for pageA in pages|sort((a, b) => a.ordre <=> b.ordre) %}
+        {% if portfolio.pages is not null %}
+            {% for pageA in portfolio.pages|sort((a, b) => a.ordre <=> b.ordre) %}
                 <li class="nav-item" value="{{ pageA.id }}">
                     <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page"
                        href="{{ path('app_portfolio_univ_edit', {'id': portfolio.id , 'step': 'page', 'page': pageA.id, 'edit': false}) }}">{{ pageA.libelle }}</a>

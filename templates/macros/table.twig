@@ -1,0 +1,28 @@
+{% macro table(items) %}
+    <table>
+        <thead>
+        <tr>
+            {% for key, value in items[0] %}
+                <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                {% for key, value in item %}
+                    {% if key == 'Visibilité' %}
+                        <td>
+                            <div class="{{ value == 'Public' ? 'pill-success' : 'pill-warning' }} {{ loop.first ? 'table-primary-text' : '' }}">{{ value }}</div>
+                        </td>
+                    {% elseif key == 'Année' %}
+                        <td>{{ value != null ? value : '**' }}</td>
+                    {% else %}
+                        <td class="{{ loop.first ? 'table-primary-text' : '' }}">{{ value }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}

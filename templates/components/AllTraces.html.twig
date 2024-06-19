@@ -1,181 +1,208 @@
 <div{{ attributes }}>
-    <div class="row filtres-input">
-        <div class="col-lg-4 col-12 g-4">
-            <img src="{{ asset('images/fiole2.png') }}" alt="illustration fiole" class="fiole">
-            <div class="accordion accordion-flush filter-drop" id="accordionCompetences">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="flush-headingTri">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#flush-collapseCompetences" aria-expanded="false"
-                                aria-controls="flush-collapseCompetences">
-                            Filtrer par compétences
-                        </button>
-                    </h2>
-                    <div id="flush-collapseCompetences" class="accordion-collapse collapse"
-                         aria-labelledby="flush-headingCompetences"
-                         data-bs-parent="#accordionCompetences">
-                        <div class="accordion-body row">
-                            <div>
-                                <h6>Compétences</h6>
-                                <fieldset>
-                                    {% for competenceChoice in this.competences %}
-                                        <div style="display: flex" class="form-check">
-                                            <input type="checkbox" id="{{ competenceChoice.id }}"
-                                                   name="{{ competenceChoice.id }}"
-                                                   data-model="selectedCompetences[]"
-                                                   data-action="live#action"
-                                                   data-live-action-param="changeCompetences"
-                                                   value="{{ competenceChoice.id }}"
-                                                   class="form-check-input">
-                                            <label for="{{ competenceChoice.id }}" style="margin-left: 10px"
-                                                   class="form-check-label">{{ competenceChoice.libelle }}</label><br>
-                                        </div>
-                                    {% endfor %}
-                                </fieldset>
+    <div class="card">
+        <div class="card-header">
+            <h2>Traces</h2>
+
+            <div class="header-actions">
+                <div class="filtres d-flex gap-3 align-items-baseline">
+                    <div class="accordion accordion-flush filter-drop" id="accordionCompetences">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTri">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseCompetences" aria-expanded="false"
+                                        aria-controls="flush-collapseCompetences">
+                                    Filtrer par compétences
+                                    <twig:ux:icon name="bi:caret-down-fill" width="15" height="15"/>
+                                </button>
+                            </h2>
+                            <div id="flush-collapseCompetences" class="accordion-collapse collapse"
+                                 aria-labelledby="flush-headingCompetences"
+                                 data-bs-parent="#accordionCompetences">
+                                <div class="accordion-body row">
+                                    <div>
+                                        <h6>Compétences</h6>
+                                        <fieldset>
+                                            {% for competenceChoice in this.competences %}
+                                                <div style="display: flex" class="form-check">
+                                                    <input type="checkbox" id="{{ competenceChoice.id }}"
+                                                           name="{{ competenceChoice.id }}"
+                                                           data-model="selectedCompetences[]"
+                                                           data-action="live#action"
+                                                           data-live-action-param="changeCompetences"
+                                                           value="{{ competenceChoice.id }}"
+                                                           class="form-check-input">
+                                                    <label for="{{ competenceChoice.id }}" style="margin-left: 10px"
+                                                           class="form-check-label">{{ competenceChoice.libelle }}</label><br>
+                                                </div>
+                                            {% endfor %}
+                                        </fieldset>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-
-        <div class="col-lg-4 col-12 g-4">
-            <div class="accordion accordion-flush filter-drop" id="accordionTri">
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="flush-headingTri">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#flush-collapseTri" aria-expanded="false"
-                                aria-controls="flush-collapseTri">
-                            Trier par
-                        </button>
-                    </h2>
-                    <div id="flush-collapseTri" class="accordion-collapse collapse" aria-labelledby="flush-headingTri"
-                         data-bs-parent="#accordionTri">
-                        <div class="accordion-body row">
-                            <div>
-                                <fieldset>
-                                    <h6>Date</h6>
-                                    <div style="display: flex" class="form-check">
-                                        <input type="checkbox" id="dateAsc"
-                                               name="dateAsc"
-                                               data-model="selectedOrdreDate"
-                                               data-action="live#action"
-                                               data-live-action-param="changeOrdreDate"
-                                               value="ASC"
-                                               class="form-check-input">
-                                        <label for="dateAsc" style="margin-left: 10px"
-                                               class="form-check-label">Ordre croissant</label><br>
+                    <div class="accordion accordion-flush filter-drop" id="accordionTri">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTri">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseTri" aria-expanded="false"
+                                        aria-controls="flush-collapseTri">
+                                    Trier par
+                                    <twig:ux:icon name="bi:caret-down-fill" width="15" height="15"/>
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTri" class="accordion-collapse collapse"
+                                 aria-labelledby="flush-headingTri"
+                                 data-bs-parent="#accordionTri">
+                                <div class="accordion-body row">
+                                    <div>
+                                        <fieldset>
+                                            <h6>Date</h6>
+                                            <div style="display: flex" class="form-check">
+                                                <input type="checkbox" id="dateAsc"
+                                                       name="dateAsc"
+                                                       data-model="selectedOrdreDate"
+                                                       data-action="live#action"
+                                                       data-live-action-param="changeOrdreDate"
+                                                       value="ASC"
+                                                       class="form-check-input">
+                                                <label for="dateAsc" style="margin-left: 10px"
+                                                       class="form-check-label">Ordre croissant</label><br>
+                                            </div>
+                                            <div style="display: flex" class="form-check">
+                                                <input type="checkbox" id="dateDesc"
+                                                       name="dateDesc"
+                                                       data-model="selectedOrdreDate"
+                                                       data-action="live#action"
+                                                       data-live-action-param="changeOrdreDate"
+                                                       value="DESC"
+                                                       class="form-check-input">
+                                                <label for="dateDesc" style="margin-left: 10px"
+                                                       class="form-check-label">Ordre décroissant</label><br>
+                                            </div>
+                                            <hr>
+                                            <h6>Validation</h6>
+                                            <div style="display: flex" class="form-check">
+                                                <input type="checkbox" id="validationAsc"
+                                                       name="validationAsc"
+                                                       data-model="selectedOrdreValidation"
+                                                       data-action="live#action"
+                                                       data-live-action-param="changeOrdreValidation"
+                                                       value="ASC"
+                                                       class="form-check-input">
+                                                <label for="validationAsc" style="margin-left: 10px"
+                                                       class="form-check-label">Ordre croissant</label><br>
+                                            </div>
+                                            <div style="display: flex" class="form-check">
+                                                <input type="checkbox" id="validationDesc"
+                                                       name="validationDesc"
+                                                       data-model="selectedOrdreValidation"
+                                                       data-action="live#action"
+                                                       data-live-action-param="changeOrdreValidation"
+                                                       value="DESC"
+                                                       class="form-check-input">
+                                                <label for="validationDesc" style="margin-left: 10px"
+                                                       class="form-check-label">Ordre décroissant</label><br>
+                                            </div>
+                                        </fieldset>
                                     </div>
-                                    <div style="display: flex" class="form-check">
-                                        <input type="checkbox" id="dateDesc"
-                                               name="dateDesc"
-                                               data-model="selectedOrdreDate"
-                                               data-action="live#action"
-                                               data-live-action-param="changeOrdreDate"
-                                               value="DESC"
-                                               class="form-check-input">
-                                        <label for="dateDesc" style="margin-left: 10px"
-                                               class="form-check-label">Ordre décroissant</label><br>
-                                    </div>
-                                    <hr>
-                                    <h6>Validation</h6>
-                                    <div style="display: flex" class="form-check">
-                                        <input type="checkbox" id="validationAsc"
-                                               name="validationAsc"
-                                               data-model="selectedOrdreValidation"
-                                               data-action="live#action"
-                                               data-live-action-param="changeOrdreValidation"
-                                               value="ASC"
-                                               class="form-check-input">
-                                        <label for="validationAsc" style="margin-left: 10px"
-                                               class="form-check-label">Ordre croissant</label><br>
-                                    </div>
-                                    <div style="display: flex" class="form-check">
-                                        <input type="checkbox" id="validationDesc"
-                                               name="validationDesc"
-                                               data-model="selectedOrdreValidation"
-                                               data-action="live#action"
-                                               data-live-action-param="changeOrdreValidation"
-                                               value="DESC"
-                                               class="form-check-input">
-                                        <label for="validationDesc" style="margin-left: 10px"
-                                               class="form-check-label">Ordre décroissant</label><br>
-                                    </div>
-                                </fieldset>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="d-flex">
-            <button class="btn btn-secondary text-uppercase m-4" data-bs-toggle="modal"
-                    data-bs-target="#staticBackdropDelete">
-                Supprimer les traces sélectionnées
-            </button>
-            <!-- Modal Delete -->
-            <div class="modal fade" id="staticBackdropDelete" data-bs-backdrop="static"
-                 data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment supprimer ces traces
-                                ?</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body d-flex flex-column align-items-center gap-4">
-                            <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
-                            <p class="text-danger">Attention, cette action est irréversible !</p>
-                            <p class="w-75">
-                                Les traces sélectionnées seront supprimées. Êtes-vous
-                                sûr de vouloir continuer ?
-                            </p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler
-                            </button>
-                            <button class="btn btn-primary"
+
+                    <div class="annees-btn d-flex align-items-baseline">
+                        {% for bibliotheque in app.user.etudiant.bibliotheques %}
+                            <button class="primary-btn
+                {% if this.selectedAnnee == bibliotheque.annee.id %}
+                active disabled  {% endif %}"
+                                    data-model="selectedAnnee"
                                     data-action="live#action"
-                                    data-live-action-param="deleteSelectedTraces"
-                                    data-bs-dismiss="modal">
-                                Supprimer
+                                    data-live-action-param="changeAnnee"
+                                    value="{{ bibliotheque.annee.id }}">
+                                {{ bibliotheque.annee.libelle }}
                             </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="actions d-flex gap-3">
+                    <button class="primary-btn" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdropDelete">
+                        Supprimer les traces sélectionnées
+                    </button>
+                    <!-- Modal Delete -->
+                    <div class="modal fade" id="staticBackdropDelete" data-bs-backdrop="static"
+                         data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment supprimer ces
+                                        traces
+                                        ?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body d-flex flex-column align-items-center gap-4">
+                                    <twig:ux:icon name="bi:exclamation-octagon" width="50" height="auto" color="red"/>
+                                    <p class="text-danger">Attention, cette action est irréversible !</p>
+                                    <p class="w-75">
+                                        Les traces sélectionnées seront supprimées. Êtes-vous
+                                        sûr de vouloir continuer ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="primary-btn" data-bs-dismiss="modal">Annuler
+                                    </button>
+                                    <button class="btn btn-primary"
+                                            data-action="live#action"
+                                            data-live-action-param="deleteSelectedTraces"
+                                            data-bs-dismiss="modal">
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <a href="{{ path('app_trace_new') }}">
+                        <button class="secondary-btn">
+                            Créer une trace
+                        </button>
+                    </a>
                 </div>
             </div>
-            <a href="{{ path('app_trace_new') }}" class="m-4">
-                <button class="btn btn-secondary text-uppercase">
-                    Créer une trace
-                </button>
-            </a>
-            {% for bibliotheque in app.user.etudiant.bibliotheques %}
-                <button class="btn btn-tertiary text-uppercase m-4
-                    {% if this.selectedAnnee == bibliotheque.annee.id %}
-                    active-filter disabled  {% endif %}"
-                        data-model="selectedAnnee"
-                        data-action="live#action"
-                        data-live-action-param="changeAnnee"
-                        value="{{ bibliotheque.annee.id }}">
-                    {{ bibliotheque.annee.libelle }}
-                </button>
-            {% endfor %}
         </div>
-    </div>
-    <div class="card p-4 col-12">
-        <div class="card-body row g-4 d-flex">
+
+        <div class="card-body">
             {% if this.allTraces is not empty %}
-                {% for trace in this.allTraces %}
-                    <div class="col-lg-4 col-12">
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" data-action="live#action" class="form-check-input"
+                               data-live-action-param="selectAll"/>
+                    </th>
+                    <th>Nom/type</th>
+                    <th>Modifiée le</th>
+                    <th>Compétences</th>
+                    <th>% Validation</th>
+                    <th>Etat</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    {% for trace in this.allTraces %}
                         <twig:TraceBiblioCard id="{{ trace.id }}"/>
+                    {% endfor %}
+                </tbody>
+            </table>
+                {% else %}
+                    <div class="alert alert-warning col-6 text-center m-auto mt-5 mb-4" role="alert">
+                        Aucune trace n'a été trouvée.
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="alert alert-warning col-6 text-center m-auto mt-5 mb-4" role="alert">
-                    Aucune trace n'a été trouvée.
-                </div>
-            {% endif %}
+                {% endif %}
         </div>
     </div>
 

@@ -37,31 +37,27 @@ class TraceImage extends AbstractTrace
         return self::TYPE;
     }
 
-    public function sauvegarde(?array $contenu,
-                               ?array $existingContenu
-    ): array
+    public function sauvegarde(?array $contenu): array
     {
         $max_size = 2 * 1024 * 1024; // 2 Mo en octets
 
-        if ($existingContenu) {
-            $contenu = array_merge($contenu, $existingContenu);
-        }
-
         if ($contenu) {
             foreach ($contenu as $image) {
-                if (!in_array($image->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
-                    return ['success' => false, 'error' => 'Le contenu n\'est pas une image valide'];
-                } elseif (filesize($image) > $max_size) {
-                    return ['success' => false, 'error' => 'Le fichier doit faire 2mo maximum'];
-                }
+                if ($image->getError() !== UPLOAD_ERR_OK) {
+                    return ['success' => false, 'error' => 'Erreur lors de l\'envoi du fichier'];
+                } else {
+                    if (!in_array($image->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
+                        return ['success' => false, 'error' => 'Le contenu n\'est pas une image valide'];
+                    } elseif (filesize($image) > $max_size) {
+                        return ['success' => false, 'error' => 'Le fichier doit faire 2mo maximum'];
+                    }
                     $fileName = uniqid() . '.' . $image->guessExtension();
                     $image->move($_ENV['PATH_FILES'], $fileName);
-                    $contenu[] = $_ENV['SRC_FILES'] . '/' . $fileName;
+                    $content[] = $_ENV['SRC_FILES'] . '/' . $fileName;
+                }
             }
-        } else {
-            return ['success' => false, 'error' => 'Le contenu est vide'];
         }
 
-        return ['success' => true, 'contenu' => $contenu];
+        return ['success' => true, 'contenu' => $content ?? null];
     }
 }

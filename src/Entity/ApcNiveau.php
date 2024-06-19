@@ -44,12 +44,19 @@ class ApcNiveau
     #[ORM\ManyToMany(targetEntity: Criteres::class, mappedBy: 'apcNiveau')]
     private Collection $criteres;
 
+    /**
+     * @var Collection<int, TraceCompetence>
+     */
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'apcNiveau')]
+    private Collection $traceCompetences;
+
     public function __construct()
     {
         $this->apcParcours = new ArrayCollection();
         $this->apcApprentissageCritiques = new ArrayCollection();
         $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
+        $this->traceCompetences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -238,6 +245,36 @@ class ApcNiveau
     {
         if ($this->criteres->removeElement($critere)) {
             $critere->removeApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TraceCompetence>
+     */
+    public function getTraceCompetences(): Collection
+    {
+        return $this->traceCompetences;
+    }
+
+    public function addTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if (!$this->traceCompetences->contains($traceCompetence)) {
+            $this->traceCompetences->add($traceCompetence);
+            $traceCompetence->setApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if ($this->traceCompetences->removeElement($traceCompetence)) {
+            // set the owning side to null (unless already changed)
+            if ($traceCompetence->getApcNiveau() === $this) {
+                $traceCompetence->setApcNiveau(null);
+            }
         }
 
         return $this;

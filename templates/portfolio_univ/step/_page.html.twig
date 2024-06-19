@@ -115,10 +115,7 @@
                     </button>
                 </a>
             </div>
-        </turbo-frame>
 
-
-        <turbo-frame id="traces-portfolio">
             <div class="row d-flex flex-column g-5 mt-3">
                 {% for trace in tracesPage %}
                     <div class="col-12">
@@ -180,7 +177,7 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                                 Annuler
                                             </button>
-                                            <a href="">
+                                            <a href="{{ path('app_portfolio_univ_edit_delete_trace', {'id': page.id, 'trace': trace.id}) }}">
                                                 <button class="btn btn-primary" data-bs-dismiss="modal">
                                                     Valider
                                                 </button>

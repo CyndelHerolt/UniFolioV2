@@ -37,12 +37,12 @@ class TraceAbstractType extends AbstractType
     {
 
         $trace = $options['data'];
-        $validations = [];
-        foreach ($trace->getValidations() as $validation) {
+        $traceCompetence = [];
+        foreach ($trace->getTraceCompetences() as $validation) {
             if ($validation->getApcNiveau() !== null) {
-                $validations[] = $validation->getApcNiveau()->getId();
+                $traceCompetence[] = $validation->getApcNiveau()->getId();
             } else {
-                $validations[] = $validation->getApcApprentissagesCritiques()->getId();
+                $traceCompetence[] = $validation->getApcApprentissagesCritiques()->getId();
             }
         }
 
@@ -51,7 +51,7 @@ class TraceAbstractType extends AbstractType
         $checkedCompetences = [];
         foreach ($options['competences'] as $competence) {
             $competences[$competence->getLibelle()] = $competence->getId();
-            if (in_array($competence->getId(), $validations)) {
+            if (in_array($competence->getId(), $traceCompetence)) {
                 $checkedCompetences[] = $competence->getId();
             }
         }

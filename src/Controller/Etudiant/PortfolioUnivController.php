@@ -283,10 +283,10 @@ class PortfolioUnivController extends BaseController
         ]);
     }
 
-    #[Route('/edit/page/{page}/trace/type', name: 'app_portfolio_univ_edit_trace_type')]
-    public function editPortfolioTraceType(Request $request, ?int $page): Response
+    #[Route('/edit/page/{page}/trace/type/{type}', name: 'app_portfolio_univ_edit_trace_type')]
+    public function editPortfolioTraceType(Request $request, ?int $page, ?string $type): Response
     {
-        $type = $request->query->get('type');
+//        $type = $request->query->get('type');
         $page = $this->pageRepository->find($page);
 
         // stocker le type de trace dans la session
@@ -385,6 +385,25 @@ class PortfolioUnivController extends BaseController
         $this->tracePageRepository->save($tracePageDown, true);
 
         $this->tracePageRepository->save($tracePage, true);
+
+        return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
+    }
+
+    #[Route('/edit/page/{id}/delete/trace/{trace}', name: 'app_portfolio_univ_edit_delete_trace')]
+    public function editPortfolioDeleteTrace(?int $id, ?int $trace): Response
+    {
+        $page = $this->pageRepository->find($id);
+        $tracePage = $this->tracePageRepository->findOneBy(['page' => $page, 'trace' => $trace]);
+        $this->tracePageRepository->delete($tracePage, true);
+
+        // gérer l'ordre des traces restantes
+        $tracePages = $this->tracePageRepository->findBy(['page' => $page]);
+        $ordre = 1;
+        foreach ($tracePages as $tracePage) {
+            $tracePage->setOrdre($ordre);
+            $this->tracePageRepository->save($tracePage, true);
+            $ordre++;
+        }
 
         return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
     }

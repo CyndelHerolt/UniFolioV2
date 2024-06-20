@@ -241,6 +241,7 @@ class PortfolioUnivController extends BaseController
     public function editPortfolioNewTrace(Request $request, ?int $id): Response
     {
         $page = $this->pageRepository->find($id);
+        $portfolio = $page->getPortfolio();
         $edit = false;
 
         $typesTrace = $this->traceRegistry->getTypeTraces();
@@ -268,7 +269,7 @@ class PortfolioUnivController extends BaseController
         }
 
 
-        return $this->render('trace/form.html.twig', [
+        return $this->render('portfolio_univ/edit.html.twig', [
             'trace' => $trace,
             'form' => $form->createView(),
             'formType' => $formType,
@@ -280,18 +281,65 @@ class PortfolioUnivController extends BaseController
             'apcNiveaux' => $competences['apcNiveaux'] ?? null,
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
+            'step' => 'newTrace',
+            'portfolio' => $portfolio
         ]);
     }
 
-    #[Route('/edit/page/{page}/trace/type/{type}', name: 'app_portfolio_univ_edit_trace_type')]
-    public function editPortfolioTraceType(Request $request, ?int $page, ?string $type): Response
+    #[Route('/edit/page/{id}/edit/trace/{trace}', name: 'app_portfolio_univ_edit_trace')]
+    public function editPortfolioTrace(Request $request, ?int $id, ?int $trace): Response
     {
-//        $type = $request->query->get('type');
+        $page = $this->pageRepository->find($id);
+        $trace = $this->traceRepository->find($trace);
+        $edit = true;
+
+        $typesTrace = $this->traceRegistry->getTypeTraces();
+        $user = $this->getUser();
+
+        $competences = $this->competencesService->getCompetences($user);
+
+        if (isset($competences['apcNiveaux'])) {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);
+        } else {
+            $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
+        }
+
+        $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
+
+        if ($selectedTraceType !== null) {
+            $formType = $selectedTraceType::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+            $typeTrace = $selectedTraceType::TYPE;
+        } else {
+            $typeTrace = null;
+            $formType = null;
+        }
+
+        return $this->render('trace/form.html.twig', [
+            'trace' => $trace,
+            'form' => $form->createView(),
+            'formType' => $formType,
+            'typeTrace' => $typeTrace,
+            'typesTrace' => $typesTrace,
+            'page' => $page,
+            'edit' => $edit,
+            'selectedTraceType' => $selectedTraceType,
+            'apcNiveaux' => $competences['apcNiveaux'] ?? null,
+            'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
+            'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
+        ]);
+    }
+
+
+    #[Route('/edit/page/{page}/trace/type', name: 'app_portfolio_univ_edit_trace_type')]
+    public function editPortfolioTraceType(Request $request, ?int $page): Response
+    {
+        $type = $request->query->get('type');
         $page = $this->pageRepository->find($page);
 
         // stocker le type de trace dans la session
         $request->getSession()->set('selected_trace_type', $type);
-
         if ($request->query->get('trace')) {
             $trace = $this->traceRepository->find($request->query->get('trace'));
             $trace->setContenu([]);
@@ -307,13 +355,11 @@ class PortfolioUnivController extends BaseController
             $formType = $selectedTraceType::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
-            $typeTrace = $selectedTraceType::TYPE;
         } elseif ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();
             $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
-            $typeTrace = $this->traceRegistry->getTypeTrace($selectedTraceType)::TYPE;
         } else {
             $formType = null;
         }
@@ -327,7 +373,6 @@ class PortfolioUnivController extends BaseController
             'trace' => $trace ?? new Trace(),
             'selectedTraceType' => $selectedTraceType,
             'formType' => $formType,
-            'typeTrace' => $typeTrace,
         ]);
     }
 

@@ -47,9 +47,7 @@
                                 {{ form_row(form.dateRealisation) }}
                             </div>
 
-                            <turbo-frame id="type-trace-form">
                                 {{ include('partials/trace/_type_trace_form.html.twig') }}
-                            </turbo-frame>
 
                             <div class="col-12 p-2">
                                 {{ form_row(form.legende) }}
@@ -152,16 +150,4 @@
             </aside>
         </div>
     </section>
-
-    <script>
-        // Initialisation de flatpickr sur l'élément dateRealisation
-        flatpickr("#trace_abstract_dateRealisation", {
-            plugins: [monthSelectPlugin({
-                shorthand: true, // true for 12/2020, false for December 2020
-                dateFormat: "m-Y", // see https://flatpickr.js.org/formatting/
-                altFormat: "F Y",
-            })],
-            locale: "fr",
-        });
-    </script>
 {% endblock %}

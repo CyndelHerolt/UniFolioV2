@@ -100,8 +100,8 @@
 
             <div class="row" style="margin: 50px 0">
                 <div class="border-end" style="width: 150px; margin-top: 15px">
-                    {% if this.trace.validations is not empty %}
-                        {% for validation in this.trace.validations %}
+                    {% if this.trace.traceCompetences is not empty %}
+                        {% for validation in this.trace.traceCompetences %}
                             {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
                                 <small><span
                                             class="ue {{ validation.apcNiveau.apcCompetence.couleur }} p-2">{{ validation.apcNiveau.apcCompetence.nomCourt }}</span>
@@ -161,30 +161,6 @@
             <hr>
 
             <div class="row justify-content-center">
-                <div class="col-10 m-2">
-                    <h5 class="text-start">Validation des compétences</h5>
-                    {% for validation in this.trace.validations %}
-                        {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-                            <div class="d-flex justify-content-between {{ validation.apcNiveau.apcCompetence.couleur }}bg p-3">
-                            <small><span
-                                        class="ue {{ validation.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcNiveau.libelle }}
-                            </small><br>
-                        {% else %}
-                            <small><span
-                                        class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} •</span> {{ validation.apcApprentissageCritique.libelle }}
-                            </small>
-                        {% endif %}
-
-                        </div>
-                        {% if validation.etat == 0 %}
-                            <p class="text-end">En attente de validation</p>
-                        {% else %}
-                            <p class="text-end">Evaluation saisie
-                                par {{ validation.enseignant.prenom }} {{ validation.enseignant.nom }}
-                                le {{ validation.dateModification|date('d-m-Y') }}</p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
 
                 <div class="col-10 m-2">
                     <h5>Commentaires</h5>

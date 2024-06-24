@@ -1,4 +1,4 @@
-<turbo-frame id="type-trace-form">
+<turbo-frame id="type_trace_form">
     <label>Contenu média</label>
 
     <div class="types row p-2">
@@ -6,7 +6,7 @@
             <a
                     {% if trace.contenu is null or trace.contenu is empty %}
                         {% if 'portfolio' in app.request.uri %}
-                            href="{{ path('app_portfolio_univ_edit_trace_type', {'page': page.id, 'type': constant('CLASS_NAME', type), 'step': 'newType'}) }}"
+                            href="{{ path('app_portfolio_univ_edit_trace_type', {'page': page.id, 'type': constant('CLASS_NAME', type)}) }}"
                         {% else %}
                             href="{{ path('app_trace_change_type', {'type': constant('CLASS_NAME', type) }) }}"
                         {% endif %}

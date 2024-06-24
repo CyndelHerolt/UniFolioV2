@@ -49,8 +49,7 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->setParameter('competence', $competence)
             ->setParameter('ordre', $annee)
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function findByAnneeParcours($annee, $parcours)
@@ -62,6 +61,22 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->andWhere('p.id = :parcours')
             ->setParameter('ordre', $annee->getOrdre())
             ->setParameter('parcours', $parcours->getId())
+            ->getQuery()
+            ->getResult();
+    }
+
+
+    public function findByPortfolioUniversitaire($portfolioId)
+    {
+        return $this->createQueryBuilder('n')
+            ->distinct()
+            ->join('n.traceCompetences', 'tc')
+            ->join('tc.trace', 't')
+            ->join('t.tracePages', 'tp')
+            ->join('tp.page', 'p')
+            ->join('p.portfolio', 'pu')
+            ->where('pu.id = :portfolioId')
+            ->setParameter('portfolioId', $portfolioId)
             ->getQuery()
             ->getResult();
     }

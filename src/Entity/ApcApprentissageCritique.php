@@ -39,10 +39,17 @@ class ApcApprentissageCritique
     #[ORM\ManyToMany(targetEntity: Criteres::class, mappedBy: 'apcApprentissageCritique')]
     private Collection $criteres;
 
+    /**
+     * @var Collection<int, TraceCompetence>
+     */
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'apcApprentissageCritique')]
+    private Collection $traceCompetences;
+
     public function __construct()
     {
         $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
+        $this->traceCompetences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,6 +157,36 @@ class ApcApprentissageCritique
     {
         if ($this->criteres->removeElement($critere)) {
             $critere->removeApcApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TraceCompetence>
+     */
+    public function getTraceCompetences(): Collection
+    {
+        return $this->traceCompetences;
+    }
+
+    public function addTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if (!$this->traceCompetences->contains($traceCompetence)) {
+            $this->traceCompetences->add($traceCompetence);
+            $traceCompetence->setApcApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if ($this->traceCompetences->removeElement($traceCompetence)) {
+            // set the owning side to null (unless already changed)
+            if ($traceCompetence->getApcApprentissageCritique() === $this) {
+                $traceCompetence->setApcApprentissageCritique(null);
+            }
         }
 
         return $this;

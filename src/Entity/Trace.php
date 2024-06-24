@@ -58,11 +58,18 @@ class Trace
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'trace')]
     private Collection $commentaires;
 
+    /**
+     * @var Collection<int, TraceCompetence>
+     */
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace', orphanRemoval: true, cascade: ['persist'])]
+    private Collection $traceCompetences;
+
     public function __construct()
     {
         $this->tracePages = new ArrayCollection();
         $this->validations = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        $this->traceCompetences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,6 +281,36 @@ class Trace
             // set the owning side to null (unless already changed)
             if ($commentaire->getTrace() === $this) {
                 $commentaire->setTrace(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TraceCompetence>
+     */
+    public function getTraceCompetences(): Collection
+    {
+        return $this->traceCompetences;
+    }
+
+    public function addTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if (!$this->traceCompetences->contains($traceCompetence)) {
+            $this->traceCompetences->add($traceCompetence);
+            $traceCompetence->setTrace($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if ($this->traceCompetences->removeElement($traceCompetence)) {
+            // set the owning side to null (unless already changed)
+            if ($traceCompetence->getTrace() === $this) {
+                $traceCompetence->setTrace(null);
             }
         }
 

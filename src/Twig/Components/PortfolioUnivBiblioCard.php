@@ -2,6 +2,7 @@
 
 namespace App\Twig\Components;
 
+use App\Repository\ApcNiveauRepository;
 use App\Repository\PortfolioUnivRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
@@ -12,8 +13,12 @@ final class PortfolioUnivBiblioCard
 {
     public int $id;
 
+    public ?array $competences = null;
+
     public function __construct(
         protected PortfolioUnivRepository $portfolioUnivRepository,
+        protected ApcNiveauRepository $apcNiveauRepository,
+
     )
     {
     }
@@ -21,6 +26,8 @@ final class PortfolioUnivBiblioCard
     public function getPortfolioUniv()
     {
         $portfolioUniv = $this->portfolioUnivRepository->find($this->id);
+
+        $this->competences = $this->apcNiveauRepository->findByPortfolioUniversitaire($portfolioUniv->getId());
 
         return $portfolioUniv;
     }

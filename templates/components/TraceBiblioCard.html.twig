@@ -35,29 +35,20 @@
         <td>
             {{ this.trace.dateModification|date('d/m/Y') }}
         </td>
-        <td>
-            {% if this.trace.validations is empty %}
+        <td class="d-flex flex-column gap-1">
+            {% if this.trace.traceCompetences is empty %}
             <div class="pill-danger d-flex align-items-center gap-1">
                 <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
                 Aucune compétence liée
             </div>
             {% else %}
-            {% for validation in this.trace.validations %}
-            {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-            <div class="pill-competence d-flex gap-1 align-items-center {{ validation.apcNiveau.apcCompetence.couleur }}">
-                {{ validation.apcNiveau.apcCompetence.nomCourt }}
+            {% for traceCompetences in this.trace.traceCompetences %}
+            {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
+            <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
                 {% else %}
-                <div class="pill-competence d-flex gap-1 align-items-center {{ validation.apcNiveau.apcCompetence.couleur }}">
-                    {{ validation.apcApprentissageCritique.apcCompetence.nomCourt }}
-                    {% endif %}
-                    {% if validation.etat == 0 %}
-                        <twig:ux:icon name="bi:hourglass-split" width="15" height="15"/>
-                    {% elseif validation.etat == 1 %}
-                        <twig:ux:icon name="bi:x-octagon-fill" width="15" height="15"/>
-                    {% elseif validation.etat == 2 %}
-                        <twig:ux:icon name="bi:arrow-up-right-circle-fill" width="15" height="15"/>
-                    {% elseif validation.etat == 3 %}
-                        <twig:ux:icon name="bi:check-circle-fill" width="15" height="15"/>
+                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                    {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -83,13 +74,13 @@
             </div>
         </td>
         <td>
-            {% if this.trace.validations is empty or this.trace.contenu is empty or this.trace.contenu is null or this.trace.description is empty or this.trace.description is null or this.trace.contexte is empty or this.trace.contexte is null %}
+            {% if this.trace.traceCompetences is empty or this.trace.contenu is empty or this.trace.contenu is null or this.trace.description is empty or this.trace.description is null or this.trace.contexte is empty or this.trace.contexte is null %}
                 <div class="pill-danger d-flex align-items-center gap-1 dropdown-toggle" data-bs-toggle="dropdown"
                      aria-expanded="false" style="cursor: pointer">
                     <twig:ux:icon name="bi:exclamation-triangle-fill" width="15px" height="auto"/>
                     Trace incomplète
                     <ul class="dropdown-menu p-3">
-                        {% if this.trace.validations is empty %}
+                        {% if this.trace.traceCompetences is empty %}
                             <li class="text-danger mb-2 mt-2">
                                 Aucune compétence liée
                             </li>
@@ -125,14 +116,14 @@
         <td>
             <div class="d-flex gap-2">
                 <a href="{{ path('app_trace_show', {'id': this.trace.id}) }}">
-                <button class="btn-info d-flex justify-content-center align-items-center">
-                    <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
-                </button>
+                    <button class="btn-info d-flex justify-content-center align-items-center">
+                        <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
+                    </button>
                 </a>
                 <a href="{{ path('app_trace_edit', {'id': this.trace.id}) }}">
-                <button class="btn-warning d-flex justify-content-center align-items-center">
-                    <twig:ux:icon name="bi:pencil-square" width="15" height="15"/>
-                </button>
+                    <button class="btn-warning d-flex justify-content-center align-items-center">
+                        <twig:ux:icon name="bi:pencil-square" width="15" height="15"/>
+                    </button>
                 </a>
                 <button class="btn-danger d-flex justify-content-center align-items-center" data-bs-toggle="modal"
                         data-bs-target="#delete{{ this.trace.id }}Modal">

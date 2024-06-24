@@ -18,3 +18,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
         locale: "fr",
     });
 });
+
+// si il y a un turbo rechargement de la page
+document.addEventListener('turbo:load', (event) => {
+    // Initialisation de flatpickr sur l'élément dateRealisation
+    flatpickr("#trace_abstract_dateRealisation", {
+        plugins: [monthSelectPlugin({
+            shorthand: true, // true for 12/2020, false for December 2020
+            dateFormat: "m-Y", // see https://flatpickr.js.org/formatting/
+            altFormat: "F Y",
+        })],
+        locale: "fr",
+    });
+});

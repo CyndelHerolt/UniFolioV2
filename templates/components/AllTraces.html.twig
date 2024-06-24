@@ -128,6 +128,12 @@
                 </div>
 
                 <div class="actions d-flex gap-3">
+                    <a href="{{ path('app_trace_new') }}">
+                        <button class="secondary-btn">
+                            Créer une trace
+                        </button>
+                    </a>
+
                     <button class="primary-btn" data-bs-toggle="modal"
                             data-bs-target="#staticBackdropDelete">
                         Supprimer les traces sélectionnées
@@ -166,12 +172,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <a href="{{ path('app_trace_new') }}">
-                        <button class="secondary-btn">
-                            Créer une trace
-                        </button>
-                    </a>
                 </div>
             </div>
         </div>

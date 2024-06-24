@@ -379,20 +379,37 @@ class PortfolioUnivController extends BaseController
     public function editPortfolioAddTrace(Request $request, ?int $id): Response
     {
         $page = $this->pageRepository->find($id);
-        $traces = $request->request->all()['traces'];
+        if (isset($request->request->all()['traces'])) {
+            $traces = $request->request->all()['traces'];
 
-        foreach ($traces as $traceId) {
-            $trace = $this->traceRepository->find($traceId);
+            foreach ($traces as $traceId) {
+                $trace = $this->traceRepository->find($traceId);
 
-            $tracePage = new TracePage();
-            $tracePage->setPage($page);
-            $tracePage->setTrace($trace);
-            $tracePage->setOrdre(count($page->getTracePages()) + 1);
+                $tracePage = new TracePage();
+                $tracePage->setPage($page);
+                $tracePage->setTrace($trace);
+                $tracePage->setOrdre(count($page->getTracePages()) + 1);
 
-            $this->tracePageRepository->save($tracePage, true);
+                $this->tracePageRepository->save($tracePage, true);
+            }
         }
 
         return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
+    }
+
+    #[Route('/edit/page/{id}/show/trace/{trace}', name: 'app_portfolio_univ_edit_show_trace')]
+    public function editPortfolioShowTrace(Request $request, ?int $id, ?int $trace): Response
+    {
+        $page = $this->pageRepository->find($id);
+        $portfolio = $page->getPortfolio();
+        $trace = $this->traceRepository->find($trace);
+
+        return $this->render('portfolio_univ/edit.html.twig', [
+            'page' => $page,
+            'portfolio' => $portfolio,
+            'trace' => $trace,
+            'step' => 'showTrace'
+        ]);
     }
 
     #[Route('/edit/page/{id}/save/trace', name: 'app_portfolio_univ_edit_save_trace')]

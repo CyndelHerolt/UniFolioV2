@@ -30,7 +30,9 @@
 
 
                 {% endif %}
-                <twig:TraceContent id="{{ trace.id }}" edit="{{ edit }}" row="{{ row }}"/>
+                <turbo-frame id="trace-zone">
+                    <twig:TraceContent id="{{ trace.id }}" edit="{{ edit }}" row="{{ row }}"/>
+                </turbo-frame>
             </div>
         </article>
     </section>

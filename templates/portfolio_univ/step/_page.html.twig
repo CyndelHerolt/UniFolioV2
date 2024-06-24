@@ -57,7 +57,7 @@
                     Ajouter des traces
                 </button>
                 <!-- Modal AddTraces -->
-                <div class="modal modal-lg fade" id="staticBackdropAddTraces" data-bs-backdrop="static"
+                <div class="modal modal-xl fade" id="staticBackdropAddTraces" data-bs-backdrop="static"
                      data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -68,37 +68,43 @@
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
+                                {% if traces is not empty %}
                                 <form action="{{ path('app_portfolio_univ_edit_add_trace', {'id': page.id}) }}"
                                       method="post">
-                                    <div class="row">
-                                        {% if traces is not empty %}
-                                            {% for trace in traces|sort((a, b) => a.dateCreation <=> b.dateCreation) %}
-                                                <div class="col-lg-4">
-                                                    <input type="checkbox" class="btn-check" id="trace{{ trace.id }}"
-                                                           name="traces[]" value="{{ trace.id }}" autocomplete="off">
-                                                    <label class="btn btn-light" for="trace{{ trace.id }}">
-                                                        <twig:TraceCard id="{{ trace.id }}"/>
-                                                    </label>
-                                                </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            <div class="col-12 d-flex flex-column align-items-center">
-                                                <p class="text-center">Aucune trace disponible.</p>
-                                                <a href="{{ path('app_portfolio_univ_edit_new_trace', {'id': page.id}) }}">
-                                                    <button class="btn btn-secondary text-uppercase m-2"
-                                                            data-bs-dismiss="modal">
-                                                        Créer une trace
-                                                    </button>
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    </div>
+                                    <table>
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Nom/type</th>
+                                            <th>Modifiée le</th>
+                                            <th>Compétences</th>
+                                            <th>Etat</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for trace in traces|sort((a, b) => a.dateCreation <=> b.dateCreation) %}
+                                            <twig:TraceCard id="{{ trace.id }}" page="{{ page.id }}"/>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    {% else %}
+                                        <div class="col-12 d-flex flex-column align-items-center">
+                                            <p class="text-center">Aucune trace disponible.</p>
+                                            <a href="{{ path('app_portfolio_univ_edit_new_trace', {'id': page.id}) }}">
+                                                <button class="btn btn-secondary text-uppercase m-2"
+                                                        data-bs-dismiss="modal">
+                                                    Créer une trace
+                                                </button>
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <button type="button" class="secondary-btn" data-bs-dismiss="modal">
                                             Annuler
                                         </button>
                                         {% if traces is not empty %}
-                                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                                            <button type="submit" class="primary-btn" data-bs-dismiss="modal"
                                                     data-turbo="false">
                                                 Valider
                                             </button>
@@ -123,7 +129,8 @@
                         <div class="d-flex flex-row justify-content-evenly align-items-center bg-light p-3">
                             {% set currentTracePage = trace.tracePages|filter(tracePage => tracePage.page == page)|first %}
                             {% if currentTracePage.ordre != 1 %}
-                                <a href="{{ path('app_portfolio_univ_edit_up_trace', {'id': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <a href="{{ path('app_portfolio_univ_edit_up_trace', {'id': page.id, 'trace': trace.id}) }}"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
                                    title="déplacer vers le haut">
                                     <twig:ux:icon name="bi:arrow-up" width="15" height="auto"/>
                                 </a>
@@ -134,7 +141,8 @@
                             {% endif %}
                             {% set totalTraces = tracesPage|length %}
                             {% if currentTracePage.ordre != totalTraces %}
-                                <a href="{{ path('app_portfolio_univ_edit_down_trace', {'id': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top"
+                                <a href="{{ path('app_portfolio_univ_edit_down_trace', {'id': page.id, 'trace': trace.id}) }}"
+                                   data-bs-toggle="tooltip" data-bs-placement="top"
                                    title="déplacer vers le bas">
                                     <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
                                 </a>
@@ -143,7 +151,8 @@
                                     <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
                                 </button>
                             {% endif %}
-                            <a href="{{ path('app_portfolio_univ_edit_trace', {'id': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer" data-turbo="false">
+                            <a href="{{ path('app_portfolio_univ_edit_trace', {'id': page.id, 'trace': trace.id}) }}"
+                               data-bs-toggle="tooltip" data-bs-placement="top" title="éditer" data-turbo="false">
                                 <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/>
                             </a>
                             <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">

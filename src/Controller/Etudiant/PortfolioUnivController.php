@@ -14,7 +14,6 @@ use App\Entity\Page;
 use App\Entity\PortfolioUniv;
 use App\Entity\Trace;
 use App\Entity\TracePage;
-use App\Entity\Validation;
 use App\Form\PageType;
 use App\Form\PortfolioUnivType;
 use App\Repository\ApcApprentissageCritiqueRepository;
@@ -25,9 +24,9 @@ use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TracePageRepository;
 use App\Repository\TraceRepository;
-use App\Repository\ValidationRepository;
 use App\Service\CompetencesService;
 use App\Service\DataUserSessionService;
+use App\Service\TraceSaveService;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,10 +46,9 @@ class PortfolioUnivController extends BaseController
         protected ApcNiveauRepository                $apcNiveauRepository,
         protected ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
         protected ApcCompetenceRepository            $competenceRepository,
-        private readonly ValidationRepository        $validationRepository,
-        private readonly BibliothequeRepository      $bibliothequeRepository,
         protected DataUserSessionService             $dataUserSessionService,
-        private readonly CompetencesService          $competencesService
+        private readonly CompetencesService          $competencesService,
+        private readonly TraceSaveService            $TraceSaveService
     )
     {
         parent::__construct(
@@ -290,6 +288,7 @@ class PortfolioUnivController extends BaseController
     public function editPortfolioTrace(Request $request, ?int $id, ?int $trace): Response
     {
         $page = $this->pageRepository->find($id);
+        $portfolio = $page->getPortfolio();
         $trace = $this->traceRepository->find($trace);
         $edit = true;
 
@@ -316,18 +315,20 @@ class PortfolioUnivController extends BaseController
             $formType = null;
         }
 
-        return $this->render('trace/form.html.twig', [
+        return $this->render('portfolio_univ/edit.html.twig', [
             'trace' => $trace,
             'form' => $form->createView(),
             'formType' => $formType,
             'typeTrace' => $typeTrace,
-            'typesTrace' => $typesTrace,
             'page' => $page,
             'edit' => $edit,
+            'typesTrace' => $typesTrace,
             'selectedTraceType' => $selectedTraceType,
             'apcNiveaux' => $competences['apcNiveaux'] ?? null,
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
+            'step' => 'newTrace',
+            'portfolio' => $portfolio
         ]);
     }
 
@@ -392,6 +393,29 @@ class PortfolioUnivController extends BaseController
 
             $this->tracePageRepository->save($tracePage, true);
         }
+
+        return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
+    }
+
+    #[Route('/edit/page/{id}/save/trace', name: 'app_portfolio_univ_edit_save_trace')]
+    public function editPortfolioSaveTrace(Request $request, ?int $id): Response
+    {
+        $page = $this->pageRepository->find($id);
+        if ($request->query->get('trace') !== null) {
+            $trace = $this->traceRepository->find($request->query->get('trace'));
+        } else {
+            $trace = new Trace();
+        }
+
+        $this->TraceSaveService->save($trace, $request);
+
+        // lier la trace à la page
+        $tracePage = new TracePage();
+        $tracePage->setPage($page);
+        $tracePage->setTrace($trace);
+        $tracePage->setOrdre(count($page->getTracePages()) + 1);
+
+        $this->tracePageRepository->save($tracePage, true);
 
         return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
     }

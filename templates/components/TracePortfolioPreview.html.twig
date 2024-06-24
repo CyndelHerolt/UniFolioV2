@@ -33,14 +33,14 @@
                         -
                         {{ this.trace.contenu|length }}
                         {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}</small>
-            {% for validation in this.trace.validations %}
-                {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-                    <small class="{{ validation.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ validation.apcNiveau.apcCompetence.nomCourt }}
-                        • {{ validation.apcNiveau.libelle }}
+            {% for traceCompetence in this.trace.traceCompetences %}
+                {% if traceCompetence.apcNiveau and traceCompetence.apcNiveau.actif == true %}
+                    <small class="{{ traceCompetence.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ traceCompetence.apcNiveau.apcCompetence.nomCourt }}
+                        • {{ traceCompetence.apcNiveau.libelle }}
                     </small>
                 {% else %}
-                    <small class="{{ validation.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ validation.apcApprentissageCritique.code }}
-                        | {{ validation.apcApprentissageCritique.libelle }}
+                    <small class="{{ traceCompetence.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ traceCompetence.apcApprentissageCritique.code }}
+                        | {{ traceCompetence.apcApprentissageCritique.libelle }}
                     </small>
                 {% endif %}
             {% endfor %}

@@ -28,11 +28,14 @@
             quitter</a>
     </li>
 </ul>
-
-<h2>Création d'une trace</h2>
+{% if 'edit' in app.request.uri %}
+    <h2>Edition de {{ trace.libelle }}</h2>
+{% else %}
+    <h2>Création d'une trace</h2>
+{% endif %}
 
 <div class="trace-form">
-    {{ form_start(form, {'action': path('app_trace_save', {'trace': trace.id}),'attr': {'enctype': 'multipart/form-data'}}) }}
+    {{ form_start(form, {'action': path('app_portfolio_univ_edit_save_trace', {'id': page.id, 'trace': trace.id}),'attr': {'enctype': 'multipart/form-data'}}) }}
 
     {{ form_errors(form) }}
 
@@ -52,7 +55,7 @@
             {{ form_row(form.dateRealisation) }}
         </div>
 
-        <turbo-frame id="type_trace_form"
+        <turbo-frame id="type_trace_form">
             {{ include('partials/trace/_type_trace_form.html.twig') }}
         </turbo-frame>
 

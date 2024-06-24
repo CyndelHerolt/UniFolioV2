@@ -4,10 +4,13 @@ namespace App\Service;
 
 use App\Components\Trace\TraceRegistry;
 use App\Controller\BaseController;
+use App\Entity\Trace;
+use App\Entity\TraceCompetence;
 use App\Entity\Validation;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\TraceCompetenceRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,7 +23,7 @@ class TraceSaveService extends BaseController
         private TraceRepository                    $traceRepository,
         private ApcNiveauRepository                $apcNiveauRepository,
         private ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
-        private ValidationRepository               $validationRepository,
+        private TraceCompetenceRepository          $traceCompetenceRepository,
         private readonly DataUserSessionService    $dataUserSessionService,
     )
     {
@@ -30,7 +33,7 @@ class TraceSaveService extends BaseController
     }
 
 
-    public function save($trace, Request $request)
+    public function save(?Trace $trace, Request $request)
     {
         $etudiant = $this->getUser()->getEtudiant();
         $bibliotheque = $this->bibliothequeRepository->findOneBy(['etudiant' => $etudiant, 'actif' => true]);
@@ -63,25 +66,13 @@ class TraceSaveService extends BaseController
                     if ($sauvegarde['success'] === true) {
                         $content = array_merge($sauvegarde['contenu'], $existingContenu);
                     } else {
-                        $this->addFlash('danger', $sauvegarde['error']);
-                        //todo: service check referer/site domain
-
-                        // récupérer le nom de la route émettrice
-                        $referer = $request->headers->get('referer');
-                        // retourner au referer
-                        return $this->redirect($referer);
+                        $error = $sauvegarde['error'];
                     }
                 } else {
                     if ($sauvegarde['success'] === true) {
                         $content = $sauvegarde['contenu'];
                     } else {
-                        $this->addFlash('danger', $sauvegarde['error']);
-                        // récupérer le nom de la route émettrice
-                        $referer = $request->headers->get('referer');
-                        $selectedTraceType = $request->getSession()->get('selected_trace_type');
-
-                        // retourner au referer
-                        return $this->redirect($referer . '?type=' . $selectedTraceType);
+                        $error = $sauvegarde['error'];
                     }
                 }
             } else {
@@ -131,35 +122,53 @@ class TraceSaveService extends BaseController
                 }
             }
 
-            $apcNiveaux = [];
-            $apcApprentissageCritiques = [];
 
+            $traceCompetences = $this->traceCompetenceRepository->findBy(['trace' => $trace]);
+
+            foreach ($traceCompetences as $traceCompetence) {
+                if ($traceCompetence->getApcNiveau()) {
+                    // Check if the competence id is not in the list of submitted competence ids
+                    if (!in_array($traceCompetence->getApcNiveau()->getId(), $submittedCompetenceIds)) {
+                        // Delete the TraceCompetence entity
+                        $this->traceCompetenceRepository->remove($traceCompetence, true);
+                    }
+                } elseif ($traceCompetence->getApcApprentissageCritique()) {
+                    // Check if the competence id is not in the list of submitted competence ids
+                    if (!in_array($traceCompetence->getApcApprentissageCritique()->getId(), $submittedCompetenceIds)) {
+                        // Delete the TraceCompetence entity
+                        $this->traceCompetenceRepository->remove($traceCompetence, true);
+                    }
+                }
+            }
 
             foreach ($selectedCompetences as $id => $libelle) {
                 // vérifier si un ApcNiveau existe avec l'id et le libellé
                 $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
                 if ($apcNiveau) {
-                    $apcNiveaux[] = $apcNiveau;
-                    $validation = new Validation();
-                    $validation->setApcNiveau($apcNiveau);
-                    $validation->setTrace($trace);
-                    $validation->setEtat(0);
-                    $validation->setDateCreation(new \DateTime());
-                    $this->validationRepository->save($validation, true);
+                    // si il n'existe pas déjà un traceCompetence lié a l'apcNiveau et à la trace
+                    if (!$this->traceCompetenceRepository->findOneBy(['apcNiveau' => $apcNiveau, 'trace' => $trace])) {
+                        $apcNiveaux[] = $apcNiveau;
+                        $traceCompetence = new TraceCompetence();
+                        $traceCompetence->setApcNiveau($apcNiveau);
+                        $traceCompetence->setTrace($trace);
+                        $this->traceCompetenceRepository->save($traceCompetence, true);
+                    }
                 } else {
                     // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
                     $apcApprentissageCritique = $this->apcApprentissageCritiqueRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
                     if ($apcApprentissageCritique) {
-                        $apcApprentissageCritiques[] = $apcApprentissageCritique;
-                        $validation = new Validation();
-                        $validation->setApcApprentissageCritique($apcApprentissageCritique);
-                        $validation->setTrace($trace);
-                        $validation->setEtat(0);
-                        $validation->setDateCreation(new \DateTime());
-                        $this->validationRepository->save($validation, true);
+                        // si il n'existe pas déjà un traceCompetence lié a l'apcApprentissageCritique et à la trace
+                        if (!$this->traceCompetenceRepository->findOneBy(['apcApprentissageCritique' => $apcApprentissageCritique, 'trace' => $trace])) {
+                            $apcApprentissageCritiques[] = $apcApprentissageCritique;
+                            $traceCompetence = new TraceCompetence();
+                            $traceCompetence->setApcApprentissageCritique($apcApprentissageCritique);
+                            $traceCompetence->setTrace($trace);
+                            $this->traceCompetenceRepository->save($traceCompetence, true);
+                        }
                     }
                 }
             }
         }
+        return [$error ?? null, $trace];
     }
 }

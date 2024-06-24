@@ -38,15 +38,9 @@ class TracePdf extends AbstractTrace
         return self::TYPE;
     }
 
-    public function sauvegarde(?array $contenu,
-                               ?array $existingContenu
-    ): array
+    public function sauvegarde(?array $contenu): array
     {
         $max_size = 8 * 1024 * 1024; // 8 Mo en octets
-
-        if ($existingContenu) {
-            $contenu = array_merge($contenu, $existingContenu);
-        }
 
         if ($contenu) {
             foreach ($contenu as $pdf) {

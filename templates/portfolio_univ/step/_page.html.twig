@@ -109,7 +109,7 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ path('app_portfolio_univ_edit_new_trace', {'id': page.id}) }}">
+                <a href="{{ path('app_portfolio_univ_edit_new_trace', {'id': page.id}) }}" data-turbo="false">
                     <button class="secondary-btn m-2">
                         Créer une trace
                     </button>
@@ -143,7 +143,7 @@
                                     <twig:ux:icon name="bi:arrow-down" width="15" height="auto"/>
                                 </button>
                             {% endif %}
-                            <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer">
+                            <a href="{{ path('app_portfolio_univ_edit_trace', {'id': page.id, 'trace': trace.id}) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="éditer" data-turbo="false">
                                 <twig:ux:icon name="bi:pencil-fill" width="15" height="15"/>
                             </a>
                             <a href="" data-bs-toggle="tooltip" data-bs-placement="top" title="voir">

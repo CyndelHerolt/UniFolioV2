@@ -61,7 +61,7 @@ class Trace
     /**
      * @var Collection<int, TraceCompetence>
      */
-    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace')]
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace', orphanRemoval: true, cascade: ['persist'])]
     private Collection $traceCompetences;
 
     public function __construct()

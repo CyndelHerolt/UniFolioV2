@@ -61,20 +61,10 @@ class TraceSaveService extends BaseController
                 $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
 
                 $existingContenu = $data[$key] ?? null;
-                $sauvegarde = $typeTrace->sauvegarde($contenu);
-                if ($existingContenu) {
-                    if ($sauvegarde['success'] === true) {
-                        $content = array_merge($sauvegarde['contenu'], $existingContenu);
-                    } else {
-                        $error = $sauvegarde['error'];
-                    }
-                } else {
-                    if ($sauvegarde['success'] === true) {
-                        $content = $sauvegarde['contenu'];
-                    } else {
-                        $error = $sauvegarde['error'];
-                    }
-                }
+                dump($existingContenu);
+                $sauvegarde = $typeTrace->sauvegarde($contenu, $existingContenu);
+                $content = $sauvegarde['contenu'];
+
             } else {
                 if (isset($data[$key])) {
                     $content = $data[$key];

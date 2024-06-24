@@ -7,8 +7,7 @@
                     <p>Pdf déjà dans la DB</p>
                     <input type="hidden" name="trace_pdf[{{ loop.index }}]" value="{{ data }}">
                     <iframe src="{{ asset(data) }}" style="width: 50%"></iframe>
-                    <button type="button" class="btn btn-danger delete-pdf">
-                        <i class="fa-solid fa-square-minus"></i>
+                    <button type="button" class="btn btn-danger delete-pdf"  data-action="typeCollection#removePdf">Supprimer
                     </button>
                     <hr>
                 </div>

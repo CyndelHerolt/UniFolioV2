@@ -26,7 +26,7 @@
                         {% endif %}
                     </div>
 
-                    <turbo-frame id="trace-form">
+                    <turbo-frame id="trace-zone">
                         {{ form_start(form, {'action': path('app_trace_save', {'trace': trace.id}),'attr': {'enctype': 'multipart/form-data', 'data-turbo':'false'}}) }}
 
                         {{ form_errors(form) }}

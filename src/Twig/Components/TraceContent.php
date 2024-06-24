@@ -160,6 +160,15 @@ final class TraceContent extends AbstractController
         return $this->traceRegistry->getTypeTrace($name);
     }
 
+    public function getTraceType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+        $type = $this->traceRegistry->getTypeTrace($trace->getType())::TYPE;
+
+        return $type;
+    }
+
+
     public function getTrace()
     {
         $trace = $this->traceRepository->find($this->id);

@@ -37,23 +37,23 @@
         </td>
         <td class="d-flex flex-column gap-1">
             {% if this.trace.traceCompetences is empty %}
-            <div class="pill-danger d-flex align-items-center gap-1">
-                <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
-                Aucune compétence liée
-            </div>
-            {% else %}
-            {% for traceCompetences in this.trace.traceCompetences %}
-            {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
-            <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
-                {% else %}
-                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                    {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
-                    {% endif %}
+                <div class="pill-danger d-flex align-items-center gap-1">
+                    <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
+                    Aucune compétence liée
                 </div>
+            {% else %}
+                {% for traceCompetences in this.trace.traceCompetences %}
+                    {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
+                        <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                            {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
+                        </div>
+                    {% else %}
+                        <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                            {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
+                        </div>
+                    {% endif %}
                 {% endfor %}
-                {% endif %}
-            </div>
+            {% endif %}
         </td>
         <td>
             <div class="circle-progress">

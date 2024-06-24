@@ -37,7 +37,7 @@ class TraceImage extends AbstractTrace
         return self::TYPE;
     }
 
-    public function sauvegarde(?array $contenu): array
+    public function sauvegarde(?array $contenu, ?array $existingContenu): array
     {
         $max_size = 2 * 1024 * 1024; // 2 Mo en octets
 
@@ -56,6 +56,13 @@ class TraceImage extends AbstractTrace
                     $content[] = $_ENV['SRC_FILES'] . '/' . $fileName;
                 }
             }
+
+            if ($existingContenu) {
+                foreach ($existingContenu as $image) {
+                    $content[] = $image;
+                }
+            }
+
         }
 
         return ['success' => true, 'contenu' => $content ?? null];

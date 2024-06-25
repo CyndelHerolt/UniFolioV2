@@ -162,11 +162,11 @@
                                 <twig:ux:icon name="bi:sliders" width="15" height="auto"/>
                             </a>
                             <a href="" class="delete-link" title="supprimer" data-bs-toggle="modal"
-                               data-bs-target="#staticBackdropDelete">
+                               data-bs-target="#portfolioDeleteTrace{{ trace.id }}">
                                 <twig:ux:icon name="bi:trash-fill" width="15" height="auto"/>
                             </a>
                             <!-- Modal Delete -->
-                            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
+                            <div class="modal modal-lg fade" id="portfolioDeleteTrace{{ trace.id }}" data-bs-backdrop="static"
                                  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog">

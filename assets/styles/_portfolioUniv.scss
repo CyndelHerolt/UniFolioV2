@@ -1,23 +1,10 @@
-.dropzone-container {
 
-  //&:before {
-  //  content: '+';
-  //  font-size: 2rem;
-  //  display: block;
-  //  text-align: center;
-  //  width: 100%;
-  //}
-
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-}
 
 .portfolio-banner {
   width: 100%;
   height: 400px;
   background-position: center;
   background-size: cover;
+  border-top-left-radius: $medium-radius;
+    border-top-right-radius: $medium-radius;
 }

@@ -1,27 +1,45 @@
-.traces {
 
-}
 
 .types {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
 
+  a {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    border: solid 1px var(--bg-color);
+    background-color: var(--bg-light-color);
+    text-decoration: none;
+    border-radius: $small-radius;
+    transition: 0.3s;
+
+    &:hover {
+      background-color: var(--bg-dark-color);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    &.active {
+      background-color: var(--bg-dark-color);
+      pointer-events: none;
+    }
+
+    hr {
+        width: 100%;
+    }
+  }
 }
 
 .trace-content-input {
   display: flex;
   flex-direction: row;
+  gap: 2rem;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+}
 
   .image_trace_div, .pdf_trace_div {
-    width: 200px;
-    height: 200px;
-    margin: 10px 10px 10px 0;
     display: flex;
     flex-direction: column;
 
@@ -40,9 +58,7 @@
   .new_lien, .new_video {
     display: flex;
     flex-direction: column;
-    margin: 10px 10px 20px 0;
   }
-}
 
 #trace_lien_contenu {
   display: flex;
@@ -50,12 +66,12 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  gap: 2rem;
 }
 
 .existing_lien {
   display: flex;
   flex-direction: column;
-  margin: 10px 10px 20px 0;
 }
 
 #trace_video_contenu {

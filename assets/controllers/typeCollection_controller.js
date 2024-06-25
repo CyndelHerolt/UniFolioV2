@@ -55,7 +55,10 @@ export default class extends Controller {
         const formGroup = document.createElement('div');
         formGroup.classList.add('image_trace_div');
         formGroup.classList.add('new_img');
-        formGroup.innerHTML = newForm;
+        formGroup.innerHTML = '<label>Image ' + (index + 1) + '</label>';
+        formGroup.innerHTML += newForm;
+        // formGroup.appendChild(document.createElement('label'));
+        // formGroup.querySelector('label').innerHTML = 'Image ' + (index + 1);
         formGroup.innerHTML += (
             '<button type="button" class="btn btn-danger delete-image" data-action="typeCollection#removeImage">' +
             'Supprimer' +
@@ -88,7 +91,8 @@ export default class extends Controller {
         const formGroup = document.createElement('div');
         formGroup.classList.add('lien_trace_div');
         formGroup.classList.add('new_lien');
-        formGroup.innerHTML = newForm;
+        formGroup.innerHTML = '<label>Lien ' + (index + 1) + '</label>';
+        formGroup.innerHTML += newForm;
         formGroup.innerHTML += (
             '<button type="button" class="btn btn-danger delete-lien" data-action="typeCollection#removeLien">' +
             'Supprimer' +
@@ -125,7 +129,8 @@ export default class extends Controller {
         const formGroup = document.createElement('div');
         formGroup.classList.add('pdf_trace_div');
         formGroup.classList.add('new_pdf');
-        formGroup.innerHTML = newForm;
+        formGroup.innerHTML = '<label>Pdf ' + (index + 1) + '</label>';
+        formGroup.innerHTML += newForm;
         formGroup.innerHTML += (
             '<button type="button" class="btn btn-danger delete-pdf" data-action="typeCollection#removePdf">' +
             'Supprimer' +
@@ -158,7 +163,8 @@ export default class extends Controller {
         const formGroup = document.createElement('div');
         formGroup.classList.add('video_trace_div');
         formGroup.classList.add('new_video');
-        formGroup.innerHTML = newForm;
+        formGroup.innerHTML = '<label>Vidéo ' + (index + 1) + '</label>';
+        formGroup.innerHTML += newForm;
         formGroup.innerHTML += (
             '<button type="button" class="btn btn-danger delete-video" data-action="typeCollection#removeVideo">' +
             'Supprimer' +

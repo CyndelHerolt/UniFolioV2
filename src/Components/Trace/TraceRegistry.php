@@ -36,6 +36,10 @@ class TraceRegistry
     {
         return $this->typesTrace;
     }
+    public function getTypeName()
+    {
+        return $this->typesTrace;
+    }
 
     public function getTypeTypeTrace(?string $name): mixed
     {

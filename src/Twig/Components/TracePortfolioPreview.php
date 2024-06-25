@@ -2,6 +2,7 @@
 
 namespace App\Twig\Components;
 
+use App\Components\Trace\TraceRegistry;
 use App\Repository\TraceRepository;
 use GuzzleHttp\Client;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
@@ -14,6 +15,7 @@ final class TracePortfolioPreview
 
     public function __construct(
         protected TraceRepository $traceRepository,
+        protected TraceRegistry   $traceRegistry,
     )
     {
     }
@@ -90,13 +92,23 @@ final class TracePortfolioPreview
     {
         $trace = $this->traceRepository->find($this->id);
 
-        if ($trace->getType() === "lien") {
+        if ($trace->getType() === "App\Components\Trace\TypeTrace\TraceLien") {
             $this->preview = [];
-            foreach ($trace->getContenu() as $url) {
-                $this->preview[] = $this->getLinkPreview($url);
-            }
+            $url = $trace->getContenu()[0];
+            dump($url);
+            $this->preview[] = $this->getLinkPreview($url);
+
         }
 
         return $trace;
+    }
+
+    public function getType()
+    {
+        $trace = $this->traceRepository->find($this->id);
+        $type = $trace->getType();
+        $type = $this->traceRegistry->getTypeTrace($type)::TYPE;
+
+        return $type;
     }
 }

@@ -126,7 +126,7 @@
                 {% for trace in tracesPage %}
                     <div class="col-12">
                         <twig:TracePortfolioPreview id="{{ trace.id }}"/>
-                        <div class="d-flex flex-row justify-content-evenly align-items-center bg-light p-3">
+                        <div class="actions-panel d-flex flex-row justify-content-evenly align-items-center p-3">
                             {% set currentTracePage = trace.tracePages|filter(tracePage => tracePage.page == page)|first %}
                             {% if currentTracePage.ordre != 1 %}
                                 <a href="{{ path('app_portfolio_univ_edit_up_trace', {'id': page.id, 'trace': trace.id}) }}"
@@ -162,11 +162,11 @@
                                 <twig:ux:icon name="bi:sliders" width="15" height="auto"/>
                             </a>
                             <a href="" class="delete-link" title="supprimer" data-bs-toggle="modal"
-                               data-bs-target="#staticBackdropDelete">
+                               data-bs-target="#portfolioDeleteTrace{{ trace.id }}">
                                 <twig:ux:icon name="bi:trash-fill" width="15" height="auto"/>
                             </a>
                             <!-- Modal Delete -->
-                            <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
+                            <div class="modal modal-lg fade" id="portfolioDeleteTrace{{ trace.id }}" data-bs-backdrop="static"
                                  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
                                  aria-hidden="true">
                                 <div class="modal-dialog">

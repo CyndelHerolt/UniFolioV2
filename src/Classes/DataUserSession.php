@@ -51,5 +51,34 @@ class DataUserSession
         $this->departement = $departement;
     }
 
+    public function getDepartementsEnseignant()
+    {
+        $this->departements = $this->departementEnseignantRepository->findBy(['enseignant' => $this->getEnseignant()]);
+        return $this->departements;
+    }
+
+    public function getDepartementDefaut()
+    {
+        $deptEnseignant = $this->departementEnseignantRepository->findOneBy([
+            'enseignant' => $this->getEnseignant(),
+            'defaut' => true
+        ]);
+        $this->departement = $deptEnseignant->getDepartement();
+        return $this->departement;
+    }
+
+    public function getDepartementsNotDefaut()
+    {
+        $deptEnseignant = $this->departementEnseignantRepository->findBy([
+            'enseignant' => $this->getEnseignant(),
+            'defaut' => false
+        ]);
+        $this->departements = [];
+        foreach ($deptEnseignant as $dept) {
+            $this->departements[] = $dept->getDepartement();
+        }
+
+        return $this->departements;
+    }
 
 }

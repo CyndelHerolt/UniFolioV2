@@ -1,38 +1,16 @@
 <div{{ attributes }}>
     <div class="row g-3 d-flex flex-row align-items-center flex-wrap">
+
         <div class="col-lg-3 col-12">
-            {% if this.trace.type == 'image' %}
-                <div style="background-image: url({{ asset(this.trace.contenu|first) }}); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
-                </div>
-
-            {% elseif this.trace.type == 'lien' %}
-                {% set firstPreview = this.preview|first %}
-                <div style="background-image: url(
-                {% if firstPreview.image is not null %}
-                    {{ firstPreview.image }}
-                {% else %}
-                    {{ asset('images/link.jpg') }}
-                {% endif %}
-                        ); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
-                </div>
-
-            {% elseif this.trace.type == 'pdf' %}
-                <iframe src="{{ this.trace.contenu|first }}" width="100% !important;"
-                        height="150px !important;"></iframe>
-
-            {% elseif this.trace.type == 'video' %}
-                {% set videoId = this.trace.contenu|first|split('/')[4] %}
-                <div style="background-image: url(https://img.youtube.com/vi/{{ videoId }}/0.jpg); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
-                </div>
-            {% endif %}
+            {% include('/partials/trace/_'~this.type~'_preview.html.twig') %}
         </div>
 
         <div class="col-lg-9 col-12 d-flex flex-column align-items-start justify-content-start">
-                    <h5>{{ this.trace.libelle }}</h5>
-                    <small class="text-muted">Publiée le : {{ this.trace.dateCreation|date('d-m-Y') }}
-                        -
-                        {{ this.trace.contenu|length }}
-                        {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}</small>
+            <h5>{{ this.trace.libelle }}</h5>
+            <small class="text-muted">Publiée le : {{ this.trace.dateCreation|date('d-m-Y') }}
+                -
+                {{ this.trace.contenu|length }}
+                {{ this.type }}{% if this.trace.contenu|length > 1 %}s{% endif %}</small>
             {% for traceCompetence in this.trace.traceCompetences %}
                 {% if traceCompetence.apcNiveau and traceCompetence.apcNiveau.actif == true %}
                     <small class="{{ traceCompetence.apcNiveau.apcCompetence.couleur }}txt ue mb-2">{{ traceCompetence.apcNiveau.apcCompetence.nomCourt }}

@@ -1,7 +1,7 @@
 <turbo-frame id="type_trace_form">
     <label>Contenu média</label>
 
-    <div class="types row p-2">
+    <div class="types d-flex flex-wrap gap-5 justify-content-center">
         {% for type in typesTrace %}
             <a
                     {% if trace.contenu is null or trace.contenu is empty %}
@@ -13,14 +13,14 @@
                     {% else %}
                         data-bs-toggle="modal" data-bs-target="#typeModal{{ constant('TYPE', type) }}"
                     {% endif %}
-                    class="col-12 col-lg-2 p-3 {% if selectedTraceType == constant('CLASS_NAME', type) %}active{% endif %}">
-                <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
+                    class="col-12 col-lg-2 p-3 gap-1 {% if selectedTraceType == constant('CLASS_NAME', type) %}active{% endif %}">
+                <div class="d-flex flex-column align-items-center">
+                <twig:ux:icon name="{{ constant('ICON', type) }}" width="40" height="40"
                               length="auto"/>
-                <div>
-                    <strong>{{ type.display }}</strong>
-                    <br>
-                    <small>{{ constant('CONSTRAINT', type) }}</small>
+                <p class="m-0">{{ type.display }}</p>
                 </div>
+                <hr>
+                <small class="">{{ constant('CONSTRAINT', type) }}</small>
             </a>
 
             <!-- Modal -->
@@ -56,13 +56,15 @@
                     </div>
                 </div>
             </div>
-
         {% endfor %}
+    </div>
 
+    <div class="mt-5">
         {% for type in typesTrace %}
             {% if selectedTraceType is not null and selectedTraceType == constant('CLASS_NAME', type) %}
                 {% include('trace/form_types/_form_'~constant('TYPE', type)~'.html.twig') %}
             {% endif %}
         {% endfor %}
     </div>
+
 </turbo-frame>

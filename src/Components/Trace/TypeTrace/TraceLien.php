@@ -36,14 +36,8 @@ class TraceLien extends AbstractTrace
         return self::TYPE;
     }
 
-    public function sauvegarde(?array $contenu,
-                               ?array $existingContenu
-    ): array
+    public function sauvegarde(?array $contenu, ?array $existingContenu): array
     {
-        if ($existingContenu) {
-            $contenu = array_merge($contenu, $existingContenu);
-        }
-
         if ($contenu) {
             foreach ($contenu as $lien) {
                 if (!filter_var($lien, FILTER_VALIDATE_URL)) {

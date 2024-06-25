@@ -10,9 +10,7 @@ use App\Components\Trace\TypeTrace\TracePdf;
 use App\Components\Trace\TypeTrace\TraceVideo;
 use App\Controller\BaseController;
 use App\Entity\Trace;
-use App\Entity\TraceCompetence;
 use App\Repository\ApcApprentissageCritiqueRepository;
-use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
 use App\Repository\PageRepository;
@@ -214,7 +212,6 @@ class TraceController extends BaseController
     #[Route('/trace/edit/{id}', name: 'app_trace_edit')]
     public function edit(int $id, Request $request): Response
     {
-        $origin = $request->query->get('origin', null);
         $trace = $this->traceRepository->find($id);
         $typesTrace = $this->traceRegistry->getTypeTraces();
         $user = $this->getUser();
@@ -228,17 +225,17 @@ class TraceController extends BaseController
         }
         // Vérifier si un type de trace a été passé en paramètre
         $selectedTraceType = $request->query->get('type', null);
-        if ($selectedTraceType !== null) {
-            $formType = $selectedTraceType::FORM;
-            $formType = $this->createForm($formType, $trace);
-            $formType = $formType->createView();
-            $typeTrace = $selectedTraceType::TYPE;
-        } elseif ($trace->getType() !== null) {
+        if ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();
             $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
             $typeTrace = $this->traceRegistry->getTypeTrace($selectedTraceType)::TYPE;
+        } elseif ($selectedTraceType !== null) {
+            $formType = $selectedTraceType::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+            $typeTrace = $selectedTraceType::TYPE;
         } else {
             $formType = null;
         }
@@ -259,7 +256,6 @@ class TraceController extends BaseController
             'apcNiveaux' => $competences['apcNiveaux'] ?? null,
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
-            'origin' => $origin ?? null,
         ]);
     }
 

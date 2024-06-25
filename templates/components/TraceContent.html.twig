@@ -5,9 +5,13 @@
             <div class="d-flex gap-3 align-items-center">
                 {% if edit == false or row != "libelle" %}
                     <h2>{{ this.trace.libelle }}</h2>
-                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': true}) }}">
-                        <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
-                    </a>
+
+                    {% if 'portfolio' not in app.request.uri %}
+                        <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': true}) }}">
+                            <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
+                        </a>
+                    {% endif %}
+
                 {% elseif edit == true and row == "libelle" %}
                     <form method="post" class="d-flex gap-3 align-items-center">
                         {{ form_row(this.form.libelle) }}
@@ -30,7 +34,7 @@
             {% else %}
                 &nbsp;|&nbsp;
                 <small>{{ this.trace.contenu|length }}
-                    {{ this.trace.type|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+                    {{ this.traceType|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
                 </small>
             {% endif %}
         </div>
@@ -51,9 +55,11 @@
                         </div>
                     {% endif %}
 
-                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'type', 'edit': true}) }}">
-                        <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
-                    </a>
+                    {% if 'portfolio' not in app.request.uri %}
+                        <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'type', 'edit': true}) }}">
+                            <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
+                        </a>
+                    {% endif %}
 
                     {#     If edit       #}
                 {% else %}
@@ -98,66 +104,64 @@
                 {% endif %}
             </turbo-frame>
 
-            <div class="row" style="margin: 50px 0">
-                <div class="border-end" style="width: 150px; margin-top: 15px">
-                    {% if this.trace.traceCompetences is not empty %}
-                        {% for validation in this.trace.traceCompetences %}
-                            {% if validation.apcNiveau and validation.apcNiveau.actif == true %}
-                                <small><span
-                                            class="ue {{ validation.apcNiveau.apcCompetence.couleur }} p-2">{{ validation.apcNiveau.apcCompetence.nomCourt }}</span>
-                                </small><br>
-                            {% else %}
-                                <small><span
-                                            class="ue {{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}txt">{{ validation.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }} </span>
-                                </small>
-                            {% endif %}
-                            <br>
-                        {% endfor %}
+            <div class="row gap-2 justify-content-between align-items-center mt-5">
+                <div class="col-lg-5">
+                    {% if this.trace.traceCompetences is empty %}
+                        <div class="pill-danger d-flex align-items-center gap-1">
+                            <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
+                            Aucune compétence liée
+                        </div>
                     {% else %}
-                        <small class="text-danger">Aucune compétence associée</small>
+                        {% for traceCompetences in this.trace.traceCompetences %}
+                            {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
+                                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                                    {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
+                                </div>
+                            {% else %}
+                                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                                    {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
                 </div>
-                <div class="col-lg-7 col-12">
+
+                <div class="col-lg-5 d-flex flex-column align-items-end">
+                    {% if this.trace.legende is not null and this.trace.legende is not empty %}
+                        <span class="text-muted mt-1">{{ this.trace.legende }}</span>
+                    {% else %}
+                        <span class="text-danger mt-1">Légende non renseignée</span>
+                    {% endif %}
+                    <span class="mt-1">Date de réalisation :
+                    {% if this.trace.dateRealisation is not null and this.trace.dateRealisation is not empty %}
+                        {{ this.trace.dateRealisation|date("m/Y") }}
+                    {% else %}
+                        <span class="text-danger">Non renseignée</span>
+                    {% endif %}
+                    </span>
+                    <span class="mt-1">
+                        Contexte :
+                    {% if this.trace.contexte is not null and this.trace.contexte is not empty %}
+                        {{ this.trace.contexte }}
+                    {% else %}
+                        <span class="text-danger">
+                        Non renseignée
+                    </span>
+                    {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-10">
                     {% if this.trace.description is not null and this.trace.description is not empty %}
                         {{ this.trace.description|raw }}
                     {% else %}
                         <p class="text-danger">Aucun argumentaire pour cette trace</p>
                     {% endif %}
                 </div>
-                <div class="col-lg-3 col-12 d-flex flex-column align-items-end">
-                    <div class="d-flex flex-column" style="max-width: 70%">
-                        {% if this.trace.legende is not null and this.trace.legende is not empty %}
-                            <span class="text-muted mt-1">
-                        {{ this.trace.legende }}
-                    </span>
-                        {% else %}
-                            <span class="text-danger mt-1">
-                        Légende non renseignée
-                        </span>
-                        {% endif %}
-                        <span class="text-muted mt-1">
-                        Date de réalisation :
-                        {% if this.trace.dateRealisation is not null and this.trace.dateRealisation is not empty %}
-                            {{ this.trace.dateRealisation|date("m/Y") }}
-                        {% else %}
-                            <span class="text-danger">
-                        Non renseignée
-                            </span>
-                        {% endif %}
-                    </span>
-                        <span class="text-muted mt-1">
-                        Contexte :
-                        {% if this.trace.contexte is not null and this.trace.contexte is not empty %}
-                            {{ this.trace.contexte }}
-                        {% else %}
-                            <span class="text-danger">
-                        Non renseignée
-                            </span>
-                        {% endif %}
-                    </span>
-                    </div>
-                </div>
             </div>
+
             <hr>
 
             <div class="row justify-content-center">

@@ -6,104 +6,100 @@
     {% endblock %}
 
 {% block main %}
-    <nav aria-label="breadcrumb" style="position:absolute; top: 80px; left: 75px;">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{{ path('app_home_panel') }}" class="link">Accueil</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_dashboard_etudiant') }}" class="link">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ path('app_biblio_portfolio_univ') }}" class="link">Bibliothèque de
-                    portfolios</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Portfolio {{ portfolio.libelle }}</li>
-        </ol>
-    </nav>
+    {% import 'macros/breadcrumbs.twig' as breadcrumb_macros %}
+    {{ breadcrumb_macros.breadcrumbs([
+        {'name': 'Accueil', 'url': '/'},
+        {'name': 'Dashboard', 'url': '/etudiant/dashboard'},
+        {'name': 'Bibliothèque de portfolios universitaires', 'url': '/etudiant/portfolio/univ'},
+        {'name': 'Portfolio' , 'url': null}
+    ]) }}
+
     <section class="container-custom min-vh-100 section-pt">
         <div class="row d-flex">
             <article class="col-lg-8 col-12">
-                <div class="card p-5">
+                <div class="card p-0">
+                    <div class="portfolio-banner" style="background-image: url({{ portfolio.banniere }})"></div>
+                    <div class="card-header p-5 m-5 mt-0 mb-0">
+                        <h2 class="text-center mb-5">{{ portfolio.libelle }}</h2>
+                        <p>{{ portfolio.etudiant.prenom }} {{ portfolio.etudiant.nom }}</p>
+                        <p class="text-muted">{{ portfolio.annee.libelleLong }}</p>
 
-                    <h1 class="text-center mb-5">{{ portfolio.libelle }}</h1>
-                    <div class="portfolio-banner mb-3" style="background-image: url({{ portfolio.banniere }})"></div>
-                    <div class="row">
-                        <div class="col-12">
-                            <p>{{ portfolio.etudiant.prenom }} {{ portfolio.etudiant.nom }}</p>
-                            <p class="text-muted">{{ portfolio.annee.libelleLong }}</p>
+
+                        <p>{{ portfolio.description }}</p>
+                    </div>
+
+                    <div class="card-body p-5 m-5 mb-0 mt-0">
+
+                        {% for page in pages.currentPageResults %}
+                            <h2>{{ page.libelle }}</h2>
+                            <p>{{ page.description }}</p>
+
+                            {% if tracesPage is empty %}
+                                <p>Aucune trace pour le moment</p>
+                            {% else %}
+
+                                {% for trace in tracesPage %}
+                                    <div class="col-12 panel_link mt-5 mb-5">
+                                        <a href="{{ path('app_trace_show', {'id': trace.id, 'portfolio': portfolio.id, 'page': page.id}) }}"
+                                           class="panel_link">
+                                            <twig:TracePortfolioPreview id="{{ trace.id }}"/>
+                                        </a>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+                        <div class="navigation text-end">
+                            {% if pages.hasPreviousPage %}
+                                <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
+                                   class="m-2">Page
+                                    précédente</a>
+                            {% endif %}
+
+                            <span class="m-2">{{ pages.currentPage }}</span>
+                            {% if pages.nbPages > 1 %}
+                                <span class="m-2">/</span>
+                                <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nbPages}) }}"
+                                   class="m-2">{{ pages.nbPages }}</a>
+                            {% endif %}
+
+                            {% if pages.hasNextPage %}
+                                <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nextPage}) }}"
+                                   class="m-2">Page
+                                    suivante</a>
+                            {% endif %}
                         </div>
+
                     </div>
+                    <div class="card-footer p-5 m-5 mb-0 mt-0">
 
-                    <div class="row">
-                        <div class="col-12 bold">
-                            <p>{{ portfolio.description }}</p>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    {% for page in pages.currentPageResults %}
-                        <h2>{{ page.libelle }}</h2>
-                        <p>{{ page.description }}</p>
-
-                        {% if tracesPage is empty %}
-                            <p>Aucune trace pour le moment</p>
-                        {% else %}
-
-                            {% for trace in tracesPage %}
-                                <div class="col-12 panel_link mt-5 mb-5">
-                                    <a href="{{ path('app_trace_show', {'id': trace.id, 'portfolio': portfolio.id, 'page': page.id}) }}"
-                                       class="panel_link">
-                                        <twig:TracePortfolioPreview id="{{ trace.id }}"/>
-                                    </a>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-
-                    <div class="navigation text-end">
-                        {% if pages.hasPreviousPage %}
-                            <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
-                               class="m-2">Page
-                                précédente</a>
-                        {% endif %}
-
-                        <span class="m-2">{{ pages.currentPage }}</span>
-                        {% if pages.nbPages > 1 %}
-                            <span class="m-2">/</span>
-                            <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nbPages}) }}"
-                               class="m-2">{{ pages.nbPages }}</a>
-                        {% endif %}
-
-                        {% if pages.hasNextPage %}
-                            <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nextPage}) }}"
-                               class="m-2">Page
-                                suivante</a>
-                        {% endif %}
-                    </div>
-
-                    <hr>
-
-                    <div class="col-10 m-2">
-                        <h5>Commentaires</h5>
-                        {% set visibleComments = portfolio.commentaires|filter(commentaire => commentaire.visibilite == 1) %}
-                        {% if visibleComments is empty %}
-                            <p>Aucun commentaire pour le moment</p>
-                        {% else %}
-                            {% for commentaire in portfolio.commentaires %}
-                                {% if commentaire.visibilite == 1 %}
-                                    <div class="card"
-                                         style="margin-bottom: 10px; box-shadow: none; border: 1px solid lightgrey">
-                                        <div class="card-header">
-                                            <div style="display: flex; justify-content: space-between; align-items: center">
-                                                <h6 class="card-subtitle">{{ commentaire.enseignant.prenom }} {{ commentaire.enseignant.nom }}</h6>
-                                                <small>
-                                                    {{ commentaire.datecreation|date('d-m-Y H:i') }}
-                                                </small>
+                        <div class="col-10 m-2">
+                            <h5>Commentaires</h5>
+                            {% set visibleComments = portfolio.commentaires|filter(commentaire => commentaire.visibilite == 1) %}
+                            {% if visibleComments is empty %}
+                                <p>Aucun commentaire pour le moment</p>
+                            {% else %}
+                                {% for commentaire in portfolio.commentaires %}
+                                    {% if commentaire.visibilite == 1 %}
+                                        <div class="card"
+                                             style="margin-bottom: 10px; box-shadow: none; border: 1px solid lightgrey">
+                                            <div class="card-header">
+                                                <div style="display: flex; justify-content: space-between; align-items: center">
+                                                    <h6 class="card-subtitle">{{ commentaire.enseignant.prenom }} {{ commentaire.enseignant.nom }}</h6>
+                                                    <small>
+                                                        {{ commentaire.datecreation|date('d-m-Y H:i') }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">{{ commentaire.contenu }}</p>
                                             </div>
                                         </div>
-                                        <div class="card-body">
-                                            <p class="card-text">{{ commentaire.contenu }}</p>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
                     </div>
 
                 </div>

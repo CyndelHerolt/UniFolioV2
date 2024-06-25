@@ -1,0 +1,11 @@
+{% if this.preview is not empty %}
+    {% set firstPreview = this.preview|first %}
+    <div style="background-image: url(
+    {% if firstPreview.image is not null %}
+        {{ firstPreview.image }}
+    {% else %}
+        {{ asset('images/link.jpg') }}
+    {% endif %}
+            ); background-position: center; background-size: cover; width: 100% !important; height: 150px !important;">
+    </div>
+{% endif %}

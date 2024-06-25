@@ -14,18 +14,22 @@
   --text-light-color: #ffffff;
   --text-dark-color: #54477B;
   --link-color: var(--primary-medium-color);
+  --input-color: #ffffff;
 
   --bg-color: #E6E4EB;
   --bg-card-color: #F7F7F7;
   --bg-light-color: #EDECF7;
+  --bg-dark-color: #cbc4e7;
 }
 
 body.dark-theme {
   --bg-color: #202020;
   --bg-card-color: #282739;
   --bg-light-color: #2B2A44;
+  --bg-dark-color: #282828;
   --text-color: #efefef;
   --link-color: #d6d5ff;
+  --input-color: #2B2A44;
 }
 
 $c1: #EF6975;

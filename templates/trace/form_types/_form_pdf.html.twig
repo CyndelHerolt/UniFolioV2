@@ -1,18 +1,19 @@
 <turbo-frame id="trace-form-content">
     <div {{ stimulus_controller('typeCollection') }}>
 
-{#        {% if '/edit' in app.request.uri or '/show' in app.request.uri and trace.type == 'pdf' %}#}
+        <div class="d-flex gap-5 justify-content-center">
             {% for data in trace.contenu %}
                 <div class="pdf_trace_div">
                     <p>Pdf déjà dans la DB</p>
                     <input type="hidden" name="trace_pdf[{{ loop.index }}]" value="{{ data }}">
-                    <iframe src="{{ asset(data) }}" style="width: 50%"></iframe>
-                    <button type="button" class="btn btn-danger delete-pdf"  data-action="typeCollection#removePdf">Supprimer
+                    <iframe src="{{ asset(data) }}"></iframe>
+                    <button type="button" class="btn btn-danger delete-pdf" data-action="typeCollection#removePdf">
+                        Supprimer
                     </button>
                     <hr>
                 </div>
             {% endfor %}
-{#        {% endif %}#}
+        </div>
         {{ form_widget(formType.contenu) }}
         <div data-typeCollection-target="input" class="trace-content-input">
         </div>

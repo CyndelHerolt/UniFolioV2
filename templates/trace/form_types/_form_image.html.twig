@@ -1,13 +1,12 @@
 <turbo-frame id="trace-form-content">
     <div {{ stimulus_controller('typeCollection') }}>
 
-        {#        {% if '/edit' in app.request.uri and trace.type == 'image' %} #}
-        <div class="galerie d-flex flex-wrap justify-content-evenly">
+        <div class="d-flex gap-5 justify-content-center">
             {% for data in trace.contenu %}
-                <div class="image_trace_div d-flex flex-column m-4 col-5">
+                <div class="image_trace_div">
                     <input type="hidden" name="trace_image[{{ loop.index }}]" value="{{ data }}">
                     <div class="trace-img"
-                         style="background-image: url('{{ asset(data) }}'); background-position: center; background-size: cover; width: 100% !important; height: 250px !important;">
+                         style="background-image: url('{{ asset(data) }}'); background-position: center; background-size: cover; width: 250px; height: 150px !important;">
                     </div>
                     <button type="button" class="btn btn-danger delete-image"
                             data-action="typeCollection#removeImage">Supprimer
@@ -15,7 +14,6 @@
                 </div>
             {% endfor %}
         </div>
-        {#        {% endif %} #}
         {{ form_widget(formType.contenu) }}
         <div data-typeCollection-target="input" class="trace-content-input">
         </div>

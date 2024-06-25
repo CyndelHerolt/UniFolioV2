@@ -8,7 +8,6 @@
                     <input type="hidden" name="trace_image[{{ loop.index }}]" value="{{ data }}">
                     <div class="trace-img"
                          style="background-image: url('{{ asset(data) }}'); background-position: center; background-size: cover; width: 100% !important; height: 250px !important;">
-
                     </div>
                     <button type="button" class="btn btn-danger delete-image"
                             data-action="typeCollection#removeImage">Supprimer

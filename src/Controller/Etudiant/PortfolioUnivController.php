@@ -303,13 +303,18 @@ class PortfolioUnivController extends BaseController
 
         $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
 
-        if ($selectedTraceType !== null) {
+        if ($trace->getType() !== null) {
+            $selectedTraceType = $trace->getType();
+            $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+            $typeTrace = $this->traceRegistry->getTypeTrace($selectedTraceType)::TYPE;
+        } elseif ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
             $formType = $this->createForm($formType, $trace);
             $formType = $formType->createView();
             $typeTrace = $selectedTraceType::TYPE;
         } else {
-            $typeTrace = null;
             $formType = null;
         }
 

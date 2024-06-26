@@ -1,0 +1,77 @@
+<div{{ attributes }}>
+
+    <div class="card">
+        <div class="card-header">
+            <h2>Portfolios</h2>
+
+            <div class="header-actions">
+                <div class="filtres d-flex gap-3 align-items-baseline">
+                    <div class="accordion accordion-flush filter-drop" id="accordionCompetences">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTri">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseCompetences" aria-expanded="false"
+                                        aria-controls="flush-collapseCompetences">
+                                    Filtrer par semestres
+                                    <twig:ux:icon name="bi:caret-down-fill" width="15" height="15"/>
+                                </button>
+                            </h2>
+                            <div id="flush-collapseCompetences" class="accordion-collapse collapse"
+                                 aria-labelledby="flush-headingCompetences"
+                                 data-bs-parent="#accordionCompetences">
+                                <div class="accordion-body row">
+                                    <div>
+                                        <h6>Semestres</h6>
+                                        <fieldset>
+                                            {% for semestre in this.allSemestres %}
+                                                <div style="display: flex" class="form-check">
+                                                    <input type="checkbox" id="{{ semestre.id }}"
+                                                           name="{{ semestre.id }}"
+                                                           data-model="selectedSemestre[]"
+                                                           data-action="live#action"
+                                                           data-live-action-param="getSelectedSemestre"
+                                                           value="{{ semestre.id }}"
+                                                           class="form-check-input">
+                                                    <label for="{{ semestre.id }}"
+                                                           class="form-check-label">{{ semestre.libelle }}</label><br>
+                                                </div>
+                                            {% endfor %}
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            {% if this.allPortfolios is not empty %}
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Libellé</th>
+                        <th>Compétences</th>
+                        <th>% Evaluation</th>
+                        <th>Etudiant</th>
+                        <th>Semestre</th>
+                        <th>TP</th>
+                        <th>Dernière modification</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for portfolio in this.allPortfolios %}
+                        <twig:PortfolioEvalTable id="{{ portfolio.id }}"/>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-warning col-6 text-center m-auto mt-5 mb-4" role="alert">
+                    Aucun portfolio n'a été trouvé.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

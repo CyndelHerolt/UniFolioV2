@@ -109,7 +109,7 @@ final class TraceContent extends AbstractController
         $typesTrace = $this->traceRegistry->getTypeTraces();
         $user = $this->getUser();
 
-        $competences = $this->competencesService->getCompetences($user);
+        $competences = $this->competencesService->getCompetencesEtudiant($user);
 
         if (isset($apcNiveaux)) {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);

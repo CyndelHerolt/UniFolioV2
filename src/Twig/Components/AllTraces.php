@@ -57,7 +57,7 @@ final class AllTraces
         $user = $this->security->getUser();
         $annee = $user->getEtudiant()->getSemestre()->getAnnee();
 
-        $competences = $this->competencesService->getCompetences($user);
+        $competences = $this->competencesService->getCompetencesEtudiant($user);
 
         if (isset($competences['apcNiveaux'])) {
             $this->competences = $competences['apcNiveaux'];

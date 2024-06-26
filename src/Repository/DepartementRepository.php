@@ -46,6 +46,18 @@ class DepartementRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByDepartementActif(Departement $departement): array
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin(Annee::class, 'a', 'WITH', 'a.id = s.annee')
+            ->innerJoin(Diplome::class, 'd', 'WITH', 'd.id = a.diplome')
+            ->where('d.departement = :departement')
+            ->andWhere('s.actif = 1')
+            ->setParameter('departement', $departement)
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @throws NonUniqueResultException
      */

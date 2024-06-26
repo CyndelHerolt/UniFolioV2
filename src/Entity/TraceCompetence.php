@@ -22,6 +22,9 @@ class TraceCompetence
     #[ORM\ManyToOne(inversedBy: 'traceCompetences')]
     private ?ApcApprentissageCritique $apcApprentissageCritique = null;
 
+    #[ORM\ManyToOne(inversedBy: 'traceCompetences')]
+    private ?PortfolioUniv $portfolio = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class TraceCompetence
     public function setApcApprentissageCritique(?ApcApprentissageCritique $apcApprentissageCritique): static
     {
         $this->apcApprentissageCritique = $apcApprentissageCritique;
+
+        return $this;
+    }
+
+    public function getPortfolio(): ?PortfolioUniv
+    {
+        return $this->portfolio;
+    }
+
+    public function setPortfolio(?PortfolioUniv $portfolio): static
+    {
+        $this->portfolio = $portfolio;
 
         return $this;
     }

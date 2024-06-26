@@ -11,20 +11,23 @@ use App\Repository\ApcApprentissageCritiqueRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class CompetencesService {
+class CompetencesService
+{
     private $security;
     private $apcNiveauRepository;
     private $apcApprentissageCritiqueRepository;
     private $competenceRepository;
 
-    public function __construct(Security $security, ApcNiveauRepository $apcNiveauRepository, ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository, ApcCompetenceRepository $competenceRepository) {
+    public function __construct(Security $security, ApcNiveauRepository $apcNiveauRepository, ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository, ApcCompetenceRepository $competenceRepository)
+    {
         $this->security = $security;
         $this->apcNiveauRepository = $apcNiveauRepository;
         $this->apcApprentissageCritiqueRepository = $apcApprentissageCritiqueRepository;
         $this->competenceRepository = $competenceRepository;
     }
 
-    public function getCompetences(UserInterface $user) {
+    public function getCompetencesEtudiant(UserInterface $user)
+    {
 
         $user = $user->getEtudiant();
         $semestre = $user->getSemestre();
@@ -93,5 +96,22 @@ class CompetencesService {
             'apcNiveaux' => $apcNiveaux,
             'groupedApprentissagesCritiques' => $groupedApprentissageCritiques,
         ];
+    }
+
+    public function getCompetencesDepartement($departement)
+    {
+        $referentiel = $departement->getApcReferentiels();
+        $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
+        $niveaux = [];
+        foreach ($competences as $competence) {
+            $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
+        }
+        $apcNiveaux = [];
+        foreach ($niveaux as $niveau) {
+            if ($niveau->isActif() === true) {
+                $apcNiveaux[] = $niveau;
+            }
+        }
+        return $apcNiveaux;
     }
 }

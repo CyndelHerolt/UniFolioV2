@@ -85,7 +85,7 @@ class PortfolioUnivController extends BaseController
 
         $user = $this->getUser();
 
-        $competences = $this->competencesService->getCompetences($user);
+        $competences = $this->competencesService->getCompetencesEtudiant($user);
 
         return $this->render('portfolio_univ/show.html.twig', [
             'portfolio' => $portfolio,
@@ -243,7 +243,7 @@ class PortfolioUnivController extends BaseController
         $typesTrace = $this->traceRegistry->getTypeTraces();
         $user = $this->getUser();
 
-        $competences = $this->competencesService->getCompetences($user);
+        $competences = $this->competencesService->getCompetencesEtudiant($user);
 
         $trace = new Trace();
         if (isset($competences['apcNiveaux'])) {
@@ -293,7 +293,7 @@ class PortfolioUnivController extends BaseController
         $typesTrace = $this->traceRegistry->getTypeTraces();
         $user = $this->getUser();
 
-        $competences = $this->competencesService->getCompetences($user);
+        $competences = $this->competencesService->getCompetencesEtudiant($user);
 
         if (isset($competences['apcNiveaux'])) {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);

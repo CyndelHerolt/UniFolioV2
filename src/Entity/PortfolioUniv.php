@@ -53,10 +53,17 @@ class PortfolioUniv
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'portfolio')]
     private Collection $commentaires;
 
+    /**
+     * @var Collection<int, TraceCompetence>
+     */
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio')]
+    private Collection $traceCompetences;
+
     public function __construct()
     {
         $this->pages = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        $this->traceCompetences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -226,6 +233,36 @@ class PortfolioUniv
             // set the owning side to null (unless already changed)
             if ($commentaire->getPortfolio() === $this) {
                 $commentaire->setPortfolio(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TraceCompetence>
+     */
+    public function getTraceCompetences(): Collection
+    {
+        return $this->traceCompetences;
+    }
+
+    public function addTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if (!$this->traceCompetences->contains($traceCompetence)) {
+            $this->traceCompetences->add($traceCompetence);
+            $traceCompetence->setPortfolio($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if ($this->traceCompetences->removeElement($traceCompetence)) {
+            // set the owning side to null (unless already changed)
+            if ($traceCompetence->getPortfolio() === $this) {
+                $traceCompetence->setPortfolio(null);
             }
         }
 

@@ -1,0 +1,38 @@
+<div{{ attributes }}>
+    <tr>
+        <td>
+            <p class="table-primary-text">{{ this.portfolio.libelle }}</p>
+        </td>
+        <td>
+            <div class="d-flex gap-1">
+                {% for competence in this.competences %}
+                    <div class="pill-competence d-flex gap-1 align-items-center {{ competence.apcCompetence.couleur }}">
+                        {{ competence.apcCompetence.nomCourt }}
+                    </div>
+                {% endfor %}
+            </div>
+        </td>
+        <td>
+
+        </td>
+        <td>
+            {{ this.portfolio.etudiant.nom }} {{ this.portfolio.etudiant.prenom }}
+        </td>
+        <td>
+            {{ this.portfolio.etudiant.semestre.libelle }}
+        </td>
+        <td>
+            {% for g in this.portfolio.etudiant.groupe %}
+                {% if 'TP' in g.typeGroupe.libelle %}
+                    TP {{ g.libelle }}
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {{ this.portfolio.datemodification is empty ? this.portfolio.datecreation|date('d-m-Y H:i') : this.portfolio.datemodification|date('d-m-Y') }}
+        </td>
+        <td>
+
+        </td>
+    </tr>
+</div>

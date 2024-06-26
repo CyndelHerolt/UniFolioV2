@@ -80,7 +80,18 @@ class TraceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
         return $qb;
+    }
 
+    public function findByPortfolio($portfolio)
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->join('t.t.traceCompetences', 'tc')
+            ->join('tc.portfolio', 'p')
+            ->where('p = :portfolio')
+            ->setParameter('portfolio', $portfolio)
+            ->getQuery()
+            ->getResult();
+        return $qb;
     }
 
 //    /**

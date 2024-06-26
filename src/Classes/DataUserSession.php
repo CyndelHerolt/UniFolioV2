@@ -17,7 +17,6 @@ class DataUserSession
     private $etudiant;
 
     public function __construct(
-        private DepartementRepository           $departementRepository,
         private DepartementEnseignantRepository $departementEnseignantRepository,
         private EnseignantRepository            $enseignantRepository,
         private EtudiantRepository              $etudiantRepository,

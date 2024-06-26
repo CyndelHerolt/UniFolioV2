@@ -5,19 +5,13 @@
     </li>
 
     {% if portfolio.pages is not null %}
-        {% for pageA in portfolio.pages|sort((a, b) => a.ordre <=> b.ordre) %}
+        {% for pageA in portfolio.pages %}
             <li class="nav-item" value="{{ pageA.id }}">
                 <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page" data-turbo="false"
-                   href="{{ path('app_portfolio_univ_edit_page', {'id': pageA.id, 'edit': false}) }}">{{ pageA.libelle }}</a>
+                   href="{{ path('app_portfolio_univ_show_page', {'id': pageA.id}) }}">{{ pageA.libelle }}</a>
             </li>
         {% endfor %}
     {% endif %}
-
-    <li class="nav-item">
-        <a class="nav-link" data-turbo="false"
-           href="{{ path('app_portfolio_univ_edit_new_page', {'id': portfolio.id}) }}">Ajouter
-            une page</a>
-    </li>
 
     <li class="nav-item">
         <a class="nav-link" data-turbo="false" href="#">Cv</a>
@@ -65,7 +59,9 @@
         <div class="col-12 p-2">
             {{ form_row(form.description) }}
         </div>
-        <div class="col-12 p-2">
+
+
+        <div class="col-12 p-2 hidden">
             <h5>Compétences relatives à cette trace <span style="color: red">*</span></h5>
             {% block choice_widget_expanded %}
                 <div class="competence-bloc">
@@ -78,11 +74,14 @@
                 </div>
             {% endblock %}
         </div>
+
+
+
     </div>
     <hr>
     <button type="submit" class="btn btn-primary text-uppercase">Enregistrer</button>
     {% if 'portfolio' in app.request.uri %}
-        <a href="{{ path('app_portfolio_univ_edit_page', {'id': page.id}) }}">
+        <a href="{{ path('app_portfolio_univ_show_page', {'id': page.id}) }}">
             <button type="button" class="btn btn-primary text-uppercase">Annuler</button>
         </a>
     {% endif %}

@@ -66,15 +66,11 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
     public function findByPortfolioUniversitaire($portfolioId)
     {
         return $this->createQueryBuilder('n')
             ->distinct()
-            ->join('n.traceCompetences', 'tc')
-            ->join('tc.trace', 't')
-            ->join('t.tracePages', 'tp')
-            ->join('tp.page', 'p')
+            ->join('n.pages', 'p')
             ->join('p.portfolio', 'pu')
             ->where('pu.id = :portfolioId')
             ->setParameter('portfolioId', $portfolioId)

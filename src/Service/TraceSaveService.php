@@ -6,11 +6,15 @@ use App\Components\Trace\TraceRegistry;
 use App\Controller\BaseController;
 use App\Entity\Trace;
 use App\Entity\TraceCompetence;
+use App\Entity\TracePage;
 use App\Entity\Validation;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\PageRepository;
+use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceCompetenceRepository;
+use App\Repository\TracePageRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +22,16 @@ use Symfony\Component\HttpFoundation\Request;
 class TraceSaveService extends BaseController
 {
     public function __construct(
-        private BibliothequeRepository             $bibliothequeRepository,
-        private TraceRegistry                      $traceRegistry,
-        private TraceRepository                    $traceRepository,
-        private ApcNiveauRepository                $apcNiveauRepository,
-        private ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
-        private TraceCompetenceRepository          $traceCompetenceRepository,
-        private readonly DataUserSessionService    $dataUserSessionService,
+        private readonly BibliothequeRepository             $bibliothequeRepository,
+        private readonly TraceRegistry                      $traceRegistry,
+        private readonly TraceRepository                    $traceRepository,
+        private readonly ApcNiveauRepository                $apcNiveauRepository,
+        private readonly ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
+        private readonly TraceCompetenceRepository          $traceCompetenceRepository,
+        private readonly PortfolioUnivRepository            $portfolioUnivRepository,
+        private readonly PageRepository                     $pageRepository,
+        private readonly TracePageRepository                $tracePageRepository,
+        private readonly DataUserSessionService             $dataUserSessionService,
     )
     {
         parent::__construct(
@@ -131,6 +138,8 @@ class TraceSaveService extends BaseController
                 }
             }
 
+            $annee = $etudiant->getSemestre()->getAnnee();
+            $portfolio = $this->portfolioUnivRepository->findOneBy(['etudiant' => $etudiant, 'annee' => $annee]);
             foreach ($selectedCompetences as $id => $libelle) {
                 // vérifier si un ApcNiveau existe avec l'id et le libellé
                 $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
@@ -142,6 +151,14 @@ class TraceSaveService extends BaseController
                         $traceCompetence->setApcNiveau($apcNiveau);
                         $traceCompetence->setTrace($trace);
                         $this->traceCompetenceRepository->save($traceCompetence, true);
+
+                        $page = $this->pageRepository->findOneBy(['portfolio' => $portfolio, 'apc_niveau' => $apcNiveau]);
+
+                        $tracePage = new TracePage();
+                        $tracePage->setPage($page);
+                        $tracePage->setTrace($trace);
+                        $tracePage->setOrdre(count($page->getTracePages()) + 1);
+                        $this->tracePageRepository->save($tracePage, true);
                     }
                 } else {
                     // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
@@ -154,6 +171,14 @@ class TraceSaveService extends BaseController
                             $traceCompetence->setApcApprentissageCritique($apcApprentissageCritique);
                             $traceCompetence->setTrace($trace);
                             $this->traceCompetenceRepository->save($traceCompetence, true);
+
+                            $page = $this->pageRepository->findOneBy(['portfolio' => $portfolio, 'apc_niveau' => $apcNiveau]);
+
+                            $tracePage = new TracePage();
+                            $tracePage->setPage($page);
+                            $tracePage->setTrace($trace);
+                            $tracePage->setOrdre(count($page->getTracePages()) + 1);
+                            $this->tracePageRepository->save($tracePage, true);
                         }
                     }
                 }

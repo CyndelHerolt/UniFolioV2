@@ -240,12 +240,6 @@ class TraceController extends BaseController
             $formType = null;
         }
 
-        // gérer la soumission du formulaire
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            dd($form->getData());
-        }
-
         return $this->render('trace/form.html.twig', [
             'form' => $form->createView(),
             'typesTrace' => $typesTrace,

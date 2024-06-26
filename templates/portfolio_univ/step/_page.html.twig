@@ -14,12 +14,6 @@
     {% endif %}
 
     <li class="nav-item">
-        <a class="nav-link" data-turbo="false"
-           href="{{ path('app_portfolio_univ_edit_new_page', {'id': portfolio.id}) }}">Ajouter
-            une page</a>
-    </li>
-
-    <li class="nav-item">
         <a class="nav-link" data-turbo="false" href="#">Cv</a>
     </li>
 
@@ -32,7 +26,12 @@
 <div class="row">
 
         <div class="col-lg-6 col-12">
-            <h2>{{ page.libelle }}</h2>
+            {% if page.apcNiveau is not null %}
+            {% set competence = page.apcNiveau.apcCompetence %}
+            {% elseif page.apcApprentissageCritique is not null %}
+            {% set competence = page.apcApprentissageCritique.apcNiveau.apcCompetence %}
+            {% endif %}
+            <h2 class="pill-competence d-flex gap-1 align-items-center {{ competence.couleur }}">{{ page.libelle }}</h2>
         </div>
 
 </div>

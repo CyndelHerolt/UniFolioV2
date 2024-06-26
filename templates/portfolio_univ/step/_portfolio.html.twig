@@ -5,10 +5,10 @@
         </li>
 
         {% if portfolio.pages is not null %}
-            {% for pageA in portfolio.pages|sort((a, b) => a.ordre <=> b.ordre) %}
+            {% for pageA in portfolio.pages %}
                 <li class="nav-item" value="{{ pageA.id }}">
                     <a class="nav-link" aria-current="page" data-turbo="false"
-                       href="{{ path('app_portfolio_univ_edit_page', {'id': pageA.id}) }}">{{ pageA.libelle }}</a>
+                       href="{{ path('app_portfolio_univ_show_page', {'id': pageA.id}) }}">{{ pageA.libelle }}</a>
                 </li>
             {% endfor %}
         {% endif %}

@@ -56,7 +56,7 @@ class PortfolioUniv
     /**
      * @var Collection<int, TraceCompetence>
      */
-    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio')]
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio', orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $traceCompetences;
 
     public function __construct()
@@ -64,6 +64,11 @@ class PortfolioUniv
         $this->pages = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->libelle;
     }
 
     public function getId(): ?int

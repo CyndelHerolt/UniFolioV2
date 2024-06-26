@@ -5,10 +5,10 @@
     </li>
 
     {% if portfolio.pages is not null %}
-        {% for pageA in portfolio.pages|sort((a, b) => a.ordre <=> b.ordre) %}
+        {% for pageA in portfolio.pages %}
             <li class="nav-item" value="{{ pageA.id }}">
                 <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page" data-turbo="false"
-                   href="{{ path('app_portfolio_univ_edit_page', {'id': pageA.id, 'edit': false}) }}">{{ pageA.libelle }}</a>
+                   href="{{ path('app_portfolio_univ_show_page', {'id': pageA.id}) }}">{{ pageA.libelle }}</a>
             </li>
         {% endfor %}
     {% endif %}
@@ -31,20 +31,9 @@
 
 <div class="row">
 
-    <turbo-frame id="page-form" class="row d-flex justify-content-between align-items-center">
         <div class="col-lg-6 col-12">
             <h2>{{ page.libelle }}</h2>
-            <em>{{ page.description }}</em>
         </div>
-        <div class="col-lg-6 col-12 d-flex justify-content-end align-items-center gap-3">
-            <a href="{{ path('app_portfolio_univ_edit_page', {'id': page.id, 'edit': true}) }}">
-                <button class="primary-btn">Modifier</button>
-            </a>
-            <a data-turbo="false" href="{{ path('app_portfolio_univ_edit_delete_page', {'id': page.id}) }}">
-                <button class="secondary-btn">Supprimer</button>
-            </a>
-        </div>
-    </turbo-frame>
 
 </div>
 <hr>

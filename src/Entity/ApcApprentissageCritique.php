@@ -45,11 +45,18 @@ class ApcApprentissageCritique
     #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'apcApprentissageCritique')]
     private Collection $traceCompetences;
 
+    /**
+     * @var Collection<int, Page>
+     */
+    #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'apc_apprentissage_critique')]
+    private Collection $pages;
+
     public function __construct()
     {
         $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
+        $this->pages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -186,6 +193,36 @@ class ApcApprentissageCritique
             // set the owning side to null (unless already changed)
             if ($traceCompetence->getApcApprentissageCritique() === $this) {
                 $traceCompetence->setApcApprentissageCritique(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Page>
+     */
+    public function getPages(): Collection
+    {
+        return $this->pages;
+    }
+
+    public function addPage(Page $page): static
+    {
+        if (!$this->pages->contains($page)) {
+            $this->pages->add($page);
+            $page->setApcApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removePage(Page $page): static
+    {
+        if ($this->pages->removeElement($page)) {
+            // set the owning side to null (unless already changed)
+            if ($page->getApcApprentissageCritique() === $this) {
+                $page->setApcApprentissageCritique(null);
             }
         }
 

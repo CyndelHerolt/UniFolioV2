@@ -10,6 +10,7 @@ use App\Components\Trace\TypeTrace\TraceLien;
 use App\Components\Trace\TypeTrace\TracePdf;
 use App\Components\Trace\TypeTrace\TraceVideo;
 use App\Controller\BaseController;
+use App\Entity\ApcNiveau;
 use App\Entity\Page;
 use App\Entity\PortfolioUniv;
 use App\Entity\Trace;
@@ -127,7 +128,28 @@ class PortfolioUnivController extends BaseController
             $portfolio->setDateModification(new \DateTime('now'));
             $portfolio->setOptSearch($form->get('optSearch')->getData());
 
+            $competences = $this->competencesService->getCompetencesEtudiant($this->getUser());
+
+            if (isset($competences['apcNiveaux'])) {
+                $competences = $competences['apcNiveaux'];
+            } else {
+                $competences = $competences['apcApprentissagesCritiques'];
+            }
             $this->portfolioUnivRepository->save($portfolio, true);
+
+            foreach ($competences as $competence) {
+                $page = new Page();
+                $page->setPortfolio($portfolio);
+                $page->setLibelle($competence->getLibelle());
+                if ($competence instanceof ApcNiveau) {
+                    $page->setApcNiveau($competence);
+                } else {
+                    $page->setApcApprentissageCritique($competence);
+                }
+
+                $this->pageRepository->save($page, true);
+            }
+
 
             return $this->redirectToRoute('app_portfolio_univ_edit_portfolio', ['id' => $portfolio->getId()]);
         }
@@ -189,8 +211,8 @@ class PortfolioUnivController extends BaseController
         return $this->redirectToRoute('app_portfolio_univ_edit_page', ['id' => $page->getId()]);
     }
 
-    #[Route('/edit/page/{id}', name: 'app_portfolio_univ_edit_page')]
-    public function editPortfolioPage(Request $request, ?int $id): Response
+    #[Route('/edit/page/{id}', name: 'app_portfolio_univ_show_page')]
+    public function showPortfolioPage(Request $request, ?int $id): Response
     {
         $user = $this->getUser()->getEtudiant();
         $page = $this->pageRepository->find($id);
@@ -199,26 +221,10 @@ class PortfolioUnivController extends BaseController
         $traces = $this->traceRepository->findNotInPage($page, $user->getBibliotheques());
         $tracesPage = $this->traceRepository->findInPage($page);
 
-        $form = $this->createForm(PageType::class, $page);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $page->setLibelle($form->get('libelle')->getData());
-            $page->setDescription($form->get('description')->getData());
-            $this->pageRepository->save($page, true);
-        }
-
-        if ($edit) {
-            return $this->render('partials/page/_form.html.twig', [
-                'page' => $page,
-                'form' => $form->createView(),
-            ]);
-        }
-
         return $this->render('portfolio_univ/edit.html.twig', [
             'page' => $page,
             'step' => 'page',
             'portfolio' => $portfolio,
-            'edit' => $edit,
             'traces' => $traces,
             'tracesPage' => $tracesPage
         ]);

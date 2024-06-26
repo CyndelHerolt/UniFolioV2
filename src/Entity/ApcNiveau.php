@@ -50,6 +50,12 @@ class ApcNiveau
     #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'apcNiveau')]
     private Collection $traceCompetences;
 
+    /**
+     * @var Collection<int, Page>
+     */
+    #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'apc_niveau')]
+    private Collection $pages;
+
     public function __construct()
     {
         $this->apcParcours = new ArrayCollection();
@@ -57,6 +63,7 @@ class ApcNiveau
         $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
+        $this->pages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -274,6 +281,36 @@ class ApcNiveau
             // set the owning side to null (unless already changed)
             if ($traceCompetence->getApcNiveau() === $this) {
                 $traceCompetence->setApcNiveau(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Page>
+     */
+    public function getPages(): Collection
+    {
+        return $this->pages;
+    }
+
+    public function addPage(Page $page): static
+    {
+        if (!$this->pages->contains($page)) {
+            $this->pages->add($page);
+            $page->setApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    public function removePage(Page $page): static
+    {
+        if ($this->pages->removeElement($page)) {
+            // set the owning side to null (unless already changed)
+            if ($page->getApcNiveau() === $this) {
+                $page->setApcNiveau(null);
             }
         }
 

@@ -43,6 +43,9 @@ class Departement
     #[ORM\OneToMany(targetEntity: Criteres::class, mappedBy: 'departement', orphanRemoval: true)]
     private Collection $criteres;
 
+    #[ORM\Column]
+    private ?int $opt_competence = 1;
+
     public function __construct()
     {
         $this->enseignant = new ArrayCollection();
@@ -255,6 +258,18 @@ class Departement
                 $critere->setDepartement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOptCompetence(): ?int
+    {
+        return $this->opt_competence;
+    }
+
+    public function setOptCompetence(int $opt_competence): static
+    {
+        $this->opt_competence = $opt_competence;
 
         return $this;
     }

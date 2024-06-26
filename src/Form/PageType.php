@@ -38,17 +38,6 @@ class PageType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label'
                 ],
-            ])
-            ->add('description', TextAreaType::class, [
-                'label' => 'Description',
-                'label_attr' => [
-                    'class' => 'form-label'
-                ],
-                'attr' => [
-                    'class' => "form-control",
-                    'placeholder' => 'Chapô de ma page',
-                ],
-                'help' => 'Une phrase pour résumer le contenu de la page',
             ]);
     }
 

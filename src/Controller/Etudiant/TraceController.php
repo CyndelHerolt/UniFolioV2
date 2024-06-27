@@ -177,8 +177,6 @@ class TraceController extends BaseController
         }
 
         // todo: code dupliqué dans edit
-        // Vérifier si un type de trace a été passé en paramètre
-//        $selectedTraceType = $request->query->get('type', null);
         $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
 
         if ($selectedTraceType !== null) {
@@ -210,7 +208,6 @@ class TraceController extends BaseController
         ]);
     }
 
-    //todo: transformer en service
     #[Route('/trace/save', name: 'app_trace_save')]
     public function save(Request $request)
     {

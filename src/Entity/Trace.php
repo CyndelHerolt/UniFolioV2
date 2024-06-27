@@ -34,7 +34,7 @@ class Trace
     #[ORM\Column(length: 100)]
     private ?string $libelle = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private array $contenu = [];
 
     #[ORM\Column(type: Types::TEXT)]
@@ -118,7 +118,7 @@ class Trace
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
 
@@ -142,7 +142,7 @@ class Trace
         return $this->contenu;
     }
 
-    public function setContenu(array $contenu): static
+    public function setContenu(?array $contenu): static
     {
         $this->contenu = $contenu;
 
@@ -154,7 +154,7 @@ class Trace
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -190,7 +190,7 @@ class Trace
         return $this->contexte;
     }
 
-    public function setContexte(string $contexte): static
+    public function setContexte(?string $contexte): static
     {
         $this->contexte = $contexte;
 

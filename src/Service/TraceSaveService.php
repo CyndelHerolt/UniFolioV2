@@ -81,13 +81,16 @@ class TraceSaveService extends BaseController
             }
             $trace->setType($typeTrace::class);
 
-        } else {
+        } elseif($trace->getType() !== null){
             $typeTrace = $trace->getType();
-            $content = [];
+//            $content = [];
             $trace->setType($typeTrace);
+        } else {
+//            $content = [];
+            $trace->setType(null);
         }
 
-        $trace->setContenu($content);
+        $trace->setContenu($content ?? []);
         $trace->setBibliotheque($bibliotheque);
         $trace->setDateCreation(new \DateTime());
         $trace->setLibelle($formDatas['libelle']);

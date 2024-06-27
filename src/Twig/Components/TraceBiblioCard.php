@@ -24,7 +24,9 @@ final class TraceBiblioCard
     {
         $trace = $this->traceRepository->find($this->id);
         $type = $trace->getType();
-        $this->type = $this->traceRegistry->getTypeTrace($type)::TYPE;
+        if ($type !== null) {
+            $this->type = $this->traceRegistry->getTypeTrace($type)::TYPE;
+        }
 
         return $trace;
     }

@@ -120,14 +120,33 @@ class TraceController extends BaseController
             $trace->setContenu([]);
             $trace->setType($type);
             $this->traceRepository->save($trace, true);
+        } else {
+            $trace = new Trace();
         }
 
-        // récupérer le nom de la route émettrice
-        $referer = $request->headers->get('referer');
-        $selectedTraceType = $request->getSession()->get('selected_trace_type');
+        $typesTrace = $this->traceRegistry->getTypeTraces();
 
-        // retourner au referer
-        return $this->redirect($referer . '?type=' . $selectedTraceType);
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
+        if ($selectedTraceType !== null) {
+            $formType = $selectedTraceType::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+        } elseif ($trace->getType() !== null) {
+            $selectedTraceType = $trace->getType();
+            $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+        } else {
+            $formType = null;
+        }
+
+        return $this->render('partials/trace/_type_trace_form.html.twig', [
+            'typesTrace' => $typesTrace,
+            'type' => $type,
+            'trace' => $trace,
+            'selectedTraceType' => $selectedTraceType,
+            'formType' => $formType,
+        ]);
     }
 
     // todo: refactor

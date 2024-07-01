@@ -126,10 +126,8 @@ class PortfolioUnivController extends BaseController
             }
             $portfolio->setEtudiant($this->getUser()->getEtudiant());
             $portfolio->setAnnee($this->getUser()->getEtudiant()->getSemestre()->getAnnee());
-            $portfolio->setVisibilite($form->get('visibilite')->getData());
             $portfolio->setDateCreation(new \DateTime('now'));
             $portfolio->setDateModification(new \DateTime('now'));
-            $portfolio->setOptSearch($form->get('optSearch')->getData());
             $portfolio->setAnneeUniv($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
 
             $competences = $this->competencesService->getCompetencesEtudiant($this->getUser());
@@ -423,24 +421,17 @@ class PortfolioUnivController extends BaseController
             $this->TraceSaveService->save($trace, $request);
 
             $competence = $page->getApcNiveau() ?? $page->getApcApprentissageCritique();
-            $traceCompetence = new TraceCompetence();
-            $traceCompetence->setTrace($trace);
-            $traceCompetence->setPortfolio($page->getPortfolio());
             if ($competence instanceof ApcNiveau) {
+            $traceCompetence = $this->traceCompetenceRepository->findOneBy(['trace' => $trace, 'apcNiveau' => $competence]);
+            $traceCompetence->setPortfolio($page->getPortfolio());
                 $traceCompetence->setApcNiveau($competence);
             } else {
+                $traceCompetence = $this->traceCompetenceRepository->findOneBy(['trace' => $trace, 'apcApprentissageCritique' => $competence]);
+                $traceCompetence->setPortfolio($page->getPortfolio());
                 $traceCompetence->setApcApprentissageCritique($competence);
             }
             $this->traceCompetenceRepository->save($traceCompetence, true);
         }
-
-        // lier la trace à la page
-        $tracePage = new TracePage();
-        $tracePage->setPage($page);
-        $tracePage->setTrace($trace);
-        $tracePage->setOrdre(count($page->getTracePages()) + 1);
-
-        $this->tracePageRepository->save($tracePage, true);
 
         return $this->redirectToRoute('app_portfolio_univ_show_page', ['id' => $page->getId()]);
     }

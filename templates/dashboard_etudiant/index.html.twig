@@ -22,17 +22,12 @@
                 {% set type = 'Personnel' %}
             {% endif %}
 
-            {% if portfolio.visibilite == 1 %}
-                {% set visibilite = 'Public' %}
-            {% else %}
-                {% set visibilite = 'Privé' %}
-            {% endif %}
+            {% set annee = portfolio.anneeUniv.libelle ~ ' | ' ~ portfolio.annee.libelle %}
 
             {% set portfolioItems = portfolioItems|merge([{
                 'Libellé': portfolio.libelle,
                 'Type': type,
-                'Visibilité': visibilite,
-                'Année': portfolio.annee.libelle ?? null,
+                'Année': annee ?? null,
                 'Dernière modification': portfolio.dateModification|date('d/m/Y'),
             }]) %}
         {% endfor %}

@@ -54,7 +54,7 @@ class Etudiant
     #[ORM\OneToOne(mappedBy: 'etudiant', cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
-    #[ORM\OneToMany(targetEntity: Bibliotheque::class, mappedBy: 'etudiant')]
+    #[ORM\OneToMany(targetEntity: Bibliotheque::class, mappedBy: 'etudiant', orphanRemoval: true)]
     private Collection $bibliotheques;
 
     #[ORM\OneToMany(targetEntity: PortfolioUniv::class, mappedBy: 'etudiant', orphanRemoval: true)]

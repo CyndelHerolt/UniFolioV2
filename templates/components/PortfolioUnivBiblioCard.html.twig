@@ -27,17 +27,6 @@
 
         </td>
         <td>
-            {% if this.portfolioUniv.visibilite == 1 %}
-                <div class="pill-success">
-                    Public
-                </div>
-            {% else %}
-                <div class="pill-warning">
-                    Privé
-                </div>
-            {% endif %}
-        </td>
-        <td>
             <div class="d-flex gap-2">
                 <a href="{{ path('app_portfolio_univ_show', {'id': this.portfolioUniv.id}) }}">
                     <button class="btn-info d-flex justify-content-center align-items-center">

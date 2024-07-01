@@ -8,10 +8,13 @@
 
 namespace App\Controller\SynchroIntranet;
 
+use App\Entity\ApcNiveau;
 use App\Entity\Bibliotheque;
 use App\Entity\DepartementEnseignant;
 use App\Entity\Etudiant;
 use App\Entity\Enseignant;
+use App\Entity\Page;
+use App\Entity\PortfolioUniv;
 use App\Entity\User;
 use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\BibliothequeRepository;
@@ -19,8 +22,11 @@ use App\Repository\DepartementRepository;
 use App\Repository\EnseignantRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\GroupeRepository;
+use App\Repository\PageRepository;
+use App\Repository\PortfolioUnivRepository;
 use App\Repository\SemestreRepository;
 use App\Repository\UserRepository;
+use App\Service\CompetencesService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\MailerInterface;
@@ -32,7 +38,10 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 class UserSynchro extends AbstractController
 {
     public function __construct(
-//        private UserRepository $usersRepository,
+        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
+        private readonly CompetencesService $competencesService,
+        private readonly PortfolioUnivRepository $portfolioUnivRepository,
+        private readonly PageRepository $pageRepository
     )
     {
     }
@@ -147,7 +156,6 @@ class UserSynchro extends AbstractController
         BibliothequeRepository $bibliothequeRepository,
         GroupeRepository $groupeRepository,
         SemestreRepository $semestreRepository,
-        AnneeUniversitaireRepository $anneeUniversitaireRepository
     )
     {
 
@@ -184,7 +192,7 @@ class UserSynchro extends AbstractController
                     $biblio = new Bibliotheque();
                     $biblio->setEtudiant($newEtudiant);
                     $biblio->setAnnee($semestre->getAnnee());
-                    $biblio->setAnneeUniversitaire($anneeUniversitaireRepository->findOneBy(['active' => true]));
+                    $biblio->setAnneeUniversitaire($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
                     $biblio->setActif(true);
                     $newEtudiant->setNom($data['nom']);
                     $newEtudiant->setPrenom($data['prenom']);
@@ -196,6 +204,34 @@ class UserSynchro extends AbstractController
                         $groupe = $groupeRepository->findOneBy(['id' => $groupe]);
                         $newEtudiant->addGroupe($groupe);
                     }
+                    $portfolio = new PortfolioUniv();
+                    $portfolio->setEtudiant($newEtudiant);
+                    $portfolio->setAnnee($semestre->getAnnee());
+                    $portfolio->setAnneeUniv($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
+                    $portfolio->setLibelle('Portfolio de ' . $newEtudiant->getNom() . ' ' . $newEtudiant->getPrenom());
+                    $portfolio->setBanniere('/files_directory/banniere.jpg');
+                    $portfolio->setDescription('Modifier la description de votre portfolio');
+                    $portfolio->setDateCreation(new \DateTime());
+                    $portfolio->setDateModification(new \DateTime());
+
+                    $competences = $this->competencesService->getCompetencesEtudiant($user);
+
+                    $competences = $competences['apcNiveaux'] ?? $competences['apcApprentissagesCritiques'];
+                    $this->portfolioUnivRepository->save($portfolio, true);
+
+                    foreach ($competences as $competence) {
+                        $page = new Page();
+                        $page->setPortfolio($portfolio);
+                        $page->setLibelle($competence->getLibelle());
+                        if ($competence instanceof ApcNiveau) {
+                            $page->setApcNiveau($competence);
+                        } else {
+                            $page->setApcApprentissageCritique($competence);
+                        }
+
+                        $this->pageRepository->save($page, true);
+                    }
+
                     $etudiantRepository->save($newEtudiant, true);
                     $bibliothequeRepository->save($biblio, true);
                 }

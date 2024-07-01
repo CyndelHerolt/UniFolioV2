@@ -5,15 +5,9 @@
 
             <div class="header-actions">
                 <div class="actions d-flex gap-3 align-items-baseline">
-                    <a href="{{ path('app_portfolio_univ_new') }}">
-                        <button class="secondary-btn">
-                            Créer un portfolio universitaire
-                        </button>
-                    </a>
-
                     <button class="primary-btn" data-bs-toggle="modal"
                             data-bs-target="#staticBackdropDelete">
-                        Supprimer les portfolios sélectionnés
+                        Réinitialiser les portfolios sélectionnés
                     </button>
                     <!-- Modal Delete -->
                     <div class="modal modal-lg fade" id="staticBackdropDelete" data-bs-backdrop="static"
@@ -22,14 +16,15 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment supprimer ces
+                                    <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment réinitialiser ces
                                         portfolios
                                         ?</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <p>Les portfolios sélectionnés seront supprimés.</p>
+                                    <p>Les portfolios sélectionnés seront réinitialisés. Êtes-vous sûr de vouloir
+                                        continuer ?</p>
                                     <p style="color: red">Attention, cette action est irréversible !</p>
                                 </div>
                                 <div class="modal-footer">
@@ -37,7 +32,7 @@
                                     </button>
                                     <button class="btn btn-primary"
                                             data-action="live#action"
-                                            data-live-action-param="deleteSelectedPortfolios"
+                                            data-live-action-param="resetSelectedPortfolios"
                                             data-bs-dismiss="modal">
                                         Supprimer
                                     </button>
@@ -62,7 +57,6 @@
                         <th>Année</th>
                         <th>Modifié le</th>
                         <th>Compétences</th>
-                        <th>Visibilité</th>
                         <th>Actions</th>
                     </thead>
                     <tbody>

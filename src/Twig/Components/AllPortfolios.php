@@ -60,12 +60,10 @@ final class AllPortfolios
             foreach ($pages as $page) {
                 $tracePages = $page->getTracePages();
                 foreach ($tracePages as $tracePage) {
-                    $traces = $tracePage->getTrace();
-                    foreach ($traces as $trace) {
-                        $traceCompetences = $trace->getTraceCompetences();
-                        foreach ($traceCompetences as $traceCompetence) {
-                            $this->traceCompetenceRepository->remove($traceCompetence, true);
-                        }
+                    $trace = $tracePage->getTrace();
+                    $traceCompetences = $trace->getTraceCompetences();
+                    foreach ($traceCompetences as $traceCompetence) {
+                        $this->traceCompetenceRepository->remove($traceCompetence, true);
                     }
                     $this->tracePageRepository->delete($tracePage, true);
                 }

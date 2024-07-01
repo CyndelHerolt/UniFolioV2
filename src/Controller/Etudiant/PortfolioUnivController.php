@@ -41,16 +41,16 @@ use Symfony\Component\Routing\Attribute\Route;
 class PortfolioUnivController extends BaseController
 {
     public function __construct(
-        private readonly PortfolioUnivRepository            $portfolioUnivRepository,
-        private readonly PageRepository                     $pageRepository,
-        private readonly TraceRepository                    $traceRepository,
-        private readonly TracePageRepository                $tracePageRepository,
-        private readonly TraceRegistry                      $traceRegistry,
-        private readonly TraceCompetenceRepository          $traceCompetenceRepository,
-        private readonly DataUserSessionService             $dataUserSessionService,
-        private readonly AnneeUniversitaireRepository       $anneeUniversitaireRepository,
-        private readonly CompetencesService          $competencesService,
-        private readonly TraceSaveService            $TraceSaveService
+        private readonly PortfolioUnivRepository      $portfolioUnivRepository,
+        private readonly PageRepository               $pageRepository,
+        private readonly TraceRepository              $traceRepository,
+        private readonly TracePageRepository          $tracePageRepository,
+        private readonly TraceRegistry                $traceRegistry,
+        private readonly TraceCompetenceRepository    $traceCompetenceRepository,
+        private readonly DataUserSessionService       $dataUserSessionService,
+        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
+        private readonly CompetencesService           $competencesService,
+        private readonly TraceSaveService             $TraceSaveService
     )
     {
         parent::__construct(
@@ -101,63 +101,6 @@ class PortfolioUnivController extends BaseController
         ]);
     }
 
-    #[Route('/new', name: 'app_portfolio_univ_new')]
-    public function create(Request $request): Response
-    {
-        $portfolio = new PortfolioUniv();
-
-        $form = $this->createForm(PortfolioUnivType::class, $portfolio);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $portfolio->setLibelle($form->get('libelle')->getData());
-            $portfolio->setDescription($form->get('description')->getData());
-            $imageFile = $form['banniere']->getData();
-            if ($imageFile) {
-                $imageFileName = uniqid() . '.' . $imageFile->guessExtension();
-                //Vérifier si le fichier est au bon format
-                if (in_array($imageFile->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
-                    $imageFile->move($_ENV['PATH_FILES'], $imageFileName);
-                    $portfolio->setBanniere($_ENV['SRC_FILES'] . '/' . $imageFileName);
-                } elseif (!in_array($imageFile->guessExtension(), ['jpg', 'jpeg', 'png', 'gif', 'svg', 'webp'])) {
-                    $this->addFlash('danger', 'L\'image doit être au format jpg, jpeg, png, gif, svg ou webp');
-                }
-            } else {
-                $portfolio->setBanniere($_ENV['SRC_FILES'] . '/banniere.jpg');
-            }
-            $portfolio->setEtudiant($this->getUser()->getEtudiant());
-            $portfolio->setAnnee($this->getUser()->getEtudiant()->getSemestre()->getAnnee());
-            $portfolio->setDateCreation(new \DateTime('now'));
-            $portfolio->setDateModification(new \DateTime('now'));
-            $portfolio->setAnneeUniv($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
-
-            $competences = $this->competencesService->getCompetencesEtudiant($this->getUser());
-
-            $competences = $competences['apcNiveaux'] ?? $competences['apcApprentissagesCritiques'];
-            $this->portfolioUnivRepository->save($portfolio, true);
-
-            foreach ($competences as $competence) {
-                $page = new Page();
-                $page->setPortfolio($portfolio);
-                $page->setLibelle($competence->getLibelle());
-                if ($competence instanceof ApcNiveau) {
-                    $page->setApcNiveau($competence);
-                } else {
-                    $page->setApcApprentissageCritique($competence);
-                }
-
-                $this->pageRepository->save($page, true);
-            }
-
-
-            return $this->redirectToRoute('app_portfolio_univ_edit_portfolio', ['id' => $portfolio->getId()]);
-        }
-
-        return $this->render('portfolio_univ/form.html.twig', [
-            'portfolio' => $portfolio,
-            'form' => $form->createView(),
-        ]);
-    }
-
     #[Route('/edit/{id}', name: 'app_portfolio_univ_edit_portfolio')]
     public function editPortfolio(Request $request, ?int $id): Response
     {
@@ -181,9 +124,7 @@ class PortfolioUnivController extends BaseController
             } else {
                 $portfolio->setBanniere($_ENV['SRC_FILES'] . '/banniere.jpg');
             }
-            $portfolio->setVisibilite($form->get('visibilite')->getData());
             $portfolio->setDateModification(new \DateTime('now'));
-            $portfolio->setOptSearch($form->get('optSearch')->getData());
 
             $this->portfolioUnivRepository->save($portfolio, true);
         }
@@ -422,8 +363,8 @@ class PortfolioUnivController extends BaseController
 
             $competence = $page->getApcNiveau() ?? $page->getApcApprentissageCritique();
             if ($competence instanceof ApcNiveau) {
-            $traceCompetence = $this->traceCompetenceRepository->findOneBy(['trace' => $trace, 'apcNiveau' => $competence]);
-            $traceCompetence->setPortfolio($page->getPortfolio());
+                $traceCompetence = $this->traceCompetenceRepository->findOneBy(['trace' => $trace, 'apcNiveau' => $competence]);
+                $traceCompetence->setPortfolio($page->getPortfolio());
                 $traceCompetence->setApcNiveau($competence);
             } else {
                 $traceCompetence = $this->traceCompetenceRepository->findOneBy(['trace' => $trace, 'apcApprentissageCritique' => $competence]);
@@ -502,10 +443,23 @@ class PortfolioUnivController extends BaseController
         return $this->redirectToRoute('app_portfolio_univ_show_page', ['id' => $page->getId()]);
     }
 
-    #[Route('/delete/{id}', name: 'app_portfolio_univ_delete')]
+    #[Route('/delete/{id}', name: 'app_portfolio_univ_reset')]
     public function delete(PortfolioUniv $portfolio): Response
     {
-        $this->portfolioUnivRepository->remove($portfolio, true);
+        $portfolio = $this->portfolioUnivRepository->find($portfolio->getId());
+        $pages = $portfolio->getPages();
+        // on supprime toutes les tracesPages de chaque page du portfolio
+        foreach ($pages as $page) {
+            $tracePages = $page->getTracePages();
+            foreach ($tracePages as $tracePage) {
+                $trace = $tracePage->getTrace();
+                $traceCompetences = $trace->getTraceCompetences();
+                foreach ($traceCompetences as $traceCompetence) {
+                    $this->traceCompetenceRepository->remove($traceCompetence, true);
+                }
+                $this->tracePageRepository->delete($tracePage, true);
+            }
+        }
 
         return $this->redirectToRoute('app_biblio_portfolio_univ');
     }

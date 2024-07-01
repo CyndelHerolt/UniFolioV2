@@ -56,7 +56,7 @@ class PortfolioUniv
     /**
      * @var Collection<int, TraceCompetence>
      */
-    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $traceCompetences;
 
     public function __construct()

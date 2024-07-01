@@ -131,11 +131,7 @@ class PortfolioUnivController extends BaseController
 
             $competences = $this->competencesService->getCompetencesEtudiant($this->getUser());
 
-            if (isset($competences['apcNiveaux'])) {
-                $competences = $competences['apcNiveaux'];
-            } else {
-                $competences = $competences['apcApprentissagesCritiques'];
-            }
+            $competences = $competences['apcNiveaux'] ?? $competences['apcApprentissagesCritiques'];
             $this->portfolioUnivRepository->save($portfolio, true);
 
             foreach ($competences as $competence) {
@@ -235,7 +231,7 @@ class PortfolioUnivController extends BaseController
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
         }
 
-        $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
 
         if ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
@@ -284,7 +280,7 @@ class PortfolioUnivController extends BaseController
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
         }
 
-        $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
 
         if ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();

@@ -20,12 +20,12 @@ use Symfony\Component\Routing\Attribute\Route;
 class DashboardEtudiantController extends BaseController
 {
     public function __construct(
-        private Security $security,
-        private BibliothequeRepository $bibliothequeRepository,
-        private TraceRepository $traceRepository,
-        private PortfolioUnivRepository $portfolioUnivRepository,
-        private PortfolioPersoRepository $portfolioPersoRepository,
-        private TraceRegistry $traceRegistry,
+        private readonly Security                 $security,
+        private readonly BibliothequeRepository   $bibliothequeRepository,
+        private readonly TraceRepository          $traceRepository,
+        private readonly PortfolioUnivRepository  $portfolioUnivRepository,
+        private readonly PortfolioPersoRepository $portfolioPersoRepository,
+        private readonly TraceRegistry            $traceRegistry,
     )
     {
 

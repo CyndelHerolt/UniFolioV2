@@ -177,7 +177,7 @@ class TraceController extends BaseController
         }
 
         // todo: code dupliqué dans edit
-        $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
 
         if ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
@@ -240,7 +240,7 @@ class TraceController extends BaseController
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
         }
         // Vérifier si un type de trace a été passé en paramètre
-        $selectedTraceType = $request->query->get('type', null);
+        $selectedTraceType = $request->query->get('type');
         if ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();
             $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;

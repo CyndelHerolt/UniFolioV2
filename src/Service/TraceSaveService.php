@@ -73,11 +73,7 @@ class TraceSaveService extends BaseController
                 $content = $sauvegarde['contenu'];
 
             } else {
-                if (isset($data[$key])) {
-                    $content = $data[$key];
-                } else {
-                    $content = [];
-                }
+                $content = $data[$key] ?? [];
             }
             $trace->setType($typeTrace::class);
 
@@ -149,7 +145,6 @@ class TraceSaveService extends BaseController
                 if ($apcNiveau) {
                     // si il n'existe pas déjà un traceCompetence lié a l'apcNiveau et à la trace
                     if (!$this->traceCompetenceRepository->findOneBy(['apcNiveau' => $apcNiveau, 'trace' => $trace])) {
-                        $apcNiveaux[] = $apcNiveau;
                         $traceCompetence = new TraceCompetence();
                         $traceCompetence->setApcNiveau($apcNiveau);
                         $traceCompetence->setTrace($trace);
@@ -162,6 +157,10 @@ class TraceSaveService extends BaseController
                         $tracePage->setTrace($trace);
                         $tracePage->setOrdre(count($page->getTracePages()) + 1);
                         $this->tracePageRepository->save($tracePage, true);
+
+                        if($trace->getTraceCompetences() !== null) {
+                            // todo : liaison
+                        }
                     }
                 } else {
                     // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
@@ -169,7 +168,6 @@ class TraceSaveService extends BaseController
                     if ($apcApprentissageCritique) {
                         // si il n'existe pas déjà un traceCompetence lié a l'apcApprentissageCritique et à la trace
                         if (!$this->traceCompetenceRepository->findOneBy(['apcApprentissageCritique' => $apcApprentissageCritique, 'trace' => $trace])) {
-                            $apcApprentissageCritiques[] = $apcApprentissageCritique;
                             $traceCompetence = new TraceCompetence();
                             $traceCompetence->setApcApprentissageCritique($apcApprentissageCritique);
                             $traceCompetence->setTrace($trace);

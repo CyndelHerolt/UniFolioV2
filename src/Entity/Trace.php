@@ -52,7 +52,7 @@ class Trace
     #[ORM\OneToMany(targetEntity: TracePage::class, mappedBy: 'trace', orphanRemoval: true)]
     private Collection $tracePages;
 
-    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'trace', orphanRemoval: true, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'trace', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $validations;
 
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'trace')]
@@ -61,7 +61,7 @@ class Trace
     /**
      * @var Collection<int, TraceCompetence>
      */
-    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace', orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace', cascade: ['persist'], orphanRemoval: true)]
     private Collection $traceCompetences;
 
     public function __construct()

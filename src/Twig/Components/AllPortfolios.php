@@ -56,8 +56,6 @@ final class AllPortfolios
 
     public function getAllPortfolios()
     {
-        $portfolios = $this->portfolioUnivRepository->findBy(['etudiant' => $this->security->getUser()->getEtudiant()]);
-
-        return $portfolios;
+        return $this->portfolioUnivRepository->findBy(['etudiant' => $this->security->getUser()->getEtudiant()]);
     }
 }

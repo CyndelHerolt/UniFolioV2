@@ -85,8 +85,6 @@ final class AllPortfoliosEval
     public function getAllPortfolios()
     {
 
-        $portfolios = $this->portfolioUnivRepository->findByFilters($this->departement, $this->selectedSemestre, $this->selectedGroupes, $this->selectedEtudiants, $this->selectedCompetences);
-
-        return $portfolios;
+        return $this->portfolioUnivRepository->findByFilters($this->departement, $this->selectedSemestre, $this->selectedGroupes, $this->selectedEtudiants, $this->selectedCompetences);
     }
 }

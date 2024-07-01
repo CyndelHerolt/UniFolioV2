@@ -49,8 +49,7 @@ class TraceRegistry
     public function getForm(AbstractTrace $typeTrace): mixed
     {
         $formClass = $typeTrace::FORM;
-        $formInstance = new $formClass();
-        return $formInstance;
+        return new $formClass();
     }
 
 //    public function getFormType($name): mixed

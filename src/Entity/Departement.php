@@ -31,7 +31,7 @@ class Departement
     /**
      * @var Collection<int, DepartementEnseignant>
      */
-    #[ORM\OneToMany(mappedBy: 'departement', targetEntity: DepartementEnseignant::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: DepartementEnseignant::class, mappedBy: 'departement', cascade: ['persist', 'remove'])]
     private Collection $departementEnseignants;
 
     #[ORM\OneToMany(targetEntity: Diplome::class, mappedBy: 'departement', orphanRemoval: true)]

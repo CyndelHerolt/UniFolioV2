@@ -110,9 +110,6 @@ final class AllTraces
     #[LiveAction]
     public function deleteSelectedTraces(): void
     {
-        if ($this->selectedTraces === null) {
-            return;
-        }
         foreach ($this->selectedTraces as $trace) {
             $trace = $this->traceRepository->find($trace);
             $this->traceRepository->delete($trace, true);

@@ -107,8 +107,6 @@ final class TracePortfolioPreview
     {
         $trace = $this->traceRepository->find($this->id);
         $type = $trace->getType();
-        $type = $this->traceRegistry->getTypeTrace($type)::TYPE;
-
-        return $type;
+        return $this->traceRegistry->getTypeTrace($type)::TYPE;
     }
 }

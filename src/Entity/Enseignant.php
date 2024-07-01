@@ -32,7 +32,7 @@
         /**
          * @var Collection<int, DepartementEnseignant>
          */
-        #[ORM\OneToMany(mappedBy: 'enseignant', targetEntity: DepartementEnseignant::class, cascade: ['persist', 'remove'])]
+        #[ORM\OneToMany(targetEntity: DepartementEnseignant::class, mappedBy: 'enseignant', cascade: ['persist', 'remove'])]
         private ?Collection $departementEnseignants;
 
 

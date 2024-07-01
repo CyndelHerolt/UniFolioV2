@@ -18,9 +18,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class SettingsController extends BaseController
 {
     public function __construct(
-        private CriteresRepository    $criteresRepository,
-        protected DepartementRepository $departementRepository,
-        protected EnseignantRepository  $enseignantRepository,
+        private readonly CriteresRepository       $criteresRepository,
+        protected DepartementRepository           $departementRepository,
+        protected EnseignantRepository            $enseignantRepository,
         protected DepartementEnseignantRepository $departementEnseignantRepository,
     )
     {

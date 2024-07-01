@@ -10,7 +10,7 @@
         </td>
         <td>
             {% if this.portfolioUniv.annee is not null %}
-                {{ this.portfolioUniv.annee.libelle }}
+                {{ this.portfolioUniv.anneeUniv.libelle }} | {{ this.portfolioUniv.annee.libelle }}
             {% else %}
                 **
             {% endif %}

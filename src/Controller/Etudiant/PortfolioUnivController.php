@@ -19,6 +19,7 @@ use App\Entity\TraceCompetence;
 use App\Entity\TracePage;
 use App\Form\PageType;
 use App\Form\PortfolioUnivType;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
@@ -47,6 +48,7 @@ class PortfolioUnivController extends BaseController
         private readonly TraceRegistry                      $traceRegistry,
         private readonly TraceCompetenceRepository          $traceCompetenceRepository,
         private readonly DataUserSessionService             $dataUserSessionService,
+        private readonly AnneeUniversitaireRepository       $anneeUniversitaireRepository,
         private readonly CompetencesService          $competencesService,
         private readonly TraceSaveService            $TraceSaveService
     )
@@ -128,6 +130,7 @@ class PortfolioUnivController extends BaseController
             $portfolio->setDateCreation(new \DateTime('now'));
             $portfolio->setDateModification(new \DateTime('now'));
             $portfolio->setOptSearch($form->get('optSearch')->getData());
+            $portfolio->setAnneeUniv($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
 
             $competences = $this->competencesService->getCompetencesEtudiant($this->getUser());
 
@@ -301,7 +304,7 @@ class PortfolioUnivController extends BaseController
             'trace' => $trace,
             'form' => $form->createView(),
             'formType' => $formType,
-            'typeTrace' => $typeTrace,
+            'typeTrace' => $typeTrace ?? null,
             'page' => $page,
             'edit' => $edit,
             'typesTrace' => $typesTrace,

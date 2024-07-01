@@ -11,7 +11,7 @@ final class TraceBiblioCard
 {
     public int $id;
 
-    public string $type = '';
+    public ?string $type = '';
 
     public function __construct(
         protected TraceRepository $traceRepository,
@@ -26,6 +26,8 @@ final class TraceBiblioCard
         $type = $trace->getType();
         if ($type !== null) {
             $this->type = $this->traceRegistry->getTypeTrace($type)::TYPE;
+        } else {
+            $this->type = null;
         }
 
         return $trace;

@@ -54,7 +54,6 @@ class TraceSaveService extends BaseController
 
         // on récupère la clé du type de trace
         $typeTraceForm = array_diff($typeDatas, ['trace_abstract']);
-//        dd($typeTraceForm);
 
         if (!empty($typeTraceForm)) {
             // on récupère la première clé du tableau
@@ -68,7 +67,6 @@ class TraceSaveService extends BaseController
                 $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
 
                 $existingContenu = $data[$key] ?? null;
-                dump($existingContenu);
                 $sauvegarde = $typeTrace->sauvegarde($contenu, $existingContenu);
                 $content = $sauvegarde['contenu'];
 
@@ -77,12 +75,10 @@ class TraceSaveService extends BaseController
             }
             $trace->setType($typeTrace::class);
 
-        } elseif($trace->getType() !== null){
+        } elseif ($trace->getType() !== null) {
             $typeTrace = $trace->getType();
-//            $content = [];
             $trace->setType($typeTrace);
         } else {
-//            $content = [];
             $trace->setType(null);
         }
 
@@ -158,7 +154,7 @@ class TraceSaveService extends BaseController
                         $tracePage->setOrdre(count($page->getTracePages()) + 1);
                         $this->tracePageRepository->save($tracePage, true);
 
-                        if($trace->getTraceCompetences() !== null) {
+                        if ($trace->getTraceCompetences() !== null) {
                             // todo : liaison
                         }
                     }

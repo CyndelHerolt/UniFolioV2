@@ -11,7 +11,7 @@ final class TraceCard
 {
     public int $id;
 
-    public string $type = '';
+    public ?string $type = '';
 
     public int $page;
 
@@ -26,7 +26,11 @@ final class TraceCard
     {
         $trace = $this->traceRepository->find($this->id);
         $type = $trace->getType();
+        if ($type !== null) {
         $this->type = $this->traceRegistry->getTypeTrace($type)::TYPE;
+        } else {
+            $this->type = null;
+        }
 
         return $trace;
     }

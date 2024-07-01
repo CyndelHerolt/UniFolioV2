@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240626135541 extends AbstractMigration
+final class Version20240701083353 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20240626135541 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE page DROP description, DROP ordre');
+        $this->addSql('ALTER TABLE annee_universitaire ADD annee INT NOT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE page ADD description LONGTEXT DEFAULT NULL, ADD ordre INT NOT NULL');
+        $this->addSql('ALTER TABLE annee_universitaire DROP annee');
     }
 }

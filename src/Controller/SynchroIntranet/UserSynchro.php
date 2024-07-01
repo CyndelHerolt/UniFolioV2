@@ -13,6 +13,7 @@ use App\Entity\DepartementEnseignant;
 use App\Entity\Etudiant;
 use App\Entity\Enseignant;
 use App\Entity\User;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\BibliothequeRepository;
 use App\Repository\DepartementRepository;
 use App\Repository\EnseignantRepository;
@@ -146,6 +147,7 @@ class UserSynchro extends AbstractController
         BibliothequeRepository $bibliothequeRepository,
         GroupeRepository $groupeRepository,
         SemestreRepository $semestreRepository,
+        AnneeUniversitaireRepository $anneeUniversitaireRepository
     )
     {
 
@@ -182,6 +184,7 @@ class UserSynchro extends AbstractController
                     $biblio = new Bibliotheque();
                     $biblio->setEtudiant($newEtudiant);
                     $biblio->setAnnee($semestre->getAnnee());
+                    $biblio->setAnneeUniversitaire($anneeUniversitaireRepository->findOneBy(['active' => true]));
                     $biblio->setActif(true);
                     $newEtudiant->setNom($data['nom']);
                     $newEtudiant->setPrenom($data['prenom']);

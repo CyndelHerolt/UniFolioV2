@@ -3,6 +3,7 @@
 namespace App\Twig\Components;
 
 use App\Entity\PortfolioUniv;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\PortfolioUnivRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -24,7 +25,8 @@ final class AllPortfolios
 
     public function __construct(
         private readonly Security $security,
-        protected PortfolioUnivRepository $portfolioUnivRepository,
+        private readonly PortfolioUnivRepository $portfolioUnivRepository,
+        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
     )
     {
         $this->allPortfolios = $this->getAllPortfolios();
@@ -54,8 +56,10 @@ final class AllPortfolios
         $this->allPortfolios = $this->getAllPortfolios();
     }
 
+
+
     public function getAllPortfolios()
     {
-        return $this->portfolioUnivRepository->findBy(['etudiant' => $this->security->getUser()->getEtudiant()]);
+        return $this->portfolioUnivRepository->findBy(['etudiant' => $this->security->getUser()->getEtudiant()], ['date_creation' => 'DESC']);
     }
 }

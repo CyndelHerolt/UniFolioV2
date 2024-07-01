@@ -59,6 +59,9 @@ class PortfolioUniv
     #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $traceCompetences;
 
+    #[ORM\ManyToOne(inversedBy: 'portfolioUnivs')]
+    private ?AnneeUniversitaire $anneeUniv = null;
+
     public function __construct()
     {
         $this->pages = new ArrayCollection();
@@ -270,6 +273,18 @@ class PortfolioUniv
                 $traceCompetence->setPortfolio(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAnneeUniv(): ?AnneeUniversitaire
+    {
+        return $this->anneeUniv;
+    }
+
+    public function setAnneeUniv(?AnneeUniversitaire $anneeUniv): static
+    {
+        $this->anneeUniv = $anneeUniv;
 
         return $this;
     }

@@ -35,9 +35,6 @@ class ApcNiveau
     #[ORM\OneToMany(targetEntity: ApcApprentissageCritique::class, mappedBy: 'apcNiveau')]
     private Collection $apcApprentissageCritiques;
 
-    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'apcNiveau', orphanRemoval: true)]
-    private Collection $validations;
-
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
@@ -60,7 +57,6 @@ class ApcNiveau
     {
         $this->apcParcours = new ArrayCollection();
         $this->apcApprentissageCritiques = new ArrayCollection();
-        $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
         $this->pages = new ArrayCollection();
@@ -182,36 +178,6 @@ class ApcNiveau
             // set the owning side to null (unless already changed)
             if ($apcApprentissageCritique->getApcNiveau() === $this) {
                 $apcApprentissageCritique->setApcNiveau(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Validation>
-     */
-    public function getValidations(): Collection
-    {
-        return $this->validations;
-    }
-
-    public function addValidation(Validation $validation): static
-    {
-        if (!$this->validations->contains($validation)) {
-            $this->validations->add($validation);
-            $validation->setApcNiveau($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidation(Validation $validation): static
-    {
-        if ($this->validations->removeElement($validation)) {
-            // set the owning side to null (unless already changed)
-            if ($validation->getApcNiveau() === $this) {
-                $validation->setApcNiveau(null);
             }
         }
 

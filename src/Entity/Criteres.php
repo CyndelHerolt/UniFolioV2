@@ -26,9 +26,6 @@ class Criteres
     #[ORM\Column]
     private array $valeurs = [];
 
-    #[ORM\OneToMany(targetEntity: ValidationCriteres::class, mappedBy: 'critere')]
-    private Collection $validationCriteres;
-
     #[ORM\ManyToMany(targetEntity: ApcNiveau::class, inversedBy: 'criteres')]
     private Collection $apcNiveau;
 
@@ -37,7 +34,6 @@ class Criteres
 
     public function __construct()
     {
-        $this->validationCriteres = new ArrayCollection();
         $this->apcNiveau = new ArrayCollection();
         $this->apcApprentissageCritique = new ArrayCollection();
     }
@@ -79,36 +75,6 @@ class Criteres
     public function setValeurs(array $valeurs): static
     {
         $this->valeurs = $valeurs;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ValidationCriteres>
-     */
-    public function getValidationCriteres(): Collection
-    {
-        return $this->validationCriteres;
-    }
-
-    public function addValidationCritere(ValidationCriteres $validationCritere): static
-    {
-        if (!$this->validationCriteres->contains($validationCritere)) {
-            $this->validationCriteres->add($validationCritere);
-            $validationCritere->setCritere($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidationCritere(ValidationCriteres $validationCritere): static
-    {
-        if ($this->validationCriteres->removeElement($validationCritere)) {
-            // set the owning side to null (unless already changed)
-            if ($validationCritere->getCritere() === $this) {
-                $validationCritere->setCritere(null);
-            }
-        }
 
         return $this;
     }

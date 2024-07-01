@@ -44,9 +44,9 @@ class TraceRepository extends ServiceEntityRepository
     public function findByCompetence(array $competences): array
     {
         return $this->createQueryBuilder('t')
-            ->join('t.validations', 'v')
-            ->leftJoin('v.apcNiveau', 'n')
-            ->leftJoin('v.apc_apprentissage_critique', 'a')
+            ->join('t.traceCompetences', 'tc')
+            ->leftJoin('tc.apcNiveau', 'n')
+            ->leftJoin('tc.apcApprentissageCritique', 'a')
             ->where('n.id IN (:competences)')
             ->orWhere('a.id IN (:competences)')
             ->setParameter('competences', $competences)

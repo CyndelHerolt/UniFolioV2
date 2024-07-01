@@ -52,9 +52,6 @@ class Trace
     #[ORM\OneToMany(targetEntity: TracePage::class, mappedBy: 'trace', orphanRemoval: true)]
     private Collection $tracePages;
 
-    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'trace', cascade: ['persist', 'remove'], orphanRemoval: true)]
-    private Collection $validations;
-
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'trace')]
     private Collection $commentaires;
 
@@ -67,7 +64,6 @@ class Trace
     public function __construct()
     {
         $this->tracePages = new ArrayCollection();
-        $this->validations = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
     }
@@ -221,36 +217,6 @@ class Trace
             // set the owning side to null (unless already changed)
             if ($tracePage->getTrace() === $this) {
                 $tracePage->setTrace(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Validation>
-     */
-    public function getValidations(): Collection
-    {
-        return $this->validations;
-    }
-
-    public function addValidation(Validation $validation): static
-    {
-        if (!$this->validations->contains($validation)) {
-            $this->validations->add($validation);
-            $validation->setTrace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidation(Validation $validation): static
-    {
-        if ($this->validations->removeElement($validation)) {
-            // set the owning side to null (unless already changed)
-            if ($validation->getTrace() === $this) {
-                $validation->setTrace(null);
             }
         }
 

@@ -56,43 +56,38 @@ class SettingsController extends BaseController
         ]);
     }
 
-    #[Route('/settings/criteres/defaut', name: 'app_settings_criteres_defaut')]
-    public function criteres(): Response
-    {
-        $enseignant = $this->getUser()->getEnseignant();
-        $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
+#[Route('/settings/criteres/defaut', name: 'app_settings_criteres_defaut')]
+public function criteres(): Response
+{
+    $enseignant = $this->getUser()->getEnseignant();
+    $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
 
-        // si il existe déjà des critères qui ont pour département le département par défaut de l'enseignant on les supprime
-        $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
-        if ($criteres) {
-            foreach ($criteres as $critere) {
-                $this->criteresRepository->remove($critere, true);
-            }
-        }
+    // Récupérer les critères existants
+    $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
 
-        // on crée les critères par défaut pour le département de l'enseignant
-        for ($i = 0; $i < 4; $i++) {
-            $critere = new Criteres();
-            if ($i === 0) {
-                $critere->setLibelle('Pertinence du ou des media.s');
-                $critere->setValeurs([4 => 'Adaptée', 2 => 'Adéquate', 1 => 'A améliorer', 0 => 'Non pertinente']);
-            } elseif ($i === 1) {
-                $critere->setLibelle('Pertinence de l\'argumentaire');
-                $critere->setValeurs([4 => 'Solide', 2 => 'Clair', 1 => 'Confus', 0 => 'Inapproprié']);
-            } elseif ($i === 2) {
-                $critere->setLibelle('Cohérence avec la compétence visée');
-                $critere->setValeurs([4 => 'En accord total', 2 => 'En accord partiel', 1 => 'En désaccord partiel', 0 => 'En désaccord total']);
-            } elseif ($i === 3) {
-                $critere->setLibelle('Qualité de la rédaction');
-                $critere->setValeurs([4 => 'Précise', 2 => 'Soignée', 1 => 'Approximative', 0 => 'Brouillone']);
-            }
-            $critere->setDepartement($departementDefaut);
+    // Définir les libellés et valeurs par défaut
+    $defaultLibelles = [
+        'Pertinence des medias',
+        'Pertinence des argumentaires',
+        'Cohérence avec la compétence visée',
+        'Diversité des traces'
+    ];
+    $defaultValeurs = [
+        [4 => 'Adaptée', 2 => 'Adéquate', 1 => 'A améliorer', 0 => 'Non pertinente'],
+        [4 => 'Solide', 2 => 'Clair', 1 => 'Confus', 0 => 'Inapproprié'],
+        [4 => 'En accord total', 2 => 'En accord partiel', 1 => 'En désaccord partiel', 0 => 'En désaccord total'],
+        [4 => 'Très diversifiées', 2 => 'Diversifiées', 1 => 'Peu diversifiées', 0 => 'Non diversifiées']
+    ];
 
-            $this->criteresRepository->save($critere, true);
-        }
-
-        return $this->redirectToRoute('app_settings');
+    // Parcourir les critères existants et les mettre à jour
+    foreach ($criteres as $critere) {
+        $critere->setLibelle(array_shift($defaultLibelles));
+        $critere->setValeurs(array_shift($defaultValeurs));
+        $this->criteresRepository->save($critere, true);
     }
+
+    return $this->redirectToRoute('app_settings');
+}
 
     #[Route('/settings/criteres/edit/{id}', name: 'app_settings_criteres_edit')]
     public function editCriteres(Request $request, ?int $id): Response

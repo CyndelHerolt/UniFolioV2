@@ -14,8 +14,9 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
+use Symfony\UX\TwigComponent\Attribute\PostMount;
 
-#[AsLiveComponent]
+#[AsLiveComponent('AllPortfoliosEval')]
 final class AllPortfoliosEval
 {
     use DefaultActionTrait;
@@ -65,6 +66,12 @@ final class AllPortfoliosEval
         $this->allPortfolios = $this->getAllPortfolios();
     }
 
+    #[PostMount]
+    public function init()
+    {
+        $this->changeSemestre($this->selectedSemestre);
+    }
+
     public function getAllSemestres()
     {
         $this->semestres = $this->semestreRepository->findByDepartementActif($this->departement);
@@ -73,14 +80,12 @@ final class AllPortfoliosEval
     }
 
     #[LiveAction]
-    public function getSelectedSemestre(#[LiveArg] ?int $id = null)
+    public function changeSemestre()
     {
-        if ($id !== null) {
-            $this->selectedSemestre = $this->semestreRepository->find($id);
-        }
 
-        $this->getAllPortfolios();
+        $this->allPortfolios = $this->getAllPortfolios();
     }
+
 
     public function getAllPortfolios()
     {

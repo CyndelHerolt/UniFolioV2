@@ -48,11 +48,18 @@ class ApcApprentissageCritique
     #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'apc_apprentissage_critique')]
     private Collection $pages;
 
+    /**
+     * @var Collection<int, CritereApprentissageCritique>
+     */
+    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'apprentissageCritique')]
+    private Collection $critereApprentissageCritiques;
+
     public function __construct()
     {
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
         $this->pages = new ArrayCollection();
+        $this->critereApprentissageCritiques = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,6 +196,36 @@ class ApcApprentissageCritique
             // set the owning side to null (unless already changed)
             if ($page->getApcApprentissageCritique() === $this) {
                 $page->setApcApprentissageCritique(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CritereApprentissageCritique>
+     */
+    public function getCritereApprentissageCritiques(): Collection
+    {
+        return $this->critereApprentissageCritiques;
+    }
+
+    public function addCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
+    {
+        if (!$this->critereApprentissageCritiques->contains($critereApprentissageCritique)) {
+            $this->critereApprentissageCritiques->add($critereApprentissageCritique);
+            $critereApprentissageCritique->setApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
+    {
+        if ($this->critereApprentissageCritiques->removeElement($critereApprentissageCritique)) {
+            // set the owning side to null (unless already changed)
+            if ($critereApprentissageCritique->getApprentissageCritique() === $this) {
+                $critereApprentissageCritique->setApprentissageCritique(null);
             }
         }
 

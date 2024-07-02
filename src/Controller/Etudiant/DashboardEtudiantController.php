@@ -4,10 +4,12 @@ namespace App\Controller\Etudiant;
 
 use App\Components\Trace\TraceRegistry;
 use App\Controller\BaseController;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\BibliothequeRepository;
 use App\Repository\PortfolioPersoRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
+use App\Service\DataUserSessionService;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,9 +28,13 @@ class DashboardEtudiantController extends BaseController
         private readonly PortfolioUnivRepository  $portfolioUnivRepository,
         private readonly PortfolioPersoRepository $portfolioPersoRepository,
         private readonly TraceRegistry            $traceRegistry,
+        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
+        private readonly DataUserSessionService   $dataUserSessionService,
     )
     {
-
+        parent::__construct(
+            $this->dataUserSessionService,
+        );
     }
 
     #[Route('/dashboard', name: 'app_dashboard_etudiant')]
@@ -50,6 +56,11 @@ class DashboardEtudiantController extends BaseController
         $portfoliosPerso = $this->portfolioPersoRepository->findBy(['etudiant' => $etudiant]);
         $portfolios = array_merge($portfoliosUniv, $portfoliosPerso);
 
+        $annee = $this->anneeUniversitaireRepository->findOneBy(['active' => true]);
+
+        $portfolioCurrent = $this->portfolioUnivRepository->findOneBy(['etudiant' => $this->security->getUser()->getEtudiant(), 'anneeUniv' => $annee]);
+
+
         // Créer un adaptateur pour Pagerfanta en utilisant le tableau des portfolios
         $adapter = new ArrayAdapter($portfolios);
 
@@ -66,12 +77,6 @@ class DashboardEtudiantController extends BaseController
         // Récupérer évals et commentaires
         $retourPedagogiques = [];
         foreach ($traces as $trace) {
-            foreach ($trace->getValidations() as $validation) {
-                // si l'éval n'est pas en attente on l'ajoute
-                if ($validation->getEtat() !== 0) {
-                    $retourPedagogiques[] = $validation;
-                }
-            }
             foreach ($trace->getCommentaires() as $commentaire) {
                 // si le commentaire est visible on l'ajoute
                 if ($commentaire->isVisibilite()) {
@@ -99,6 +104,7 @@ class DashboardEtudiantController extends BaseController
 
         return $this->render('dashboard_etudiant/index.html.twig', [
             'retourPedagogiques' => $retourPedagogiques,
+            'portfolioCurrent' => $portfolioCurrent,
             'traces' => $traces,
             'portfolios' => $pagerfanta,
             'typesTrace' => $typesTrace,

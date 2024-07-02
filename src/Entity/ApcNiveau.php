@@ -53,6 +53,12 @@ class ApcNiveau
     #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'apc_niveau')]
     private Collection $pages;
 
+    /**
+     * @var Collection<int, CritereNiveau>
+     */
+    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'apcNiveau')]
+    private Collection $critereNiveaux;
+
     public function __construct()
     {
         $this->apcParcours = new ArrayCollection();
@@ -60,6 +66,7 @@ class ApcNiveau
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
         $this->pages = new ArrayCollection();
+        $this->critereNiveaux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -277,6 +284,36 @@ class ApcNiveau
             // set the owning side to null (unless already changed)
             if ($page->getApcNiveau() === $this) {
                 $page->setApcNiveau(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CritereNiveau>
+     */
+    public function getCritereNiveaux(): Collection
+    {
+        return $this->critereNiveaux;
+    }
+
+    public function addCritereNiveau(CritereNiveau $critereNiveau): static
+    {
+        if (!$this->critereNiveaux->contains($critereNiveau)) {
+            $this->critereNiveaux->add($critereNiveau);
+            $critereNiveau->setApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritereNiveau(CritereNiveau $critereNiveau): static
+    {
+        if ($this->critereNiveaux->removeElement($critereNiveau)) {
+            // set the owning side to null (unless already changed)
+            if ($critereNiveau->getApcNiveau() === $this) {
+                $critereNiveau->setApcNiveau(null);
             }
         }
 

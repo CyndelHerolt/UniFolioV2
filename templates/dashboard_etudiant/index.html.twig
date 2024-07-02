@@ -12,60 +12,71 @@
         {'name': 'Dashboard', 'url': null}
     ]) }}
 
-    <section class="container-custom dashboard">
-
-        {% set portfolioItems = [] %}
-        {% for portfolio in portfolios.currentPageResults %}
-            {% if portfolio.annee is defined %}
-                {% set type = 'Universitaire' %}
-            {% else %}
-                {% set type = 'Personnel' %}
-            {% endif %}
-
-            {% set annee = portfolio.anneeUniv.libelle ~ ' | ' ~ portfolio.annee.libelle %}
-
-            {% set portfolioItems = portfolioItems|merge([{
-                'Libellé': portfolio.libelle,
-                'Type': type,
-                'Année': annee ?? null,
-                'Dernière modification': portfolio.dateModification|date('d/m/Y'),
-            }]) %}
-        {% endfor %}
-
-        <article class="portfolios">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Portfolios</h2>
+    <section class="container-custom min-vh-100 section-pt">
+        <article>
+            <div class="card p-5">
+                <div class="card-header d-flex justify-content-between">
+                    <h2>Portfolio de l'année en cours</h2>
+                    <a href="{{ path('app_portfolio_univ_edit_portfolio', {'id': portfolioCurrent.id}) }}">
+                        <button class="secondary-btn">Modifier le portfolio</button>
+                    </a>
                 </div>
-                {% import 'macros/table.twig' as table_macros %}
-                {{ table_macros.table(portfolioItems) }}
-
-                <div class="card-footer">
-                    <small>{{ portfolios.currentPageResults|length }} portfolio(s) sur {{ portfolios.nbResults }}
-                        affiché(s)</small>
-                    {% if portfolios.haveToPaginate %}
-                        <div class="navigation">
-                            {% if portfolios.hasPreviousPage %}
-                                <a href="{{ path('app_dashboard_etudiant', {'page': portfolios.previousPage}) }}">
-                                    <button class="nav-btn">
-                                        <twig:ux:icon name="material-symbols:arrow-left" width="15" height="15"/>
-                                    </button>
-                                </a>
-                            {% endif %}
-
-                            <span>{{ portfolios.currentPage }} / {{ portfolios.nbPages }}</span>
-
-                            {% if portfolios.hasNextPage %}
-                                <a href="{{ path('app_dashboard_etudiant', {'page': portfolios.nextPage}) }}">
-                                    <button class="nav-btn">
-                                        <twig:ux:icon name="material-symbols:arrow-right" width="15" height="15"/>
-                                    </button>
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
+                <div class="card-body">
+                    <twig:CurrentPortfolio/>
                 </div>
             </div>
         </article>
+
+        {% if portfolios|length > 1 %}
+            <div class="row">
+                <article>
+                    <div class="card">
+                        <twig:AllPortfolios/>
+
+                        <div class="card-footer">
+                            <small>{{ portfolios.currentPageResults|length }} portfolio(s)
+                                sur {{ portfolios.nbResults }}
+                                affiché(s)</small>
+                            {% if portfolios.haveToPaginate %}
+                                <div class="navigation">
+                                    {% if portfolios.hasPreviousPage %}
+                                        <a href="{{ path('app_dashboard_etudiant', {'page': portfolios.previousPage}) }}">
+                                            <button class="nav-btn">
+                                                <twig:ux:icon name="material-symbols:arrow-left" width="15"
+                                                              height="15"/>
+                                            </button>
+                                        </a>
+                                    {% endif %}
+
+                                    <span>{{ portfolios.currentPage }} / {{ portfolios.nbPages }}</span>
+
+                                    {% if portfolios.hasNextPage %}
+                                        <a href="{{ path('app_dashboard_etudiant', {'page': portfolios.nextPage}) }}">
+                                            <button class="nav-btn">
+                                                <twig:ux:icon name="material-symbols:arrow-right" width="15"
+                                                              height="15"/>
+                                            </button>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </article>
+            </div>
+        {% endif %}
+
+        <div class="row d-flex align-items-stretch">
+            <article class="col-lg-8 col-12">
+                <div class="card p-5 h-100">
+
+                </div>
+            </article>
+            <aside class="col-lg-4 col-12">
+                <div class="card p-5 h-100">
+
+                </div>
+            </aside>
+        </div>
     </section>
 {% endblock %}

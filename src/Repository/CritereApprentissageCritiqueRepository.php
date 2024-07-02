@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\Criteres;
+use App\Entity\CritereApprentissageCritique;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Criteres>
+ * @extends ServiceEntityRepository<CritereApprentissageCritique>
  *
- * @method Criteres|null find($id, $lockMode = null, $lockVersion = null)
- * @method Criteres|null findOneBy(array $criteria, array $orderBy = null)
- * @method Criteres[]    findAll()
- * @method Criteres[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method CritereApprentissageCritique|null find($id, $lockMode = null, $lockVersion = null)
+ * @method CritereApprentissageCritique|null findOneBy(array $criteria, array $orderBy = null)
+ * @method CritereApprentissageCritique[]    findAll()
+ * @method CritereApprentissageCritique[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CriteresRepository extends ServiceEntityRepository
+class CritereApprentissageCritiqueRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Criteres::class);
+        parent::__construct($registry, CritereApprentissageCritique::class);
     }
 
-    public function save(Criteres $entity, bool $flush = false): void
+    public function save(CritereApprentissageCritique $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,26 +30,16 @@ class CriteresRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Criteres $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function findByDepartement(int $departementId): array
-    {
+    public function findByPage(?int $pageId) {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.departement = :departementId')
-            ->setParameter('departementId', $departementId)
+            ->andWhere('c.page = :pageId')
+            ->setParameter('pageId', $pageId)
             ->getQuery()
             ->getResult();
     }
 
     //    /**
-    //     * @return Criteres[] Returns an array of Criteres objects
+    //     * @return CritereApprentissageCritique[] Returns an array of CritereApprentissageCritique objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -63,7 +53,7 @@ class CriteresRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Criteres
+    //    public function findOneBySomeField($value): ?CritereApprentissageCritique
     //    {
     //        return $this->createQueryBuilder('c')
     //            ->andWhere('c.exampleField = :val')

@@ -26,16 +26,22 @@ class Criteres
     #[ORM\Column]
     private array $valeurs = [];
 
-    #[ORM\ManyToMany(targetEntity: ApcNiveau::class, inversedBy: 'criteres')]
-    private Collection $apcNiveau;
+    /**
+     * @var Collection<int, CritereApprentissageCritique>
+     */
+    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'critere')]
+    private Collection $critereApprentissageCritiques;
 
-    #[ORM\ManyToMany(targetEntity: ApcApprentissageCritique::class, inversedBy: 'criteres')]
-    private Collection $apcApprentissageCritique;
+    /**
+     * @var Collection<int, CritereNiveau>
+     */
+    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'critere')]
+    private Collection $critereNiveaux;
 
     public function __construct()
     {
-        $this->apcNiveau = new ArrayCollection();
-        $this->apcApprentissageCritique = new ArrayCollection();
+        $this->critereApprentissageCritiques = new ArrayCollection();
+        $this->critereNiveaux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,49 +86,61 @@ class Criteres
     }
 
     /**
-     * @return Collection<int, ApcNiveau>
+     * @return Collection<int, CritereApprentissageCritique>
      */
-    public function getApcNiveau(): Collection
+    public function getCritereApprentissageCritiques(): Collection
     {
-        return $this->apcNiveau;
+        return $this->critereApprentissageCritiques;
     }
 
-    public function addApcNiveau(ApcNiveau $apcNiveau): static
+    public function addCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
     {
-        if (!$this->apcNiveau->contains($apcNiveau)) {
-            $this->apcNiveau->add($apcNiveau);
+        if (!$this->critereApprentissageCritiques->contains($critereApprentissageCritique)) {
+            $this->critereApprentissageCritiques->add($critereApprentissageCritique);
+            $critereApprentissageCritique->setCritere($this);
         }
 
         return $this;
     }
 
-    public function removeApcNiveau(ApcNiveau $apcNiveau): static
+    public function removeCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
     {
-        $this->apcNiveau->removeElement($apcNiveau);
+        if ($this->critereApprentissageCritiques->removeElement($critereApprentissageCritique)) {
+            // set the owning side to null (unless already changed)
+            if ($critereApprentissageCritique->getCritere() === $this) {
+                $critereApprentissageCritique->setCritere(null);
+            }
+        }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, ApcApprentissageCritique>
+     * @return Collection<int, CritereNiveau>
      */
-    public function getApcApprentissageCritique(): Collection
+    public function getCritereNiveaux(): Collection
     {
-        return $this->apcApprentissageCritique;
+        return $this->critereNiveaux;
     }
 
-    public function addApcApprentissageCritique(ApcApprentissageCritique $apcApprentissageCritique): static
+    public function addCritereNiveau(CritereNiveau $critereNiveau): static
     {
-        if (!$this->apcApprentissageCritique->contains($apcApprentissageCritique)) {
-            $this->apcApprentissageCritique->add($apcApprentissageCritique);
+        if (!$this->critereNiveaux->contains($critereNiveau)) {
+            $this->critereNiveaux->add($critereNiveau);
+            $critereNiveau->setCritere($this);
         }
 
         return $this;
     }
 
-    public function removeApcApprentissageCritique(ApcApprentissageCritique $apcApprentissageCritique): static
+    public function removeCritereNiveau(CritereNiveau $critereNiveau): static
     {
-        $this->apcApprentissageCritique->removeElement($apcApprentissageCritique);
+        if ($this->critereNiveaux->removeElement($critereNiveau)) {
+            // set the owning side to null (unless already changed)
+            if ($critereNiveau->getCritere() === $this) {
+                $critereNiveau->setCritere(null);
+            }
+        }
 
         return $this;
     }

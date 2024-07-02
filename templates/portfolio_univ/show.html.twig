@@ -17,7 +17,7 @@
     <section class="container-custom min-vh-100 section-pt">
         <div class="row d-flex">
             <article class="col-lg-8 col-12">
-                <div class="card p-0">
+                <div class="card p-0 h-100">
                     <div class="portfolio-banner" style="background-image: url({{ portfolio.banniere }})"></div>
                     <div class="card-header p-5 m-5 mt-0 mb-0">
                         <h2 class="text-center mb-5">{{ portfolio.libelle }}</h2>
@@ -31,10 +31,15 @@
                     <div class="card-body p-5 m-5 mb-0 mt-0">
 
                         {% for page in pages.currentPageResults %}
-                            <h2>{{ page.libelle }}</h2>
+                            {% if page.apcNiveau is not null %}
+                                {% set competence = page.apcNiveau.apcCompetence %}
+                            {% elseif page.apcApprentissageCritique is not null %}
+                                {% set competence = page.apcApprentissageCritique.apcNiveau.apcCompetence %}
+                            {% endif %}
+                            <h2 class="pill-competence d-flex gap-1 align-items-center {{ competence.couleur }}">{{ page.libelle }}</h2>
 
                             {% if tracesPage is empty %}
-                                <p>Aucune trace pour le moment</p>
+                                <div class="alert alert-warning w-100">Aucune trace pour le moment</div>
                             {% else %}
 
                                 {% for trace in tracesPage %}
@@ -46,9 +51,43 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
+
+                            <hr>
+                            <div>
+                                <h4>Validation de la compétence {{ page.libelle }}</h4>
+
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            Critère
+                                        </th>
+                                        <th>
+                                            Resultat
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for critereCompetence in criteresCompetences %}
+                                        <tr>
+                                            <td>
+                                                {{ critereCompetence.critere.libelle }}
+                                            </td>
+                                            <td>
+                                                {% if critereCompetence.valeur is null %}
+                                                    <span class="text-muted">En attente</span>
+                                                {% else %}
+                                                    {{ critereCompetence.valeur }}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         {% endfor %}
 
-                        <div class="navigation text-end">
+                        <div class=" navigation text-end">
                             {% if pages.hasPreviousPage %}
                                 <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
                                    class="m-2">Page
@@ -68,106 +107,13 @@
                                     suivante</a>
                             {% endif %}
                         </div>
-
                     </div>
-                    <div class="card-footer p-5 m-5 mb-0 mt-0">
-
-                        <div class="col-10 m-2">
-                            <h5>Commentaires</h5>
-                            {% set visibleComments = portfolio.commentaires|filter(commentaire => commentaire.visibilite == 1) %}
-                            {% if visibleComments is empty %}
-                                <p>Aucun commentaire pour le moment</p>
-                            {% else %}
-                                {% for commentaire in portfolio.commentaires %}
-                                    {% if commentaire.visibilite == 1 %}
-                                        <div class="card"
-                                             style="margin-bottom: 10px; box-shadow: none; border: 1px solid lightgrey">
-                                            <div class="card-header">
-                                                <div style="display: flex; justify-content: space-between; align-items: center">
-                                                    <h6 class="card-subtitle">{{ commentaire.enseignant.prenom }} {{ commentaire.enseignant.nom }}</h6>
-                                                    <small>
-                                                        {{ commentaire.datecreation|date('d-m-Y H:i') }}
-                                                    </small>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <p class="card-text">{{ commentaire.contenu }}</p>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-                        </div>
-
-                    </div>
-
                 </div>
             </article>
             <aside class="col-lg-4 col-12">
-                <div class="card p-5 h-100">
+                <div class="card p-0 h-100">
                     <div class="card-header">
-                        <h3>Référentiel</h3>
-                        <em>Cliquez sur une compétence pour afficher les apprentissages critiques</em>
-                    </div>
-                    <div class="apc-card mb-5">
-                        {% if apcNiveaux is not null %}
-                            {% for niveau in apcNiveaux %}
-                                <div class="apc-accordion" id="accordionFlush{{ niveau.id }}">
-                                    <div class="apc-bloc">
-                                        <div class="collapsed {{ niveau.apcCompetence.couleur }} apc-element"
-                                             type="button"
-                                             data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveau.id }}"
-                                             aria-expanded="false"
-                                             aria-controls="flush-collapse{{ niveau.id }}">
-                                            <p class="m-0">{{ niveau.apcCompetence.nomCourt }}
-                                                <br>
-                                                <em>{{ niveau.libelle }}</em></p>
-                                        </div>
-                                        <div id="flush-collapse{{ niveau.id }}" class="accordion-collapse collapse"
-                                             data-bs-parent="#accordionFlush{{ niveau.id }}">
-                                            <div class="{{ niveau.apcCompetence.couleur }}bg apc-element">
-                                                <ul>
-                                                    {% for ac in niveau.apcApprentissageCritiques %}
-                                                        <li>{{ ac.code }} | {{ ac.libelle }}</li>
-                                                        <hr>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% else %}
-                            {% for niveauId, data in groupedApprentissageCritiques %}
-                                <div class="apc-accordion" id="accordionFlush{{ niveauId }}">
-                                    <div class="apc-bloc">
-                                        <div class="collapsed {{ data.niveau.apcCompetence.couleur }} apc-element"
-                                             type="button"
-                                             data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ niveauId }}"
-                                             aria-expanded="false"
-                                             aria-controls="flush-collapse{{ niveauId }}">
-                                            <p class="m-0">{{ data.niveau.apcCompetence.nomCourt }}
-                                                <br>
-                                                <em>{{ data.niveau.libelle }}</em></p>
-                                        </div>
-                                        <div id="flush-collapse{{ niveauId }}" class="accordion-collapse collapse"
-                                             data-bs-parent="#accordionFlush{{ niveauId }}">
-                                            <div class="{{ data.niveau.apcCompetence.couleur }}bg apc-element">
-                                                <ul>
-                                                    {% for ac in data.critiques %}
-                                                        <li>{{ ac.code }} | {{ ac.libelle }}</li>
-                                                        <hr>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="card-header">
-                        <h3>Validation des compétences dans cette page</h3>
+
                     </div>
                 </div>
             </aside>

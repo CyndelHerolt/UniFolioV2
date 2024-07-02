@@ -1,0 +1,63 @@
+<div{{ attributes }}>
+    <table>
+        <thead>
+        <tr>
+            <th>Nom/Type</th>
+            <th>Année</th>
+            <th>Modifié le</th>
+            <th>Compétences</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+        <twig:PortfolioUnivBiblioCard id="{{ this.currentPortfolio.id }}"/>
+        </tbody>
+    </table>
+
+    <div class="row mt-5 g-5 justify-content-between align-items-center">
+        <div>
+        <h3>Validation des compétences</h3>
+        <small>
+            Ces données sont des moyennes des resultats obtenus
+        </small>
+        </div>
+
+        <div class="col-lg-6 col-12">
+            {{ render_chart(this.chart) }}
+        </div>
+
+        <div class="col-lg-6 col-12 overflow-y-scroll critere-competence-table">
+            {% for competence in this.competences %}
+                <div class="pill-competence d-flex justify-content-center align-items-center w-100 {{ competence.apcCompetence.couleur }}">
+                    {{ competence.apcCompetence.nomCourt }}
+                </div>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Critère</th>
+                        <th>Résultat</th>
+                    </tr>
+                    </thead>
+                    {% for details in this.detailsCompetence(competence) %}
+                        <tbody>
+                        <tr>
+                            <td>{{ details.critere.libelle }}</td>
+                            <td>
+                                {% if details.valeur is null %}
+                                    <span class="text-muted">En attente</span>
+                                {% else %}
+                                    {{ details.valeur }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row mt-5 g-5">
+        <h3>Derniers commentaires</h3>
+    </div>
+</div>

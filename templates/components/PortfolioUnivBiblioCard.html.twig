@@ -1,10 +1,12 @@
 <div{{ attributes }}>
     <tr>
-        <td>
-            <input type="checkbox" class="form-check-input"
-                   data-model="selectedPortfoliosUniv[]"
-                   value="{{ this.portfolioUniv.id }}"/>
-        </td>
+        {% if 'dashboard' not in app.request.uri %}
+            <td>
+                <input type="checkbox" class="form-check-input"
+                       data-model="selectedPortfoliosUniv[]"
+                       value="{{ this.portfolioUniv.id }}"/>
+            </td>
+        {% endif %}
         <td>
             <p class="table-primary-text">{{ this.portfolioUniv.libelle }}</p>
         </td>
@@ -51,7 +53,8 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="delete{{ this.portfolioUniv.id }}ModalLabel">Réinitialiser un
+                            <h1 class="modal-title fs-5" id="delete{{ this.portfolioUniv.id }}ModalLabel">Réinitialiser
+                                un
                                 portfolio</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -60,7 +63,8 @@
                             <p class="text-danger">Attention, cette action est irréversible !</p>
 
                             <p>
-                                La portfolio "{{ this.portfolioUniv.libelle }}" va être Réinitialiser. Êtes-vous sûr de vouloir
+                                La portfolio "{{ this.portfolioUniv.libelle }}" va être Réinitialiser. Êtes-vous sûr de
+                                vouloir
                                 continuer ?
                             </p>
                         </div>

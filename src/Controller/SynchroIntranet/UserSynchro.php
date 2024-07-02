@@ -10,14 +10,18 @@ namespace App\Controller\SynchroIntranet;
 
 use App\Entity\ApcNiveau;
 use App\Entity\Bibliotheque;
+use App\Entity\CritereApprentissageCritique;
+use App\Entity\CritereNiveau;
 use App\Entity\DepartementEnseignant;
 use App\Entity\Etudiant;
 use App\Entity\Enseignant;
 use App\Entity\Page;
 use App\Entity\PortfolioUniv;
-use App\Entity\User;
 use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\CritereApprentissageCritiqueRepository;
+use App\Repository\CritereNiveauRepository;
+use App\Repository\CriteresRepository;
 use App\Repository\DepartementRepository;
 use App\Repository\EnseignantRepository;
 use App\Repository\EtudiantRepository;
@@ -25,7 +29,6 @@ use App\Repository\GroupeRepository;
 use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\SemestreRepository;
-use App\Repository\UserRepository;
 use App\Service\CompetencesService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,9 +42,13 @@ class UserSynchro extends AbstractController
 {
     public function __construct(
         private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
-        private readonly CompetencesService $competencesService,
-        private readonly PortfolioUnivRepository $portfolioUnivRepository,
-        private readonly PageRepository $pageRepository
+        private readonly CompetencesService           $competencesService,
+        private readonly PortfolioUnivRepository      $portfolioUnivRepository,
+        private readonly PageRepository               $pageRepository,
+        private readonly CriteresRepository           $criteresRepository,
+        private readonly DepartementRepository        $departementRepository,
+        private readonly CritereNiveauRepository                $critereNiveauRepository,
+        private readonly CritereApprentissageCritiqueRepository $critereApprentissageCritiqueRepository,
     )
     {
     }
@@ -230,6 +237,32 @@ class UserSynchro extends AbstractController
                         }
 
                         $this->pageRepository->save($page, true);
+                    }
+
+                    $departement = $this->departementRepository->findDepartementEtudiant($newEtudiant);
+                    $criteres = $this->criteresRepository->findByDepartement($departement->getId());
+
+                    $pages = $this->pageRepository->findBy(['portfolio' => $portfolio]);
+
+                    foreach ($pages as $page) {
+                        $competence = $page->getApcNiveau() ?? $page->getApcApprentissageCritique();
+                        foreach ($criteres as $critere) {
+                            if ($competence instanceof ApcNiveau) {
+                                $eval = new CritereNiveau();
+                                $eval->setCritere($critere);
+                                $eval->setPage($page);
+                                $eval->setApcNiveau($competence);
+                                $eval->setValeur(null);
+                                $this->critereNiveauRepository->save($eval, true);
+                            } else {
+                                $eval = new CritereApprentissageCritique();
+                                $eval->setCritere($critere);
+                                $eval->setPage($page);
+                                $eval->setApprentissageCritique($competence);
+                                $eval->setValeur(null);
+                                $this->critereApprentissageCritiqueRepository->save($eval, true);
+                            }
+                        }
                     }
 
                     $etudiantRepository->save($newEtudiant, true);

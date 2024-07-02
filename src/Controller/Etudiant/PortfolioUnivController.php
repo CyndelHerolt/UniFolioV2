@@ -23,6 +23,8 @@ use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
+use App\Repository\CritereApprentissageCritiqueRepository;
+use App\Repository\CritereNiveauRepository;
 use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceCompetenceRepository;
@@ -49,6 +51,8 @@ class PortfolioUnivController extends BaseController
         private readonly TraceCompetenceRepository    $traceCompetenceRepository,
         private readonly DataUserSessionService       $dataUserSessionService,
         private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
+        private readonly CritereNiveauRepository     $critereNiveauRepository,
+        private readonly CritereApprentissageCritiqueRepository $critereApprentissageCritiqueRepository,
         private readonly CompetencesService           $competencesService,
         private readonly TraceSaveService             $TraceSaveService
     )
@@ -91,6 +95,12 @@ class PortfolioUnivController extends BaseController
 
         $competences = $this->competencesService->getCompetencesEtudiant($user);
 
+        if ($competences['apcNiveaux']) {
+            $criteresCompetences = $this->critereNiveauRepository->findByPage($currentPage->getId());
+        } else {
+            $criteresCompetences = $this->critereApprentissageCritiqueRepository->findByPage($currentPage->getId());
+        }
+
         return $this->render('portfolio_univ/show.html.twig', [
             'portfolio' => $portfolio,
             'pages' => $pagerfanta,
@@ -98,6 +108,7 @@ class PortfolioUnivController extends BaseController
             'apcNiveaux' => $competences['apcNiveaux'] ?? null,
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
+            'criteresCompetences' => $criteresCompetences,
         ]);
     }
 

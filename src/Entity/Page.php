@@ -34,9 +34,23 @@ class Page
     #[ORM\ManyToOne(inversedBy: 'pages')]
     private ?ApcApprentissageCritique $apc_apprentissage_critique = null;
 
+    /**
+     * @var Collection<int, CritereApprentissageCritique>
+     */
+    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'page')]
+    private Collection $critereApprentissageCritiques;
+
+    /**
+     * @var Collection<int, CritereNiveau>
+     */
+    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'page')]
+    private Collection $critereNiveaux;
+
     public function __construct()
     {
         $this->tracePages = new ArrayCollection();
+        $this->critereApprentissageCritiques = new ArrayCollection();
+        $this->critereNiveaux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,6 +132,66 @@ class Page
     public function setApcApprentissageCritique(?ApcApprentissageCritique $apc_apprentissage_critique): static
     {
         $this->apc_apprentissage_critique = $apc_apprentissage_critique;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CritereApprentissageCritique>
+     */
+    public function getCritereApprentissageCritiques(): Collection
+    {
+        return $this->critereApprentissageCritiques;
+    }
+
+    public function addCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
+    {
+        if (!$this->critereApprentissageCritiques->contains($critereApprentissageCritique)) {
+            $this->critereApprentissageCritiques->add($critereApprentissageCritique);
+            $critereApprentissageCritique->setPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
+    {
+        if ($this->critereApprentissageCritiques->removeElement($critereApprentissageCritique)) {
+            // set the owning side to null (unless already changed)
+            if ($critereApprentissageCritique->getPage() === $this) {
+                $critereApprentissageCritique->setPage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CritereNiveau>
+     */
+    public function getCritereNiveaux(): Collection
+    {
+        return $this->critereNiveaux;
+    }
+
+    public function addCritereNiveau(CritereNiveau $critereNiveau): static
+    {
+        if (!$this->critereNiveaux->contains($critereNiveau)) {
+            $this->critereNiveaux->add($critereNiveau);
+            $critereNiveau->setPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritereNiveau(CritereNiveau $critereNiveau): static
+    {
+        if ($this->critereNiveaux->removeElement($critereNiveau)) {
+            // set the owning side to null (unless already changed)
+            if ($critereNiveau->getPage() === $this) {
+                $critereNiveau->setPage(null);
+            }
+        }
 
         return $this;
     }

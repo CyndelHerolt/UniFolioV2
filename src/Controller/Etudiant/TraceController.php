@@ -150,17 +150,6 @@ class TraceController extends BaseController
     }
 
     // todo: refactor
-    #[Route('/trace/show/{id}/edit', name: 'app_trace_show_edit')]
-    public function showEdit(?int $id, ?string $row, ?bool $edit, Request $request): Response
-    {
-        $trace = $this->traceRepository->find($id);
-        $row = $request->query->get('row');
-        $edit = $request->query->get('edit');
-
-        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit, 'row' => $row]);
-    }
-
-    // todo: refactor
     #[Route('/trace/new', name: 'app_trace_new')]
     public function new(Request $request): Response
     {

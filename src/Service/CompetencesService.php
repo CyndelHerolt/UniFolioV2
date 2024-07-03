@@ -117,4 +117,21 @@ class CompetencesService
             return $apcApprentissagesCritiques;
         }
     }
+
+    public function getCompetencesPortfolio($portfolio)
+    {
+        $pages = $portfolio->getPages();
+        foreach ($pages as $page) {
+            if ($page->getApcNiveau()) {
+                $apcNiveaux[] = $page->getApcNiveau();
+            } else {
+                $apcApprentissagesCritiques[] = $page->getApcApprentissageCritique();
+            }
+        }
+
+        return [
+            'apcApprentissagesCritiques' => $apcApprentissagesCritiques ?? null,
+            'apcNiveaux' => $apcNiveaux ?? null,
+        ];
+    }
 }

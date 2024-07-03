@@ -73,10 +73,10 @@ public function criteres(): Response
         'Diversité des traces'
     ];
     $defaultValeurs = [
-        [4 => 'Adaptée', 2 => 'Adéquate', 1 => 'A améliorer', 0 => 'Non pertinente'],
-        [4 => 'Solide', 2 => 'Clair', 1 => 'Confus', 0 => 'Inapproprié'],
-        [4 => 'En accord total', 2 => 'En accord partiel', 1 => 'En désaccord partiel', 0 => 'En désaccord total'],
-        [4 => 'Très diversifiées', 2 => 'Diversifiées', 1 => 'Peu diversifiées', 0 => 'Non diversifiées']
+        [4 => 'Adapté', 3 => 'Adéquat', 2 => 'Acceptable', 1 => 'A améliorer', 0 => 'Non pertinent', 'x' => 'Non applicable'],
+        [4 => 'Solide', 3 => 'Convaincant' , 2 => 'Clair', 1 => 'Confus', 0 => 'Inapproprié', 'x' => 'Non applicable'],
+        [4 => 'En accord total', 3 => 'En accord partiel', 2 => 'Peu en accord', 1 => 'Pas en accord', 0 => 'Non cohérent', 'x' => 'Non applicable'],
+        [4 => 'Très diversifiées', 3 => 'Diversifiées', 2 => 'Peu diversifiées', 1 => 'Répétitives', 0 => 'Pas diversifiées', 'x' => 'Non applicable']
     ];
 
     // Parcourir les critères existants et les mettre à jour

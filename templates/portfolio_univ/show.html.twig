@@ -10,7 +10,7 @@
     {{ breadcrumb_macros.breadcrumbs([
         {'name': 'Accueil', 'url': '/'},
         {'name': 'Dashboard', 'url': '/etudiant/dashboard'},
-        {'name': 'Bibliothèque de portfolios universitaires', 'url': '/etudiant/portfolio/univ'},
+        {'name': 'Bibliothèque de portfolios universitaires', 'url': '/etudiant/portfolioUniv'},
         {'name': 'Portfolio' , 'url': null}
     ]) }}
 
@@ -90,8 +90,7 @@
                         <div class=" navigation text-end">
                             {% if pages.hasPreviousPage %}
                                 <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
-                                   class="m-2">Page
-                                    précédente</a>
+                                   class="m-2">Page précédente</a>
                             {% endif %}
 
                             <span class="m-2">{{ pages.currentPage }}</span>
@@ -103,8 +102,7 @@
 
                             {% if pages.hasNextPage %}
                                 <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nextPage}) }}"
-                                   class="m-2">Page
-                                    suivante</a>
+                                   class="m-2">Page suivante</a>
                             {% endif %}
                         </div>
                     </div>

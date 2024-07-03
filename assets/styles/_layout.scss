@@ -454,9 +454,10 @@ table {
 
 .pill {
   background-color: var(--primary-light-color);
-  color: var(--text-dark-color);
+  color: var(--primary-color);
+  border: solid 2px var(--primary-color);
   padding: $small-padding $medium-padding;
-  border-radius: $large-radius;
+  border-radius: $small-radius;
   font-weight: $bold;
   width: fit-content;
 }

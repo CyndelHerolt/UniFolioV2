@@ -1,200 +1,102 @@
 <div{{ attributes }}>
+    <h2 class="mb-2">{{ this.trace.libelle }}</h2>
 
-    <turbo-frame id="trace-content">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex gap-3 align-items-center">
-                {% if edit == false or row != "libelle" %}
-                    <h2>{{ this.trace.libelle }}</h2>
-
-                    {% if 'portfolio' not in app.request.uri %}
-                        <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': true}) }}">
-                            <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
-                        </a>
-                    {% endif %}
-
-                {% elseif edit == true and row == "libelle" %}
-                    <form method="post" class="d-flex gap-3 align-items-center">
-                        {{ form_row(this.form.libelle) }}
-                        <button class="btn btn-success" type="submit" style="height: fit-content">
-                            <twig:ux:icon name="bi:check" width="20px" height="auto"/>
-                        </button>
-                        <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': false}) }}"
-                           class="btn btn-danger" style="height: fit-content">
-                            <twig:ux:icon name="bi:x" width="20px" height="auto"/>
-                        </a>
-                    </form>
-                {% endif %}
-            </div>
-        </div>
-        <div class="card-infos-min border-bottom">
-            <small>Publiée le : {{ this.trace.dateCreation|date("d-m-Y") }}</small>
+    <div class="card-infos-min border-bottom d-flex flex-column gap-2">
+        <p class="m-0">Publiée le : {{ this.trace.dateCreation|date("d/m/Y") }}
             {% if this.trace.type is null %}
-                &nbsp;|&nbsp;
-                <small class="text-danger">Aucun média associé à cette trace</small>
+            &nbsp;|&nbsp;
+        <p class="text-danger m-0">Aucun média associé à cette trace</p>
+        {% else %}
+            &nbsp;|&nbsp;
+            {{ this.trace.contenu|length }}
+            {{ this.traceType|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+        {% endif %}
+        </p>
+        <div class="d-flex flex-row gap-4 align-items-center mb-4">
+            <p class="text-muted m-0">
+                Date de réalisation : {{ this.trace.dateRealisation|date("m/Y") }}
+            </p>
+            <div class="pill">
+                {{ this.trace.contexte }}
+            </div>
+            {% if this.trace.traceCompetences is empty %}
+                <div class="pill-danger d-flex align-items-center gap-1">
+                    <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
+                    Aucune compétence liée
+                </div>
             {% else %}
-                &nbsp;|&nbsp;
-                <small>{{ this.trace.contenu|length }}
-                    {{ this.traceType|lower }}{% if this.trace.contenu|length > 1 %}s{% endif %}
-                </small>
+                {% for traceCompetences in this.trace.traceCompetences %}
+                    {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
+                        <div class="pill-competence {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
+                            {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
+                        </div>
+                    {% else %}
+                        <div class="pill-competence {{ traceCompetences.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">
+                            {{ traceCompetences.apcApprentissageCritique.apcNiveau.apcCompetence.nomCourt }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
         </div>
-        <div class="card-body">
-            <turbo-frame id="trace-form-content">
-                {% if this.edit == false or row != "type" %}
+    </div>
+    <div class="card-body">
+        {% if this.trace.contenu is not null and this.trace.contenu is not empty %}
+            <div class="row d-flex justify-content-center mb-5 mt-5">
+                {% include('/partials/trace/_' ~ constant('TYPE', this.typeTrace(this.type)) ~ '_content.html.twig') %}
+                <p class="text-muted m-0 mt-2">
+                    {{ this.trace.legende }}
+                </p>
+            </div>
 
-                    {#     If media       #}
-                    {% if this.trace.contenu is not null and this.trace.contenu is not empty %}
-                        <div class="row d-flex justify-content-center">
-                            {% include('/partials/trace/_' ~ constant('TYPE', this.typeTrace(this.type)) ~ '_content.html.twig') %}
-                        </div>
+        {% else %}
+            <div class="alert alert-warning text-center" role="alert">
+                Aucun média associé à cette trace
+            </div>
+        {% endif %}
 
-                        {#     If !media       #}
-                    {% else %}
-                        <div class="row d-flex justify-content-center">
-                            <p class="text-center text-danger">Cette trace ne contient pas de média d'illustration.</p>
-                        </div>
-                    {% endif %}
+        <hr>
 
-                    {% if 'portfolio' not in app.request.uri %}
-                        <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'type', 'edit': true}) }}">
-                            <twig:ux:icon name="bi:pencil-square" width="20px" height="auto"/>
-                        </a>
-                    {% endif %}
-
-                    {#     If edit       #}
+        <div class="row justify-content-center">
+            <div class="col-lg-11 col-12 mt-4 mb-4">
+                {% if this.trace.description is not null and this.trace.description is not empty %}
+                    {{ this.trace.description|raw }}
                 {% else %}
-
-                    {#     If  media       #}
-                    {% if this.trace.type is not null and this.trace.type is not empty %}
-
-                        {% set trace = this.trace %}
-                        {% set formType = this.formType %}
-                        {% set typesTrace = this.typesTraces %}
-                        {% set selectedTraceType = this.selectedTraceType %}
-                        {% include('trace/form_types/_form_'~constant('TYPE', this.typeTrace(this.type))~'.html.twig') %}
-
-                    {% else %}
-
-                        <div class="types row p-2">
-                            {% for type in this.typesTraces %}
-                                <a
-                                        href="{{ path('app_trace_show_edit_type', {'type': constant('CLASS_NAME', type), 'id': this.trace.id}) }}"
-                                        data-turbo-action="replace" data-turbo-frame="trace-form-content"
-                                        class="col-12 col-lg-2 p-3"
-                                        {% if this.selectedTraceType == constant('TYPE', type) %}
-                                            style="background-color: #f8f9fa;"
-                                        {% endif %}
-                                >
-                                    <twig:ux:icon name="{{ constant('ICON', type) }}" width="15" height="auto"
-                                                  length="auto"/>
-                                    <div>
-                                        <strong>{{ type.display }}</strong>
-                                        <br>
-                                        <small>{{ constant('CONSTRAINT', type) }}</small>
-                                    </div>
-                                </a>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    <a href="{{ path('app_trace_show_edit', {'id': this.trace.id, 'row': 'libelle', 'edit': false}) }}"
-                       class="btn btn-danger" style="height: fit-content">
-                        <twig:ux:icon name="bi:x" width="20px" height="auto"/>
-                    </a>
+                    <p class="text-danger">Aucun argumentaire pour cette trace</p>
                 {% endif %}
-            </turbo-frame>
-
-            <div class="row gap-2 justify-content-between align-items-center mt-5">
-                <div class="col-lg-5">
-                    {% if this.trace.traceCompetences is empty %}
-                        <div class="pill-danger d-flex align-items-center gap-1">
-                            <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
-                            Aucune compétence liée
-                        </div>
-                    {% else %}
-                        {% for traceCompetences in this.trace.traceCompetences %}
-                            {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
-                                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                                    {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
-                                </div>
-                            {% else %}
-                                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                                    {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-                <div class="col-lg-5 d-flex flex-column align-items-end">
-                    {% if this.trace.legende is not null and this.trace.legende is not empty %}
-                        <span class="text-muted mt-1">{{ this.trace.legende }}</span>
-                    {% else %}
-                        <span class="text-danger mt-1">Légende non renseignée</span>
-                    {% endif %}
-                    <span class="mt-1">Date de réalisation :
-                    {% if this.trace.dateRealisation is not null and this.trace.dateRealisation is not empty %}
-                        {{ this.trace.dateRealisation|date("m/Y") }}
-                    {% else %}
-                        <span class="text-danger">Non renseignée</span>
-                    {% endif %}
-                    </span>
-                    <span class="mt-1">
-                        Contexte :
-                    {% if this.trace.contexte is not null and this.trace.contexte is not empty %}
-                        {{ this.trace.contexte }}
-                    {% else %}
-                        <span class="text-danger">
-                        Non renseignée
-                    </span>
-                    {% endif %}
-                    </span>
-                </div>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-10">
-                    {% if this.trace.description is not null and this.trace.description is not empty %}
-                        {{ this.trace.description|raw }}
-                    {% else %}
-                        <p class="text-danger">Aucun argumentaire pour cette trace</p>
-                    {% endif %}
-                </div>
-            </div>
-
-            <hr>
-
-            <div class="row justify-content-center">
-
-                <div class="col-10 m-2">
-                    <h5>Commentaires</h5>
-                    {% set visibleComments = this.trace.commentaires|filter(commentaire => commentaire.visibilite == 1) %}
-                    {% if visibleComments is empty %}
-                        <p>Aucun commentaire pour le moment</p>
-                    {% else %}
-                        {% for commentaire in this.trace.commentaires %}
-                            {% if commentaire.visibilite == 1 %}
-                                <div class="card"
-                                     style="margin-bottom: 10px; box-shadow: none; border: 1px solid lightgrey">
-                                    <div class="card-header">
-                                        <div style="display: flex; justify-content: space-between; align-items: center">
-                                            <h6 class="card-subtitle">{{ commentaire.enseignant.prenom }} {{ commentaire.enseignant.nom }}</h6>
-                                            <small>
-                                                {{ commentaire.datecreation|date('d-m-Y H:i') }}
-                                            </small>
-                                        </div>
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="card-text">{{ commentaire.contenu }}</p>
-                                    </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
             </div>
         </div>
 
-    </turbo-frame>
+        <hr>
 
+
+        <div class="row justify-content-center">
+
+            <div class="mt-4 mb-4">
+                <h4>Commentaires</h4>
+                {% set visibleComments = this.trace.commentaires|filter(commentaire => commentaire.visibilite == 1) %}
+                {% if visibleComments is empty %}
+                    <p>Aucun commentaire pour le moment</p>
+                {% else %}
+                    {% for commentaire in this.trace.commentaires %}
+                        {% if commentaire.visibilite == 1 %}
+                            <div class="card"
+                                 style="margin-bottom: 10px; box-shadow: none; border: 1px solid lightgrey">
+                                <div class="card-header">
+                                    <div style="display: flex; justify-content: space-between; align-items: center">
+                                        <h6 class="card-subtitle">{{ commentaire.enseignant.prenom }} {{ commentaire.enseignant.nom }}</h6>
+                                        <small>
+                                            {{ commentaire.datecreation|date('d-m-Y H:i') }}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">{{ commentaire.contenu }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>

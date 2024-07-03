@@ -2,27 +2,17 @@
 
 namespace App\Controller\Etudiant;
 
-use App\Classes\DataUserSession;
 use App\Components\Trace\Form\TraceAbstractType;
 use App\Components\Trace\TraceRegistry;
-use App\Components\Trace\TypeTrace\TraceImage;
-use App\Components\Trace\TypeTrace\TraceLien;
-use App\Components\Trace\TypeTrace\TracePdf;
-use App\Components\Trace\TypeTrace\TraceVideo;
 use App\Controller\BaseController;
 use App\Entity\ApcApprentissageCritique;
 use App\Entity\ApcNiveau;
-use App\Entity\Page;
 use App\Entity\PortfolioUniv;
 use App\Entity\Trace;
 use App\Entity\TraceCompetence;
 use App\Entity\TracePage;
-use App\Form\PageType;
 use App\Form\PortfolioUnivType;
 use App\Repository\AnneeUniversitaireRepository;
-use App\Repository\ApcApprentissageCritiqueRepository;
-use App\Repository\ApcCompetenceRepository;
-use App\Repository\ApcNiveauRepository;
 use App\Repository\CritereApprentissageCritiqueRepository;
 use App\Repository\CritereNiveauRepository;
 use App\Repository\PageRepository;
@@ -39,7 +29,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/etudiant/portfolio/univ')]
+#[Route('/etudiant/portfolioUniv')]
 class PortfolioUnivController extends BaseController
 {
     public function __construct(

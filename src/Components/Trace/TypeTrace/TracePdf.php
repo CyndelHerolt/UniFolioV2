@@ -46,7 +46,7 @@ class TracePdf extends AbstractTrace
             foreach ($contenu as $pdf) {
                 if ($pdf->getSize() > $max_size) {
                     return ['success' => false, 'error' => 'Le fichier doit faire 8mo maximum'];
-                } elseif (!in_array($pdf->guessExtension(), ['pdf'])) {
+                } elseif ($pdf->guessExtension() !== 'pdf') {
                     return ['success' => false, 'error' => 'Le contenu n\'est pas un pdf valide'];
                 }
                 $fileName = uniqid() . '.' . $pdf->guessExtension();

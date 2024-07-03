@@ -35,9 +35,6 @@ final class AllTraces
     public string $selectedOrdreDate = '';
 
     #[LiveProp(writable: true)]
-    public string $selectedOrdreValidation = '';
-
-    #[LiveProp(writable: true)]
     public array $selectedTraces = [];
 
     #[LiveProp(writable: true)]
@@ -90,14 +87,6 @@ final class AllTraces
     #[LiveAction]
     public function changeOrdreDate()
     {
-        $this->selectedOrdreValidation = '';
-        $this->allTraces = $this->getAllTrace();
-    }
-
-    #[LiveAction]
-    public function changeOrdreValidation()
-    {
-        $this->selectedOrdreDate = '';
         $this->allTraces = $this->getAllTrace();
     }
 
@@ -110,9 +99,6 @@ final class AllTraces
     #[LiveAction]
     public function deleteSelectedTraces(): void
     {
-        if ($this->selectedTraces === null) {
-            return;
-        }
         foreach ($this->selectedTraces as $trace) {
             $trace = $this->traceRepository->find($trace);
             $this->traceRepository->delete($trace, true);
@@ -126,8 +112,6 @@ final class AllTraces
         $bibliotheque = $this->bibliothequeRepository->findOneByEtudiantAnnee($this->security->getUser()->getEtudiant(), $annee);
 
         $ordreDate = $this->selectedOrdreDate != null ? $this->selectedOrdreDate : null;
-
-        $ordreValidation = $this->selectedOrdreValidation != null ? $this->selectedOrdreValidation : null;
 
         if (!empty($this->selectedCompetences)) {
             $traces = $this->traceRepository->findByCompetence($this->selectedCompetences);
@@ -152,31 +136,6 @@ final class AllTraces
                         } else {
                             return $a->getDateCreation() <=> $b->getDateCreation();
                         }
-                    }
-                });
-            }
-
-            if (!empty($ordreValidation)) {
-                usort($traces, function (Trace $a, Trace $b) use ($ordreValidation) {
-                    $totalA = $a->getValidations()->count();
-                    $totalB = $b->getValidations()->count();
-
-                    $validationsA = $a->getValidations()->filter(function ($validation) {
-                        return $validation->getEtat() == 3;
-                    })->count();
-
-                    $validationsB = $b->getValidations()->filter(function ($validation) {
-                        return $validation->getEtat() == 3;
-                    })->count();
-
-                    // Ratio du nombre des validations avec un état de 3 sur le total des validations
-                    $ratiosA = ($totalA > 0) ? $validationsA / $totalA : 0;
-                    $ratiosB = ($totalB > 0) ? $validationsB / $totalB : 0;
-
-                    if ($ordreValidation === "ASC") {
-                        return $ratiosA <=> $ratiosB;
-                    } else {
-                        return $ratiosB <=> $ratiosA;
                     }
                 });
             }

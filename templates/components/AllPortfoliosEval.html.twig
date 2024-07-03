@@ -27,12 +27,13 @@
                                                 <div style="display: flex" class="form-check">
                                                     <input type="checkbox" id="{{ semestre.id }}"
                                                            name="{{ semestre.id }}"
-                                                           data-model="selectedSemestre[]"
+                                                           data-model="selectedSemestre"
                                                            data-action="live#action"
-                                                           data-live-action-param="getSelectedSemestre"
+                                                           data-action-name="changeSemestre"
+                                                           data-live-action-param=changeSemestre
                                                            value="{{ semestre.id }}"
                                                            class="form-check-input">
-                                                    <label for="{{ semestre.id }}"
+                                                    <label for="{{ semestre.id }}" style="margin-left: 10px"
                                                            class="form-check-label">{{ semestre.libelle }}</label><br>
                                                 </div>
                                             {% endfor %}
@@ -53,7 +54,6 @@
                     <tr>
                         <th>Libellé</th>
                         <th>Compétences</th>
-                        <th>% Evaluation</th>
                         <th>Etudiant</th>
                         <th>Semestre</th>
                         <th>TP</th>

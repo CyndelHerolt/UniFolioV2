@@ -1,0 +1,67 @@
+<turbo-frame id="critere_eval_form">
+    <table>
+        <thead>
+        <tr>
+            <th>
+                Critère
+            </th>
+            <th>
+                Resultat
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for critereCompetence in criteresCompetences %}
+            <tr>
+                <td>
+                    {{ critereCompetence.critere.libelle }}
+                </td>
+                <td>
+                    {% if critereCompetence.valeur is null %}
+                        <span class="text-muted">En attente</span>
+                    {% else %}
+                        {{ critereCompetence.valeur }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if critereCompetence.id == editCritereId  %}
+                    <form action=""
+                          class="d-flex align-items-center justify-content-between gap-4">
+                        <div>
+                            {% for key, valeurs in critereCompetence.critere.valeurs %}
+                                <input type="radio"
+                                       id="{{ critereCompetence.id }}{{ key }}"
+                                       name="valeur"
+                                       value="{{ critereCompetence.id }}{{ key }}">
+                                <label for="{{ critereCompetence.id }}{{ key }}">{{ valeurs }}
+                                    : {{ key }}</label>
+                                <br>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <button type="submit" class="primary-btn">
+                                Valider
+                            </button>
+                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': 0, 'editCritereId': critereCompetence.id}) }}">
+                                <button type="submit" class="primary-btn">
+                                    Annuler
+                                </button>
+                            </a>
+                        </div>
+                    </form>
+                    {% else %}
+                        <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': 1, 'editCritereId': critereCompetence.id}) }}">
+                            <button class="primary-btn">
+                                Evaluer
+                            </button>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</turbo-frame>

@@ -5,6 +5,7 @@ namespace App\Twig\Components;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceCompetenceRepository;
 use App\Repository\TraceRepository;
+use App\Service\CompetencesService;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -19,6 +20,7 @@ final class PortfolioEvalTable
         private readonly PortfolioUnivRepository   $portfolioUnivRepository,
         private readonly TraceRepository           $traceRepository,
         private readonly TraceCompetenceRepository $traceCompetenceRepository,
+        private readonly CompetencesService        $competencesService,
     )
     {
 
@@ -27,21 +29,14 @@ final class PortfolioEvalTable
     public function getCompetences()
     {
         $portfolio = $this->portfolioUnivRepository->find($this->id);
-        $portfolioCompetences = $this->traceCompetenceRepository->findBy(['portfolio' => $portfolio]);
-        $competences = [];
-        foreach ($portfolioCompetences as $portfolioCompetence) {
-            if ($portfolioCompetence->getApcNiveau() !== null) {
-                $competences[$portfolioCompetence->getApcNiveau()->getId()] = $portfolioCompetence->getApcNiveau();
-            } elseif ($portfolioCompetence->getApcApprentissageCritique() !== null) {
-                   $competences[$portfolioCompetence->getApcApprentissageCritique()->getApcNiveau()->getId()] = $portfolioCompetence->getApcApprentissageCritique();
-            } else {
-                // todo: gérer les erreurs
-                $error = 'Erreur : compétence non trouvée';
-            }
+        $competences = $this->competencesService->getCompetencesPortfolio($portfolio);
+
+        if ($competences['apcNiveaux']) {
+            $competences = $competences['apcNiveaux'];
+        } else {
+            $competences = $competences['apcApprentissageCritiques'];
         }
 
-        // retirer les doublons du tableau de compétences
-//        $competences = array_unique($competences);
 
         return $competences;
     }

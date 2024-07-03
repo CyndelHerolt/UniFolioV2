@@ -13,14 +13,6 @@
                             Portfolio personnel
                         {% endif %}
                     </small>
-                    •
-                    <small>
-                        {% if this.portfolio.visibilite == 1 %}
-                            Public
-                        {% else %}
-                            Privé
-                        {% endif %}
-                    </small>
                 </div>
                 <small>Publié le : {{ this.portfolio.dateCreation|date('d-m-Y') }}</small>
             </div>

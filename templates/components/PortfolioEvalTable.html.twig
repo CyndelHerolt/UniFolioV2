@@ -6,14 +6,11 @@
         <td>
             <div class="d-flex gap-1">
                 {% for competence in this.competences %}
-                    <div class="pill-competence d-flex gap-1 align-items-center {{ competence.apcCompetence.couleur }}">
-                        {{ competence.apcCompetence.nomCourt }}
+                    <div class="pill-competence d-flex gap-1 align-items-center {{ competence.apcCompetence.couleur ?? competence.apcNiveau.apcCompetence.couleur }}">
+                        {{ competence.apcCompetence.nomCourt ?? competence.apcNiveau.apcCompetence.nomCourt }}
                     </div>
                 {% endfor %}
             </div>
-        </td>
-        <td>
-
         </td>
         <td>
             {{ this.portfolio.etudiant.nom }} {{ this.portfolio.etudiant.prenom }}
@@ -32,6 +29,11 @@
             {{ this.portfolio.datemodification is empty ? this.portfolio.datecreation|date('d-m-Y H:i') : this.portfolio.datemodification|date('d-m-Y') }}
         </td>
         <td>
+            <a href="{{ path('app_portfolio_univ_eval_show', {'id': this.portfolio.id}) }}">
+                <button class="btn-info d-flex justify-content-center align-items-center">
+                    <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
+                </button>
+            </a>
 
         </td>
     </tr>

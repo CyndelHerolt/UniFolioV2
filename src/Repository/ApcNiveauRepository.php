@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ApcNiveau;
+use App\Entity\Departement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -65,15 +66,11 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-
     public function findByPortfolioUniversitaire($portfolioId)
     {
         return $this->createQueryBuilder('n')
             ->distinct()
-            ->join('n.traceCompetences', 'tc')
-            ->join('tc.trace', 't')
-            ->join('t.tracePages', 'tp')
-            ->join('tp.page', 'p')
+            ->join('n.pages', 'p')
             ->join('p.portfolio', 'pu')
             ->where('pu.id = :portfolioId')
             ->setParameter('portfolioId', $portfolioId)
@@ -89,6 +86,19 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
         $this->getEntityManager()->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS=1');
+    }
+
+    public function findByDepartement(?Departement $departement)
+    {
+        return $this->createQueryBuilder('n')
+            ->join('n.apcCompetence', 'c')
+            ->join('c.apcParcours', 'p')
+            ->join('p.apcDiplome', 'd')
+            ->join('d.departement', 'dep')
+            ->where('dep = :departement')
+            ->setParameter('departement', $departement)
+            ->getQuery()
+            ->getResult();
     }
 //    /**
 //     * @return ApcNiveau[] Returns an array of ApcNiveau objects

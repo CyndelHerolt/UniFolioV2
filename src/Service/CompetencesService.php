@@ -100,18 +100,38 @@ class CompetencesService
 
     public function getCompetencesDepartement($departement)
     {
-        $referentiel = $departement->getApcReferentiels();
-        $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel->first()]);
-        $niveaux = [];
-        foreach ($competences as $competence) {
-            $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
-        }
+
+        $niveaux = $this->apcNiveauRepository->findByDepartement($departement);
+
         $apcNiveaux = [];
+        $apcApprentissagesCritiques = [];
         foreach ($niveaux as $niveau) {
-            if ($niveau->isActif() === true) {
-                $apcNiveaux[] = $niveau;
+            $apcNiveaux[] = $niveau;
+            foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                $apcApprentissagesCritiques[] = $apcApprentissageCritique;
             }
         }
-        return $apcNiveaux;
+        if ($departement->getOptCompetence() === 1) {
+            return $apcNiveaux;
+        } else {
+            return $apcApprentissagesCritiques;
+        }
+    }
+
+    public function getCompetencesPortfolio($portfolio)
+    {
+        $pages = $portfolio->getPages();
+        foreach ($pages as $page) {
+            if ($page->getApcNiveau()) {
+                $apcNiveaux[] = $page->getApcNiveau();
+            } else {
+                $apcApprentissagesCritiques[] = $page->getApcApprentissageCritique();
+            }
+        }
+
+        return [
+            'apcApprentissagesCritiques' => $apcApprentissagesCritiques ?? null,
+            'apcNiveaux' => $apcNiveaux ?? null,
+        ];
     }
 }

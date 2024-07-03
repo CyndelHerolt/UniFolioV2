@@ -26,20 +26,22 @@ class Criteres
     #[ORM\Column]
     private array $valeurs = [];
 
-    #[ORM\OneToMany(targetEntity: ValidationCriteres::class, mappedBy: 'critere')]
-    private Collection $validationCriteres;
+    /**
+     * @var Collection<int, CritereApprentissageCritique>
+     */
+    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'critere')]
+    private Collection $critereApprentissageCritiques;
 
-    #[ORM\ManyToMany(targetEntity: ApcNiveau::class, inversedBy: 'criteres')]
-    private Collection $apcNiveau;
-
-    #[ORM\ManyToMany(targetEntity: ApcApprentissageCritique::class, inversedBy: 'criteres')]
-    private Collection $apcApprentissageCritique;
+    /**
+     * @var Collection<int, CritereNiveau>
+     */
+    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'critere')]
+    private Collection $critereNiveaux;
 
     public function __construct()
     {
-        $this->validationCriteres = new ArrayCollection();
-        $this->apcNiveau = new ArrayCollection();
-        $this->apcApprentissageCritique = new ArrayCollection();
+        $this->critereApprentissageCritiques = new ArrayCollection();
+        $this->critereNiveaux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -84,29 +86,29 @@ class Criteres
     }
 
     /**
-     * @return Collection<int, ValidationCriteres>
+     * @return Collection<int, CritereApprentissageCritique>
      */
-    public function getValidationCriteres(): Collection
+    public function getCritereApprentissageCritiques(): Collection
     {
-        return $this->validationCriteres;
+        return $this->critereApprentissageCritiques;
     }
 
-    public function addValidationCritere(ValidationCriteres $validationCritere): static
+    public function addCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
     {
-        if (!$this->validationCriteres->contains($validationCritere)) {
-            $this->validationCriteres->add($validationCritere);
-            $validationCritere->setCritere($this);
+        if (!$this->critereApprentissageCritiques->contains($critereApprentissageCritique)) {
+            $this->critereApprentissageCritiques->add($critereApprentissageCritique);
+            $critereApprentissageCritique->setCritere($this);
         }
 
         return $this;
     }
 
-    public function removeValidationCritere(ValidationCriteres $validationCritere): static
+    public function removeCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
     {
-        if ($this->validationCriteres->removeElement($validationCritere)) {
+        if ($this->critereApprentissageCritiques->removeElement($critereApprentissageCritique)) {
             // set the owning side to null (unless already changed)
-            if ($validationCritere->getCritere() === $this) {
-                $validationCritere->setCritere(null);
+            if ($critereApprentissageCritique->getCritere() === $this) {
+                $critereApprentissageCritique->setCritere(null);
             }
         }
 
@@ -114,49 +116,31 @@ class Criteres
     }
 
     /**
-     * @return Collection<int, ApcNiveau>
+     * @return Collection<int, CritereNiveau>
      */
-    public function getApcNiveau(): Collection
+    public function getCritereNiveaux(): Collection
     {
-        return $this->apcNiveau;
+        return $this->critereNiveaux;
     }
 
-    public function addApcNiveau(ApcNiveau $apcNiveau): static
+    public function addCritereNiveau(CritereNiveau $critereNiveau): static
     {
-        if (!$this->apcNiveau->contains($apcNiveau)) {
-            $this->apcNiveau->add($apcNiveau);
+        if (!$this->critereNiveaux->contains($critereNiveau)) {
+            $this->critereNiveaux->add($critereNiveau);
+            $critereNiveau->setCritere($this);
         }
 
         return $this;
     }
 
-    public function removeApcNiveau(ApcNiveau $apcNiveau): static
+    public function removeCritereNiveau(CritereNiveau $critereNiveau): static
     {
-        $this->apcNiveau->removeElement($apcNiveau);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ApcApprentissageCritique>
-     */
-    public function getApcApprentissageCritique(): Collection
-    {
-        return $this->apcApprentissageCritique;
-    }
-
-    public function addApcApprentissageCritique(ApcApprentissageCritique $apcApprentissageCritique): static
-    {
-        if (!$this->apcApprentissageCritique->contains($apcApprentissageCritique)) {
-            $this->apcApprentissageCritique->add($apcApprentissageCritique);
+        if ($this->critereNiveaux->removeElement($critereNiveau)) {
+            // set the owning side to null (unless already changed)
+            if ($critereNiveau->getCritere() === $this) {
+                $critereNiveau->setCritere(null);
+            }
         }
-
-        return $this;
-    }
-
-    public function removeApcApprentissageCritique(ApcApprentissageCritique $apcApprentissageCritique): static
-    {
-        $this->apcApprentissageCritique->removeElement($apcApprentissageCritique);
 
         return $this;
     }

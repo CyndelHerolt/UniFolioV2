@@ -6,11 +6,15 @@ use App\Components\Trace\TraceRegistry;
 use App\Controller\BaseController;
 use App\Entity\Trace;
 use App\Entity\TraceCompetence;
+use App\Entity\TracePage;
 use App\Entity\Validation;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\PageRepository;
+use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceCompetenceRepository;
+use App\Repository\TracePageRepository;
 use App\Repository\TraceRepository;
 use App\Repository\ValidationRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +22,16 @@ use Symfony\Component\HttpFoundation\Request;
 class TraceSaveService extends BaseController
 {
     public function __construct(
-        private BibliothequeRepository             $bibliothequeRepository,
-        private TraceRegistry                      $traceRegistry,
-        private TraceRepository                    $traceRepository,
-        private ApcNiveauRepository                $apcNiveauRepository,
-        private ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
-        private TraceCompetenceRepository          $traceCompetenceRepository,
-        private readonly DataUserSessionService    $dataUserSessionService,
+        private readonly BibliothequeRepository             $bibliothequeRepository,
+        private readonly TraceRegistry                      $traceRegistry,
+        private readonly TraceRepository                    $traceRepository,
+        private readonly ApcNiveauRepository                $apcNiveauRepository,
+        private readonly ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
+        private readonly TraceCompetenceRepository          $traceCompetenceRepository,
+        private readonly PortfolioUnivRepository            $portfolioUnivRepository,
+        private readonly PageRepository                     $pageRepository,
+        private readonly TracePageRepository                $tracePageRepository,
+        private readonly DataUserSessionService             $dataUserSessionService,
     )
     {
         parent::__construct(
@@ -47,7 +54,6 @@ class TraceSaveService extends BaseController
 
         // on récupère la clé du type de trace
         $typeTraceForm = array_diff($typeDatas, ['trace_abstract']);
-//        dd($typeTraceForm);
 
         if (!empty($typeTraceForm)) {
             // on récupère la première clé du tableau
@@ -61,26 +67,22 @@ class TraceSaveService extends BaseController
                 $contenu = $files == [] ? $data[$key]['contenu'] : $files[$key]['contenu'];
 
                 $existingContenu = $data[$key] ?? null;
-                dump($existingContenu);
                 $sauvegarde = $typeTrace->sauvegarde($contenu, $existingContenu);
                 $content = $sauvegarde['contenu'];
 
             } else {
-                if (isset($data[$key])) {
-                    $content = $data[$key];
-                } else {
-                    $content = [];
-                }
+                $content = $data[$key] ?? [];
             }
             $trace->setType($typeTrace::class);
 
-        } else {
+        } elseif ($trace->getType() !== null) {
             $typeTrace = $trace->getType();
-            $content = [];
             $trace->setType($typeTrace);
+        } else {
+            $trace->setType(null);
         }
 
-        $trace->setContenu($content);
+        $trace->setContenu($content ?? []);
         $trace->setBibliotheque($bibliotheque);
         $trace->setDateCreation(new \DateTime());
         $trace->setLibelle($formDatas['libelle']);
@@ -131,17 +133,30 @@ class TraceSaveService extends BaseController
                 }
             }
 
+            $annee = $etudiant->getSemestre()->getAnnee();
+            $portfolio = $this->portfolioUnivRepository->findOneBy(['etudiant' => $etudiant, 'annee' => $annee]);
             foreach ($selectedCompetences as $id => $libelle) {
                 // vérifier si un ApcNiveau existe avec l'id et le libellé
                 $apcNiveau = $this->apcNiveauRepository->findOneBy(['id' => $id, 'libelle' => $libelle]);
                 if ($apcNiveau) {
                     // si il n'existe pas déjà un traceCompetence lié a l'apcNiveau et à la trace
                     if (!$this->traceCompetenceRepository->findOneBy(['apcNiveau' => $apcNiveau, 'trace' => $trace])) {
-                        $apcNiveaux[] = $apcNiveau;
                         $traceCompetence = new TraceCompetence();
                         $traceCompetence->setApcNiveau($apcNiveau);
                         $traceCompetence->setTrace($trace);
                         $this->traceCompetenceRepository->save($traceCompetence, true);
+
+                        $page = $this->pageRepository->findOneBy(['portfolio' => $portfolio, 'apc_niveau' => $apcNiveau]);
+
+                        $tracePage = new TracePage();
+                        $tracePage->setPage($page);
+                        $tracePage->setTrace($trace);
+                        $tracePage->setOrdre(count($page->getTracePages()) + 1);
+                        $this->tracePageRepository->save($tracePage, true);
+
+                        if ($trace->getTraceCompetences() !== null) {
+                            // todo : liaison
+                        }
                     }
                 } else {
                     // vérifier si un ApcApprentissageCritique existe avec l'id et le libellé
@@ -149,11 +164,18 @@ class TraceSaveService extends BaseController
                     if ($apcApprentissageCritique) {
                         // si il n'existe pas déjà un traceCompetence lié a l'apcApprentissageCritique et à la trace
                         if (!$this->traceCompetenceRepository->findOneBy(['apcApprentissageCritique' => $apcApprentissageCritique, 'trace' => $trace])) {
-                            $apcApprentissageCritiques[] = $apcApprentissageCritique;
                             $traceCompetence = new TraceCompetence();
                             $traceCompetence->setApcApprentissageCritique($apcApprentissageCritique);
                             $traceCompetence->setTrace($trace);
                             $this->traceCompetenceRepository->save($traceCompetence, true);
+
+                            $page = $this->pageRepository->findOneBy(['portfolio' => $portfolio, 'apc_niveau' => $apcNiveau]);
+
+                            $tracePage = new TracePage();
+                            $tracePage->setPage($page);
+                            $tracePage->setTrace($trace);
+                            $tracePage->setOrdre(count($page->getTracePages()) + 1);
+                            $this->tracePageRepository->save($tracePage, true);
                         }
                     }
                 }

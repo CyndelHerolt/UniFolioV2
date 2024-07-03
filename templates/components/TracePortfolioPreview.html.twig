@@ -2,7 +2,9 @@
     <div class="row g-3 d-flex flex-row align-items-center flex-wrap">
 
         <div class="col-lg-3 col-12">
+            {% if this.type is not null %}
             {% include('/partials/trace/_'~this.type~'_preview.html.twig') %}
+            {% endif %}
         </div>
 
         <div class="col-lg-9 col-12 d-flex flex-column align-items-start justify-content-start">

@@ -331,6 +331,30 @@ h2 {
   margin: $large-margin 0 !important;
 }
 
+h3 {
+  font-size: $h3-size !important;
+  font-weight: $bold !important;
+  margin: $medium-margin 0;
+}
+
+h4 {
+  font-size: $h4-size !important;
+  font-weight: $bold !important;
+  margin: $small-margin 0;
+}
+
+h5 {
+  font-size: $h5-size !important;
+  font-weight: $bold !important;
+  margin: $small-margin 0;
+}
+
+h6 {
+  font-size: $h6-size !important;
+  font-weight: $bold !important;
+  margin: $small-margin 0;
+}
+
 a {
   color: var(--link-color) !important;
   text-decoration: none;
@@ -430,9 +454,10 @@ table {
 
 .pill {
   background-color: var(--primary-light-color);
-  color: var(--text-dark-color);
+  color: var(--primary-color);
+  border: solid 2px var(--primary-color);
   padding: $small-padding $medium-padding;
-  border-radius: $large-radius;
+  border-radius: $small-radius;
   font-weight: $bold;
   width: fit-content;
 }
@@ -551,14 +576,14 @@ table {
   }
 }
 
-  .flatpickr-months {
-    color: var(--text-color);
-    background-color: var(--bg-card-color);
+.flatpickr-months {
+  color: var(--text-color);
+  background-color: var(--bg-card-color);
 
-    svg {
-      fill: var(--text-color);
-    }
+  svg {
+    fill: var(--text-color);
   }
+}
 
 .flatpickr-rContainer {
   width: 100%;
@@ -589,4 +614,8 @@ table {
 
 .actions-panel {
   background-color: var(--bg-light-color);
+}
+
+.hidden {
+  display: none;
 }

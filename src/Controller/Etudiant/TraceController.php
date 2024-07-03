@@ -120,25 +120,33 @@ class TraceController extends BaseController
             $trace->setContenu([]);
             $trace->setType($type);
             $this->traceRepository->save($trace, true);
+        } else {
+            $trace = new Trace();
         }
 
-        // récupérer le nom de la route émettrice
-        $referer = $request->headers->get('referer');
+        $typesTrace = $this->traceRegistry->getTypeTraces();
+
         $selectedTraceType = $request->getSession()->get('selected_trace_type');
+        if ($selectedTraceType !== null) {
+            $formType = $selectedTraceType::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+        } elseif ($trace->getType() !== null) {
+            $selectedTraceType = $trace->getType();
+            $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
+            $formType = $this->createForm($formType, $trace);
+            $formType = $formType->createView();
+        } else {
+            $formType = null;
+        }
 
-        // retourner au referer
-        return $this->redirect($referer . '?type=' . $selectedTraceType);
-    }
-
-    // todo: refactor
-    #[Route('/trace/show/{id}/edit', name: 'app_trace_show_edit')]
-    public function showEdit(?int $id, ?string $row, ?bool $edit, Request $request): Response
-    {
-        $trace = $this->traceRepository->find($id);
-        $row = $request->query->get('row');
-        $edit = $request->query->get('edit');
-
-        return $this->redirectToRoute('app_trace_show', ['id' => $id, 'edit' => $edit, 'row' => $row]);
+        return $this->render('partials/trace/_type_trace_form.html.twig', [
+            'typesTrace' => $typesTrace,
+            'type' => $type,
+            'trace' => $trace,
+            'selectedTraceType' => $selectedTraceType,
+            'formType' => $formType,
+        ]);
     }
 
     // todo: refactor
@@ -158,9 +166,7 @@ class TraceController extends BaseController
         }
 
         // todo: code dupliqué dans edit
-        // Vérifier si un type de trace a été passé en paramètre
-//        $selectedTraceType = $request->query->get('type', null);
-        $selectedTraceType = $request->getSession()->get('selected_trace_type', null);
+        $selectedTraceType = $request->getSession()->get('selected_trace_type');
 
         if ($selectedTraceType !== null) {
             $formType = $selectedTraceType::FORM;
@@ -191,7 +197,6 @@ class TraceController extends BaseController
         ]);
     }
 
-    //todo: transformer en service
     #[Route('/trace/save', name: 'app_trace_save')]
     public function save(Request $request)
     {
@@ -224,7 +229,7 @@ class TraceController extends BaseController
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
         }
         // Vérifier si un type de trace a été passé en paramètre
-        $selectedTraceType = $request->query->get('type', null);
+        $selectedTraceType = $request->query->get('type');
         if ($trace->getType() !== null) {
             $selectedTraceType = $trace->getType();
             $formType = $this->traceRegistry->getTypeTrace($selectedTraceType)::FORM;
@@ -238,12 +243,6 @@ class TraceController extends BaseController
             $typeTrace = $selectedTraceType::TYPE;
         } else {
             $formType = null;
-        }
-
-        // gérer la soumission du formulaire
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            dd($form->getData());
         }
 
         return $this->render('trace/form.html.twig', [

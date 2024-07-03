@@ -33,9 +33,6 @@ class ApcApprentissageCritique
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
-    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'apc_apprentissage_critique')]
-    private Collection $validations;
-
     #[ORM\ManyToMany(targetEntity: Criteres::class, mappedBy: 'apcApprentissageCritique')]
     private Collection $criteres;
 
@@ -45,11 +42,24 @@ class ApcApprentissageCritique
     #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'apcApprentissageCritique')]
     private Collection $traceCompetences;
 
+    /**
+     * @var Collection<int, Page>
+     */
+    #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'apc_apprentissage_critique')]
+    private Collection $pages;
+
+    /**
+     * @var Collection<int, CritereApprentissageCritique>
+     */
+    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'apprentissageCritique')]
+    private Collection $critereApprentissageCritiques;
+
     public function __construct()
     {
-        $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
+        $this->pages = new ArrayCollection();
+        $this->critereApprentissageCritiques = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -106,36 +116,6 @@ class ApcApprentissageCritique
     }
 
     /**
-     * @return Collection<int, Validation>
-     */
-    public function getValidations(): Collection
-    {
-        return $this->validations;
-    }
-
-    public function addValidation(Validation $validation): static
-    {
-        if (!$this->validations->contains($validation)) {
-            $this->validations->add($validation);
-            $validation->setApcApprentissageCritique($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidation(Validation $validation): static
-    {
-        if ($this->validations->removeElement($validation)) {
-            // set the owning side to null (unless already changed)
-            if ($validation->getApcApprentissageCritique() === $this) {
-                $validation->setApcApprentissageCritique(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
      * @return Collection<int, Criteres>
      */
     public function getCriteres(): Collection
@@ -186,6 +166,66 @@ class ApcApprentissageCritique
             // set the owning side to null (unless already changed)
             if ($traceCompetence->getApcApprentissageCritique() === $this) {
                 $traceCompetence->setApcApprentissageCritique(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Page>
+     */
+    public function getPages(): Collection
+    {
+        return $this->pages;
+    }
+
+    public function addPage(Page $page): static
+    {
+        if (!$this->pages->contains($page)) {
+            $this->pages->add($page);
+            $page->setApcApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removePage(Page $page): static
+    {
+        if ($this->pages->removeElement($page)) {
+            // set the owning side to null (unless already changed)
+            if ($page->getApcApprentissageCritique() === $this) {
+                $page->setApcApprentissageCritique(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CritereApprentissageCritique>
+     */
+    public function getCritereApprentissageCritiques(): Collection
+    {
+        return $this->critereApprentissageCritiques;
+    }
+
+    public function addCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
+    {
+        if (!$this->critereApprentissageCritiques->contains($critereApprentissageCritique)) {
+            $this->critereApprentissageCritiques->add($critereApprentissageCritique);
+            $critereApprentissageCritique->setApprentissageCritique($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritereApprentissageCritique(CritereApprentissageCritique $critereApprentissageCritique): static
+    {
+        if ($this->critereApprentissageCritiques->removeElement($critereApprentissageCritique)) {
+            // set the owning side to null (unless already changed)
+            if ($critereApprentissageCritique->getApprentissageCritique() === $this) {
+                $critereApprentissageCritique->setApprentissageCritique(null);
             }
         }
 

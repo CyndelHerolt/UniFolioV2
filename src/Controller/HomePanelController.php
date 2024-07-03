@@ -30,6 +30,8 @@ class HomePanelController extends BaseController
                 return $this->render('/home_panel/enseignant_panel.html.twig', [
                     'controller_name' => 'HomePanelController',
                 ]);
+            } elseif ($this->isGranted('ROLE_ADMIN')) {
+                return $this->redirectToRoute('admin');
             }
         }
         return $this->redirectToRoute('app_login');

@@ -106,9 +106,11 @@ final class TracePortfolioPreview
     public function getType()
     {
         $trace = $this->traceRepository->find($this->id);
-        $type = $trace->getType();
-        $type = $this->traceRegistry->getTypeTrace($type)::TYPE;
-
+        if ($trace->getType()) {
+            $type = $this->traceRegistry->getTypeTrace($trace->getType())::TYPE;
+        } else {
+            $type = null;
+        }
         return $type;
     }
 }

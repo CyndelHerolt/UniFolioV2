@@ -77,6 +77,20 @@ class PortfolioUnivRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    public function findByDepartement($dept): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.etudiant', 'e')
+            ->innerJoin('e.semestre', 's')
+            ->innerJoin('s.annee', 'a')
+            ->innerJoin('a.diplome', 'd')
+            ->innerJoin('d.departement', 'dep')
+            ->where('dep.id = :departement')
+            ->setParameter('departement', $dept)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return PortfolioUniv[] Returns an array of PortfolioUniv objects
 //     */

@@ -10,6 +10,12 @@ use App\Repository\CriteresRepository;
 use App\Repository\DepartementEnseignantRepository;
 use App\Repository\DepartementRepository;
 use App\Repository\EnseignantRepository;
+use App\Repository\EtudiantRepository;
+use App\Repository\PageRepository;
+use App\Repository\PortfolioUnivRepository;
+use App\Repository\TraceCompetenceRepository;
+use App\Repository\TracePageRepository;
+use App\Service\PortfolioCreateService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,10 +24,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class SettingsController extends BaseController
 {
     public function __construct(
-        private readonly CriteresRepository       $criteresRepository,
-        protected DepartementRepository           $departementRepository,
-        protected EnseignantRepository            $enseignantRepository,
-        protected DepartementEnseignantRepository $departementEnseignantRepository,
+        private readonly CriteresRepository              $criteresRepository,
+        private readonly DepartementRepository           $departementRepository,
+        private readonly EnseignantRepository            $enseignantRepository,
+        private readonly DepartementEnseignantRepository $departementEnseignantRepository,
+        private readonly PortfolioUnivRepository         $portfolioUnivRepository,
+        private readonly PageRepository                  $pageRepository,
+        private readonly TraceCompetenceRepository       $traceCompetenceRepository,
+        private readonly PortfolioCreateService          $portfolioCreateService,
+        private readonly TracePageRepository             $tracePageRepository, private readonly EtudiantRepository $etudiantRepository,
     )
     {
     }
@@ -125,6 +136,45 @@ public function criteres(): Response
         } else {
             return $this->redirectToRoute('app_settings', ['edit' => true, 'critereId' => $id]);
         }
+        return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/settings/competences/opt', name: 'app_settings_competences_opt')]
+    public function changeCompetencesOpt(Request $request): Response
+    {
+        $enseignant = $this->getUser()->getEnseignant();
+        $departement = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
+
+        $selectedOption = $request->request->get('competence');
+
+        $departement->setOptCompetence($selectedOption);
+        $this->departementRepository->save($departement, true);
+
+//        $etudiant = $this->etudiantRepository->findOneBy(['username' => 'hero0005']);
+//        $this->portfolioCreateService->create($etudiant);
+
+        $portfolios = $this->portfolioUnivRepository->findByDepartement($departement);
+
+        foreach($portfolios as $portfolio) {
+            $this->portfolioCreateService->create($portfolio->getEtudiant());
+
+            $this->portfolioUnivRepository->remove($portfolio, true);
+
+            $pages = $portfolio->getPages();
+            foreach($pages as $page) {
+                $this->pageRepository->delete($page, true);
+
+                $tracesPages = $this->tracePageRepository->findBy(['page' => $page]);
+                foreach($tracesPages as $tracePage) {
+                    $tracesCompetences = $tracePage->getTrace()->getTraceCompetences();
+
+                    foreach($tracesCompetences as $traceCompetence) {
+                        $this->traceCompetenceRepository->remove($traceCompetence, true);
+                    }
+                }
+            }
+        }
+
         return $this->redirectToRoute('app_settings');
     }
 

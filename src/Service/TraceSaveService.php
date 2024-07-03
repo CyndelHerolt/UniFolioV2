@@ -7,7 +7,6 @@ use App\Controller\BaseController;
 use App\Entity\Trace;
 use App\Entity\TraceCompetence;
 use App\Entity\TracePage;
-use App\Entity\Validation;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\BibliothequeRepository;

@@ -55,7 +55,7 @@ class CompetencesService
             }
             // si les apcNiveaux dans niveaux ont pour actif = true
             foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
+                if ($dept->getOptCompetence() === 1) {
                     $apcNiveaux[] = $niveau;
                 } else {
                     // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
@@ -68,7 +68,7 @@ class CompetencesService
             // ------------récupère tous les apcNiveau de l'année -------------------------
             $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
             foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
+                if ($dept->getOptCompetence() === 1) {
                     $apcNiveaux[] = $niveau;
                 } else {
                     // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau

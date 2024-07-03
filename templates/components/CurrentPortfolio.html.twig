@@ -27,8 +27,8 @@
 
         <div class="col-lg-6 col-12 overflow-y-scroll critere-competence-table">
             {% for competence in this.competences %}
-                <div class="pill-competence d-flex justify-content-center align-items-center w-100 {{ competence.apcCompetence.couleur }}">
-                    {{ competence.apcCompetence.nomCourt }}
+                <div class="pill-competence d-flex justify-content-center align-items-center w-100 {{ competence.apcCompetence.couleur ?? competence.apcNiveau.apcCompetence.couleur }}">
+                    {{ competence.apcCompetence.nomCourt ?? competence.libelle }}
                 </div>
 
                 <table>

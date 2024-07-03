@@ -25,6 +25,9 @@ class CritereNiveau
     #[ORM\Column(nullable: true)]
     private ?int $valeur = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $libelle = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class CritereNiveau
     public function setValeur(?int $valeur): static
     {
         $this->valeur = $valeur;
+
+        return $this;
+    }
+
+    public function getLibelle(): ?string
+    {
+        return $this->libelle;
+    }
+
+    public function setLibelle(?string $libelle): static
+    {
+        $this->libelle = $libelle;
 
         return $this;
     }

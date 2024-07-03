@@ -23,41 +23,50 @@
                     {% if critereCompetence.valeur is null %}
                         <span class="text-muted">En attente</span>
                     {% else %}
-                        {{ critereCompetence.valeur }}
+                        {{ critereCompetence.libelle }} <span class="pill">{{ critereCompetence.valeur }}/5</span>
                     {% endif %}
                 </td>
                 <td>
-                    {% if critereCompetence.id == editCritereId  %}
-                    <form action=""
-                          class="d-flex align-items-center justify-content-between gap-4">
-                        <div>
-                            {% for key, valeurs in critereCompetence.critere.valeurs %}
-                                <input type="radio"
-                                       id="{{ critereCompetence.id }}{{ key }}"
-                                       name="valeur"
-                                       value="{{ critereCompetence.id }}{{ key }}">
-                                <label for="{{ critereCompetence.id }}{{ key }}">{{ valeurs }}
-                                    : {{ key }}</label>
-                                <br>
-                            {% endfor %}
-                        </div>
-                        <div>
-                            <button type="submit" class="primary-btn">
-                                Valider
-                            </button>
-                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': 0, 'editCritereId': critereCompetence.id}) }}">
+                    {% if critereCompetence.id == editCritereId %}
+                        <form
+                                class="d-flex align-items-center justify-content-between gap-4">
+                            <div>
+                                {% for key, valeurs in critereCompetence.critere.valeurs %}
+                                    <input type="radio"
+                                           id="{{ key }}"
+                                           name="valeur"
+                                           value="{{ key }} : {{ valeurs }}">
+                                    <label for="{{ key }}">{{ valeurs }}
+                                        : {{ key }}</label>
+                                    <br>
+                                {% endfor %}
+                            </div>
+                            <div>
                                 <button type="submit" class="primary-btn">
-                                    Annuler
+                                    Valider
+                                </button>
+                                <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': 0, 'editCritereId': critereCompetence.id}) }}">
+                                    <button type="submit" class="primary-btn">
+                                        Annuler
+                                    </button>
+                                </a>
+                            </div>
+                            <input type="hidden" name="critereCompetenceId" value="{{ critereCompetence.id }}">
+                        </form>
+                    {% else %}
+                        {% if critereCompetence.valeur is null %}
+                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': true, 'critereCompetence': critereCompetence.id}) }}">
+                                <button class="secondary-btn">
+                                    Evaluer
                                 </button>
                             </a>
-                        </div>
-                    </form>
-                    {% else %}
-                        <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': 1, 'editCritereId': critereCompetence.id}) }}">
-                            <button class="primary-btn">
-                                Evaluer
-                            </button>
-                        </a>
+                        {% else %}
+                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': true, 'critereCompetence': critereCompetence.id}) }}">
+                                <button class="secondary-btn">
+                                    Modifier
+                                </button>
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </td>
             </tr>

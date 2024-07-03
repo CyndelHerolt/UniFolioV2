@@ -159,7 +159,7 @@ class TraceController extends BaseController
         $competences = $this->competencesService->getCompetencesEtudiant($user);
 
         $trace = new Trace();
-        if (isset($competences['apcNiveaux'])) {
+        if (!empty($competences['apcNiveaux'])) {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);
         } else {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);
@@ -223,7 +223,7 @@ class TraceController extends BaseController
 
         $competences = $this->competencesService->getCompetencesEtudiant($user);
 
-        if (isset($competences['apcNiveaux'])) {
+        if (!empty($competences['apcNiveaux'])) {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcNiveaux']]);
         } else {
             $form = $this->createForm(TraceAbstractType::class, $trace, ['user' => $user, 'competences' => $competences['apcApprentissagesCritiques']]);

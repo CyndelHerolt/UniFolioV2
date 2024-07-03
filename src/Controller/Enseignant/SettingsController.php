@@ -128,6 +128,20 @@ public function criteres(): Response
         return $this->redirectToRoute('app_settings');
     }
 
+    #[Route('/settings/competences/opt', name: 'app_settings_competences_opt')]
+    public function changeCompetencesOpt(Request $request): Response
+    {
+        $enseignant = $this->getUser()->getEnseignant();
+        $departement = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
+
+        $selectedOption = $request->request->get('competence');
+
+        $departement->setOptCompetence($selectedOption);
+        $this->departementRepository->save($departement, true);
+
+        return $this->redirectToRoute('app_settings');
+    }
+
     #[Route('/settings/choix_departement', name: 'app_settings_choix_departement')]
     public function choixDepartement(Request $request): Response
     {

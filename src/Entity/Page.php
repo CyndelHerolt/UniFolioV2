@@ -37,13 +37,13 @@ class Page
     /**
      * @var Collection<int, CritereApprentissageCritique>
      */
-    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'page')]
+    #[ORM\OneToMany(targetEntity: CritereApprentissageCritique::class, mappedBy: 'page', orphanRemoval: true)]
     private Collection $critereApprentissageCritiques;
 
     /**
      * @var Collection<int, CritereNiveau>
      */
-    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'page')]
+    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'page', orphanRemoval: true)]
     private Collection $critereNiveaux;
 
     public function __construct()

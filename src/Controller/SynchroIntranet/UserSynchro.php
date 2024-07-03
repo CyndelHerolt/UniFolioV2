@@ -30,6 +30,7 @@ use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\SemestreRepository;
 use App\Service\CompetencesService;
+use App\Service\PortfolioCreateService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\MailerInterface;
@@ -42,13 +43,7 @@ class UserSynchro extends AbstractController
 {
     public function __construct(
         private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
-        private readonly CompetencesService           $competencesService,
-        private readonly PortfolioUnivRepository      $portfolioUnivRepository,
-        private readonly PageRepository               $pageRepository,
-        private readonly CriteresRepository           $criteresRepository,
-        private readonly DepartementRepository        $departementRepository,
-        private readonly CritereNiveauRepository                $critereNiveauRepository,
-        private readonly CritereApprentissageCritiqueRepository $critereApprentissageCritiqueRepository,
+        private readonly PortfolioCreateService $portfolioCreateService,
     )
     {
     }
@@ -211,59 +206,8 @@ class UserSynchro extends AbstractController
                         $groupe = $groupeRepository->findOneBy(['id' => $groupe]);
                         $newEtudiant->addGroupe($groupe);
                     }
-                    $portfolio = new PortfolioUniv();
-                    $portfolio->setEtudiant($newEtudiant);
-                    $portfolio->setAnnee($semestre->getAnnee());
-                    $portfolio->setAnneeUniv($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
-                    $portfolio->setLibelle('Portfolio de ' . $newEtudiant->getNom() . ' ' . $newEtudiant->getPrenom());
-                    $portfolio->setBanniere('/files_directory/banniere.jpg');
-                    $portfolio->setDescription('Modifier la description de votre portfolio');
-                    $portfolio->setDateCreation(new \DateTime());
-                    $portfolio->setDateModification(new \DateTime());
 
-                    $competences = $this->competencesService->getCompetencesEtudiant($user);
-
-                    $competences = $competences['apcNiveaux'] ?? $competences['apcApprentissagesCritiques'];
-                    $this->portfolioUnivRepository->save($portfolio, true);
-
-                    foreach ($competences as $competence) {
-                        $page = new Page();
-                        $page->setPortfolio($portfolio);
-                        $page->setLibelle($competence->getLibelle());
-                        if ($competence instanceof ApcNiveau) {
-                            $page->setApcNiveau($competence);
-                        } else {
-                            $page->setApcApprentissageCritique($competence);
-                        }
-
-                        $this->pageRepository->save($page, true);
-                    }
-
-                    $departement = $this->departementRepository->findDepartementEtudiant($newEtudiant);
-                    $criteres = $this->criteresRepository->findByDepartement($departement->getId());
-
-                    $pages = $this->pageRepository->findBy(['portfolio' => $portfolio]);
-
-                    foreach ($pages as $page) {
-                        $competence = $page->getApcNiveau() ?? $page->getApcApprentissageCritique();
-                        foreach ($criteres as $critere) {
-                            if ($competence instanceof ApcNiveau) {
-                                $eval = new CritereNiveau();
-                                $eval->setCritere($critere);
-                                $eval->setPage($page);
-                                $eval->setApcNiveau($competence);
-                                $eval->setValeur(null);
-                                $this->critereNiveauRepository->save($eval, true);
-                            } else {
-                                $eval = new CritereApprentissageCritique();
-                                $eval->setCritere($critere);
-                                $eval->setPage($page);
-                                $eval->setApprentissageCritique($competence);
-                                $eval->setValeur(null);
-                                $this->critereApprentissageCritiqueRepository->save($eval, true);
-                            }
-                        }
-                    }
+                    $this->portfolioCreateService->create($newEtudiant);
 
                     $etudiantRepository->save($newEtudiant, true);
                     $bibliothequeRepository->save($biblio, true);

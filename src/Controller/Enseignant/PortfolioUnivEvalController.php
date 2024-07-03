@@ -20,12 +20,13 @@ use Symfony\Component\Routing\Attribute\Route;
 class PortfolioUnivEvalController extends AbstractController
 {
     public function __construct(
-        private readonly PageRepository $pageRepository,
-        private readonly TraceRepository $traceRepository,
-        private readonly CompetencesService $competencesService,
-        private readonly CritereNiveauRepository $critereNiveauRepository,
+        private readonly PageRepository                         $pageRepository,
+        private readonly TraceRepository                        $traceRepository,
+        private readonly CompetencesService                     $competencesService,
+        private readonly CritereNiveauRepository                $critereNiveauRepository,
         private readonly CritereApprentissageCritiqueRepository $critereApprentissageCritiqueRepository,
-    ) {
+    )
+    {
 
     }
 
@@ -54,17 +55,40 @@ class PortfolioUnivEvalController extends AbstractController
             $criteresCompetences = $this->critereApprentissageCritiqueRepository->findByPage($currentPage->getId());
         }
 
-        $form = $this->createForm(CritereType::class);
         $edit = $request->query->get('edit', false);
 
         if ($edit) {
-        $critereCompetence = $request->query->get('critereCompetence');
+            $critereCompetence = $request->query->get('critereCompetence');
             return $this->render('partials/_critere_eval_form.html.twig', [
-                'editCritereId'=> $critereCompetence,
+                'editCritereId' => $critereCompetence,
                 'critereCompetence' => $this->critereNiveauRepository->findOneBy(['id' => $critereCompetence]),
                 'portfolio' => $portfolio,
                 'criteresCompetences' => $criteresCompetences,
             ]);
+        }
+
+        // si la requête contient un paramètre "valeur" et un paramètre "critereCompetenceId"
+        if ($request->query->get('valeur') && $request->query->get('critereCompetenceId')) {
+            $datas = $request->query->get('valeur');
+
+            $valeur = explode(' :', $datas)[0];
+            $libelle = explode(' : ', $datas)[1];
+
+            $critereCompetenceId = $request->query->get('critereCompetenceId');
+
+            if ($competences['apcNiveaux']) {
+                $critereCompetence = $this->critereNiveauRepository->findOneBy(['id' => $critereCompetenceId]);
+                $critereCompetence->setValeur($valeur);
+                $critereCompetence->setLibelle($libelle);
+                $this->critereNiveauRepository->save($critereCompetence, true);
+            } else {
+                $critereCompetence = $this->critereApprentissageCritiqueRepository->findOneBy(['id' => $critereCompetenceId]);
+                $critereCompetence->setValeur($valeur);
+                $critereCompetence->setLibelle($libelle);
+                $this->critereApprentissageCritiqueRepository->save($critereCompetence, true);
+            }
+
+            return $this->redirectToRoute('app_portfolio_univ_eval_show', ['id' => $portfolio->getId()]);
         }
 
 
@@ -76,7 +100,6 @@ class PortfolioUnivEvalController extends AbstractController
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
             'criteresCompetences' => $criteresCompetences,
-            'form' => $form->createView(),
             'edit' => $edit,
             'editCritereId' => $editCritereId ?? null,
         ]);

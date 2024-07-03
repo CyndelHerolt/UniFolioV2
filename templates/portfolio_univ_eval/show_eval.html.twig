@@ -28,7 +28,7 @@
                         {% endfor %}</p>
                 </div>
 
-                <div class="card-body p-5 m-5 mb-0 mt-0 border">
+                <div class="card-body p-5 m-5 border">
 
                     {% for page in pages.currentPageResults %}
                         {% if page.apcNiveau is not null %}
@@ -71,23 +71,23 @@
                                             <td>
                                                 {{ critereCompetence.critere.libelle }}
                                             </td>
-                                            <td>
+                                            <td class="d-flex gap-3 align-items-center">
                                                 {% if critereCompetence.valeur is null %}
                                                     <span class="text-muted">En attente</span>
                                                 {% else %}
-                                                    {{ critereCompetence.valeur }}
+                                                    {{ critereCompetence.libelle }} <span class="pill">{{ critereCompetence.valeur }}/5</span>
                                                 {% endif %}
                                             </td>
                                             <td>
                                                 {% if critereCompetence.valeur is null %}
                                                     <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': true, 'critereCompetence': critereCompetence.id}) }}">
-                                                        <button class="primary-btn">
+                                                        <button class="secondary-btn">
                                                             Evaluer
                                                         </button>
                                                     </a>
                                                 {% else %}
                                                     <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': true, 'critereCompetence': critereCompetence.id}) }}">
-                                                        <button class="primary-btn">
+                                                        <button class="secondary-btn">
                                                             Modifier
                                                         </button>
                                                     </a>

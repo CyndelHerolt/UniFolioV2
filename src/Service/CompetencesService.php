@@ -53,7 +53,6 @@ class CompetencesService
             foreach ($competences as $competence) {
                 $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
             }
-            // si les apcNiveaux dans niveaux ont pour actif = true
             foreach ($niveaux as $niveau) {
                 if ($dept->getOptCompetence() === 1) {
                     $apcNiveaux[] = $niveau;

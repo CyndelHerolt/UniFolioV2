@@ -91,10 +91,9 @@ class ApcNiveauRepository extends ServiceEntityRepository
     public function findByDepartement(?Departement $departement)
     {
         return $this->createQueryBuilder('n')
-            ->join('n.apcCompetence', 'c')
-            ->join('c.apcParcours', 'p')
-            ->join('p.apcDiplome', 'd')
-            ->join('d.departement', 'dep')
+            ->join('n.apcParcours', 'p')
+            ->join('p.apcReferentiel', 'r')
+            ->join('r.departement', 'dep')
             ->where('dep = :departement')
             ->setParameter('departement', $departement)
             ->getQuery()

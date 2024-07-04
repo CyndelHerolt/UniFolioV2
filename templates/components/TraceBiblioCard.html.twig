@@ -43,15 +43,9 @@
                 </div>
             {% else %}
                 {% for traceCompetences in this.trace.traceCompetences %}
-                    {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
-                        <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                            {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
-                        </div>
-                    {% else %}
-                        <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                            {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
-                        </div>
-                    {% endif %}
+                    <div class="pill-competence w-100 {{ traceCompetences.apcNiveau.apcCompetence.couleur ?? traceCompetences.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">
+                        {{ traceCompetences.apcNiveau.apcCompetence.nomCourt ?? traceCompetences.apcApprentissageCritique.libelle }}
+                    </div>
                 {% endfor %}
             {% endif %}
         </td>

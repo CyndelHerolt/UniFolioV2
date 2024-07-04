@@ -3,15 +3,15 @@
         <td>
             <p class="table-primary-text">{{ this.portfolio.libelle }}</p>
         </td>
-        <td>
-            <div class="d-flex gap-1">
-                {% for competence in this.competences %}
-                    <div class="pill-competence d-flex gap-1 align-items-center {{ competence.apcCompetence.couleur ?? competence.apcNiveau.apcCompetence.couleur }}">
-                        {{ competence.apcCompetence.nomCourt ?? competence.apcNiveau.apcCompetence.nomCourt }}
-                    </div>
-                {% endfor %}
-            </div>
-        </td>
+{#        <td>#}
+{#            <div class="d-flex flex-wrap gap-1">#}
+{#                {% for competence in this.competences %}#}
+{#                    <div class="pill-competence {{ competence.apcCompetence.couleur ?? competence.apcNiveau.apcCompetence.couleur }}">#}
+{#                        {{ competence.apcCompetence.nomCourt ?? competence.libelle }}#}
+{#                    </div>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        </td>#}
         <td>
             {{ this.portfolio.etudiant.nom }} {{ this.portfolio.etudiant.prenom }}
         </td>

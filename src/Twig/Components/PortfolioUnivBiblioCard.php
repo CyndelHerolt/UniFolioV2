@@ -2,6 +2,7 @@
 
 namespace App\Twig\Components;
 
+use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\PortfolioUnivRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
@@ -16,9 +17,9 @@ final class PortfolioUnivBiblioCard
     public ?array $competences = null;
 
     public function __construct(
-        protected PortfolioUnivRepository $portfolioUnivRepository,
-        protected ApcNiveauRepository $apcNiveauRepository,
-
+        private readonly PortfolioUnivRepository $portfolioUnivRepository,
+        private readonly ApcNiveauRepository $apcNiveauRepository,
+        private readonly ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
     )
     {
     }
@@ -27,7 +28,14 @@ final class PortfolioUnivBiblioCard
     {
         $portfolioUniv = $this->portfolioUnivRepository->find($this->id);
 
-        $this->competences = $this->apcNiveauRepository->findByPortfolioUniversitaire($portfolioUniv->getId());
+        $etudiant = $portfolioUniv->getEtudiant();
+        $departement = $etudiant->getSemestre()->getAnnee()->getDiplome()->getDepartement();
+
+        if ($departement->getOptCompetence() === 1) {
+            $this->competences = $this->apcNiveauRepository->findByPortfolioUniversitaire($portfolioUniv->getId());
+        } else {
+            $this->competences = $this->apcApprentissageCritiqueRepository->findByPortfolioUniversitaire($portfolioUniv->getId());
+        }
 
         return $portfolioUniv;
     }

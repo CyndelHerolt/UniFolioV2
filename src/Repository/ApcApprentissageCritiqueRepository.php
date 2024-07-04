@@ -58,6 +58,30 @@ class ApcApprentissageCritiqueRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByPortfolioUniversitaire($portfolioId)
+    {
+        return $this->createQueryBuilder('n')
+            ->distinct()
+            ->join('n.pages', 'p')
+            ->join('p.portfolio', 'pu')
+            ->where('pu.id = :portfolioId')
+            ->setParameter('portfolioId', $portfolioId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByDepartement($departement)
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.apcNiveau', 'n')
+            ->join('n.apcParcours', 'p')
+            ->join('p.apcReferentiel', 'r')
+            ->where('r.departement = :departement')
+            ->setParameter('departement', $departement)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return ApcApprentissageCritique[] Returns an array of ApcApprentissageCritique objects
 //     */

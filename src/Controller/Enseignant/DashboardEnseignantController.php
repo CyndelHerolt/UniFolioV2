@@ -14,7 +14,6 @@ class DashboardEnseignantController extends BaseController
     public function index(): Response
     {
         return $this->render('dashboard_enseignant/index.html.twig', [
-            'controller_name' => 'DashboardEnseignantController',
         ]);
     }
 }

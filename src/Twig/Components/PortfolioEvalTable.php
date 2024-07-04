@@ -34,7 +34,7 @@ final class PortfolioEvalTable
         if ($competences['apcNiveaux']) {
             $competences = $competences['apcNiveaux'];
         } else {
-            $competences = $competences['apcApprentissageCritiques'];
+            $competences = $competences['apcApprentissagesCritiques'];
         }
 
 

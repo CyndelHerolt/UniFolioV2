@@ -14,107 +14,90 @@
         {'name': 'Portfolio' , 'url': null}
     ]) }}
 
+
     <section class="container-custom min-vh-100 section-pt">
-        <div class="row d-flex">
-            <article class="col-lg-8 col-12">
-                <div class="card p-0 h-100">
-                    <div class="portfolio-banner" style="background-image: url({{ portfolio.banniere }})"></div>
-                    <div class="card-header p-5 m-5 mt-0 mb-0">
-                        <h2 class="text-center mb-5">{{ portfolio.libelle }}</h2>
-                        <p>{{ portfolio.etudiant.prenom }} {{ portfolio.etudiant.nom }}</p>
-                        <p class="text-muted">{{ portfolio.annee.libelleLong }}</p>
-
-
-                        <p>{{ portfolio.description }}</p>
-                    </div>
-
-                    <div class="card-body p-5 m-5 mb-0 mt-0">
-
-                        {% for page in pages.currentPageResults %}
-                            {% if page.apcNiveau is not null %}
-                                {% set competence = page.apcNiveau.apcCompetence %}
-                            {% elseif page.apcApprentissageCritique is not null %}
-                                {% set competence = page.apcApprentissageCritique.apcNiveau.apcCompetence %}
+        <article>
+            <div class="card p-0 h-100">
+                <div class="portfolio-banner" style="background-image: url({{ portfolio.banniere }})"></div>
+                <div class="card-header p-5 m-5 mt-0 mb-0 text-center">
+                    <h2 class="text-center">{{ portfolio.libelle }}</h2>
+                    <p class="text-muted">{{ portfolio.annee.libelleLong }}</p>
+                    <p>{{ portfolio.etudiant.prenom }} {{ portfolio.etudiant.nom }}
+                        - {{ portfolio.etudiant.semestre.libelle }} - {% for g in portfolio.etudiant.groupe %}
+                            {% if 'TP' in g.typeGroupe.libelle %}
+                                Groupe {{ g.libelle }}
                             {% endif %}
-                            <h2 class="pill-competence d-flex gap-1 align-items-center {{ competence.couleur }}">{{ page.libelle }}</h2>
+                        {% endfor %}</p>
+                </div>
 
-                            {% if tracesPage is empty %}
-                                <div class="alert alert-warning w-100">Aucune trace pour le moment</div>
-                            {% else %}
+                <div class="card-body p-5 m-5 border">
 
-                                {% for trace in tracesPage %}
-                                    <div class="col-12 panel_link mt-5 mb-5">
-                                        <a href="{{ path('app_trace_show', {'id': trace.id, 'portfolio': portfolio.id, 'page': page.id}) }}"
-                                           class="panel_link">
-                                            <twig:TracePortfolioPreview id="{{ trace.id }}"/>
-                                        </a>
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
+                    {% for page in pages.currentPageResults %}
+                        <h2 class="pill-competence m-auto mb-5 {{ page.apcNiveau.apcCompetence.couleur ?? page.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">{{ page.libelle }}</h2>
 
-                            <hr>
-                            <div>
-                                <h4>Validation de la compétence {{ page.libelle }}</h4>
+                        {% if tracesPage is empty %}
+                            <div class="alert alert-warning w-100">Aucune trace pour le moment</div>
+                        {% else %}
 
-                                <table>
-                                    <thead>
+                            {% for trace in tracesPage %}
+                                <twig:TraceContent id="{{ trace.id }}"/>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div>
+                            <h4>Validation de la compétence {{ page.libelle }}</h4>
+
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>
+                                        Critère
+                                    </th>
+                                    <th>
+                                        Resultat
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for critereCompetence in criteresCompetences %}
                                     <tr>
-                                        <th>
-                                            Critère
-                                        </th>
-                                        <th>
-                                            Resultat
-                                        </th>
+                                        <td>
+                                            {{ critereCompetence.critere.libelle }}
+                                        </td>
+                                        <td>
+                                            {% if critereCompetence.valeur is null %}
+                                                <span class="text-muted">En attente</span>
+                                            {% else %}
+                                                {{ critereCompetence.valeur }}
+                                            {% endif %}
+                                        </td>
                                     </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for critereCompetence in criteresCompetences %}
-                                        <tr>
-                                            <td>
-                                                {{ critereCompetence.critere.libelle }}
-                                            </td>
-                                            <td>
-                                                {% if critereCompetence.valeur is null %}
-                                                    <span class="text-muted">En attente</span>
-                                                {% else %}
-                                                    {{ critereCompetence.valeur }}
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% endfor %}
-
-                        <div class=" navigation text-end">
-                            {% if pages.hasPreviousPage %}
-                                <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
-                                   class="m-2">Page précédente</a>
-                            {% endif %}
-
-                            <span class="m-2">{{ pages.currentPage }}</span>
-                            {% if pages.nbPages > 1 %}
-                                <span class="m-2">/</span>
-                                <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nbPages}) }}"
-                                   class="m-2">{{ pages.nbPages }}</a>
-                            {% endif %}
-
-                            {% if pages.hasNextPage %}
-                                <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nextPage}) }}"
-                                   class="m-2">Page suivante</a>
-                            {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                </div>
-            </article>
-            <aside class="col-lg-4 col-12">
-                <div class="card p-0 h-100">
-                    <div class="card-header">
+                    {% endfor %}
 
+                    <div class=" navigation text-end">
+                        {% if pages.hasPreviousPage %}
+                            <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
+                               class="m-2">Page précédente</a>
+                        {% endif %}
+
+                        <span class="m-2">{{ pages.currentPage }}</span>
+                        {% if pages.nbPages > 1 %}
+                            <span class="m-2">/</span>
+                            <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nbPages}) }}"
+                               class="m-2">{{ pages.nbPages }}</a>
+                        {% endif %}
+
+                        {% if pages.hasNextPage %}
+                            <a href="{{ path('app_portfolio_univ_show', {'id': portfolio.id, 'page': pages.nextPage}) }}"
+                               class="m-2">Page suivante</a>
+                        {% endif %}
                     </div>
                 </div>
-            </aside>
-        </div>
+            </div>
+        </article>
     </section>
 {% endblock %}

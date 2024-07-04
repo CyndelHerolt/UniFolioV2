@@ -1,0 +1,7 @@
+<div{{ attributes }}>
+    <ul>
+        {% for competence in this.allCompetences %}
+            <li>{{ competence.code ?? null }} {{ competence.libelle }}</li>
+        {% endfor %}
+    </ul>
+</div>

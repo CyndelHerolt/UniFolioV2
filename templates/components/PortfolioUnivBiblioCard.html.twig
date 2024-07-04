@@ -20,14 +20,14 @@
         <td>
             {{ this.portfolioUniv.dateModification|date('d/m/Y') }}
         </td>
-        <td class="d-flex flex-column gap-1">
-            {% for competence in this.competences %}
-                <div class="pill-competence d-flex gap-1 align-items-center {{ competence.apcCompetence.couleur }}">
-                    {{ competence.apcCompetence.nomCourt }}
-                </div>
-            {% endfor %}
+{#        <td class="d-flex flex-row flex-wrap gap-1">#}
+{#            {% for competence in this.competences %}#}
+{#                <div class="pill-competence {{ competence.apcCompetence.couleur ?? competence.apcNiveau.apcCompetence.couleur }}">#}
+{#                    {{ competence.apcCompetence.nomCourt ?? competence.libelle }}#}
+{#                </div>#}
+{#            {% endfor %}#}
 
-        </td>
+{#        </td>#}
         <td>
             <div class="d-flex gap-2">
                 <a href="{{ path('app_portfolio_univ_show', {'id': this.portfolioUniv.id}) }}">

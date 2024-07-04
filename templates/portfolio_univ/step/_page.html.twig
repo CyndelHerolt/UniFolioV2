@@ -1,40 +1,37 @@
-<ul class="nav nav-tabs">
+<ul class="nav nav-tabs overflow-x-scroll overflow-y-hidden d-flex flex-nowrap">
     <li class="nav-item">
-        <a class="nav-link" aria-current="page" data-turbo="false"
+        <a class="nav-link" aria-current="page" data-turbo="false" style="width: max-content"
            href="{{ path('app_portfolio_univ_edit_portfolio', {'id': portfolio.id }) }}">Portfolio</a>
     </li>
 
     {% if portfolio.pages is not null %}
         {% for pageA in portfolio.pages %}
             <li class="nav-item" value="{{ pageA.id }}">
-                <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page" data-turbo="false"
+                <a class="nav-link {% if pageA.id == page.id %}active{% endif %}" aria-current="page" data-turbo="false" style="width: max-content"
                    href="{{ path('app_portfolio_univ_show_page', {'id': pageA.id}) }}">{{ pageA.libelle }}</a>
             </li>
         {% endfor %}
     {% endif %}
 
     <li class="nav-item">
-        <a class="nav-link" data-turbo="false" href="#">Cv</a>
+        <a class="nav-link" data-turbo="false" href="#" style="width: max-content">Cv</a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" data-turbo="false" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
+        <a class="nav-link" data-turbo="false" style="width: max-content" href="{{ path('app_biblio_portfolio_univ') }}">Enregistrer et
             quitter</a>
     </li>
 </ul>
 
-<div class="row">
 
-        <div class="col-lg-6 col-12">
             {% if page.apcNiveau is not null %}
             {% set competence = page.apcNiveau.apcCompetence %}
             {% elseif page.apcApprentissageCritique is not null %}
             {% set competence = page.apcApprentissageCritique.apcNiveau.apcCompetence %}
             {% endif %}
-            <h2 class="pill-competence d-flex gap-1 align-items-center {{ competence.couleur }}">{{ page.libelle }}</h2>
-        </div>
+            <h2 class="pill-competence {{ competence.couleur }}">{{ page.libelle }}</h2>
 
-</div>
+
 <hr>
 <div class="row">
     <div class="col-12">

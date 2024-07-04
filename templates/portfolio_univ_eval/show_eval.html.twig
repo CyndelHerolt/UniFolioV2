@@ -31,12 +31,7 @@
                 <div class="card-body p-5 m-5 border">
 
                     {% for page in pages.currentPageResults %}
-                        {% if page.apcNiveau is not null %}
-                            {% set competence = page.apcNiveau.apcCompetence %}
-                        {% elseif page.apcApprentissageCritique is not null %}
-                            {% set competence = page.apcApprentissageCritique.apcNiveau.apcCompetence %}
-                        {% endif %}
-                        <h2 class="pill-competence m-auto mb-5 {{ competence.couleur }}">{{ page.libelle }}</h2>
+                        <h2 class="pill-competence m-auto mb-5 {{ page.apcNiveau.apcCompetence.couleur ?? page.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">{{ page.libelle }}</h2>
 
                         {% if tracesPage is empty %}
                             <div class="alert alert-warning w-100">Aucune trace pour le moment</div>

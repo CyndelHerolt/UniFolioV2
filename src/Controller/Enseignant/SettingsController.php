@@ -162,9 +162,8 @@ public function criteres(): Response
 
             $pages = $portfolio->getPages();
             foreach($pages as $page) {
-                $this->pageRepository->delete($page, true);
-
-                $tracesPages = $this->tracePageRepository->findBy(['page' => $page]);
+                $tracesPages = $page->getTracePages();
+                    dump($tracesPages);
                 foreach($tracesPages as $tracePage) {
                     $tracesCompetences = $tracePage->getTrace()->getTraceCompetences();
 
@@ -172,6 +171,8 @@ public function criteres(): Response
                         $this->traceCompetenceRepository->remove($traceCompetence, true);
                     }
                 }
+                $this->pageRepository->delete($page, true);
+
             }
         }
 

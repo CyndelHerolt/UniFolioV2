@@ -14,7 +14,8 @@
         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
         <script src="https://npmcdn.com/flatpickr/dist/plugins/monthSelect/index.js"></script>
-        <script src="https://cdn.tiny.cloud/1/{{ tinyMCEApiKey }}/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+        <script src="https://cdn.tiny.cloud/1/{{ tinyMCEApiKey }}/tinymce/5/tinymce.min.js"
+                referrerpolicy="origin"></script>
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
@@ -34,11 +35,28 @@
 <main class="min-vh-100">
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="alert {% if label is defined %}alert-{{ label }}{% else %}alert-warning{% endif %} alert-dismissible fade show alert-popup w-100"
-                 role="alert"
-                style="z-index: 10; margin: 10px 0; position: absolute;">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="toast-container p-3 position-fixed top-0 end-0">
+                <div id="liveToast" class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header d-flex gap-2">
+                        {% if label == 'success' %}
+                            <twig:ux:icon name="bi:check-circle-fill" width="15" height="15"/>
+                            <strong class="me-auto">Succès</strong>
+                        {% elseif label == 'danger' %}
+                            <twig:ux:icon name="bi:exclamation-triangle-fill" width="15" height="15"/>
+                            <strong class="me-auto">Erreur</strong>
+                        {% elseif label == 'warning' %}
+                            <twig:ux:icon name="bi:exclamation-triangle-fill" width="15" height="15"/>
+                            <strong class="me-auto">Attention</strong>
+                        {% elseif label == 'info' %}
+                            <twig:ux:icon name="bi:info-circle-fill" width="15" height="15"/>
+                            <strong class="me-auto">Information</strong>
+                        {% endif %}
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ message }}
+                    </div>
+                </div>
             </div>
         {% endfor %}
     {% endfor %}

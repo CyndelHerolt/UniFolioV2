@@ -18,8 +18,16 @@
                 <div class="card-header">
                     <h2>Bilan de compétences</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column gap-5">
+                    <div>
+                    <h3>Général</h3>
                     <twig:AllCompetences/>
+                    </div>
+
+                    <div>
+                    <h3>Par étudiant</h3>
+                        <twig:BilanEtudiant/>
+                    </div>
                 </div>
             </div>
         </article>

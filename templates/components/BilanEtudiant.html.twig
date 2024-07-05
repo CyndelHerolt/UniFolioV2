@@ -1,0 +1,32 @@
+<div{{ attributes }}>
+    <form class="m-5" role="search">
+        <label for="search" class="visually-hidden">Rechercher un étudiant</label>
+        <input class="form-control me-2" type="search" placeholder="Rechercher un étudiant" aria-label="Search"
+               data-model="search" data-action="live#update">
+        <ul id="searchResults" class="list-group">
+            {% for etudiant in this.filteredEtudiants %}
+                <li class="list-group-item" data-action="live#click selectEtudiant" data-id="{{ etudiant.id }}">
+                    {{ etudiant.nom }} {{ etudiant.prenom }}
+                </li>
+            {% endfor %}
+        </ul>
+    </form>
+
+    <div class="filtres">
+        <ul class="nav nav-underline">
+            {% for semestre in this.semestres %}
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="#">{{ semestre.libelle }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <ul>
+        {% for etudiant in this.etudiants %}
+            <li>
+                {{ etudiant.nom }} {{ etudiant.prenom }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>

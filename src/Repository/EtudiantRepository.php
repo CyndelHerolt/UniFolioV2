@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Etudiant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -28,6 +29,15 @@ class EtudiantRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findBySemestre($semestre): array
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.semestre = :semestre')
+            ->setParameter('semestre', $semestre)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

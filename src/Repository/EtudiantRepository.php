@@ -40,6 +40,19 @@ class EtudiantRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByDepartement($departement): array
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.semestre', 's')
+            ->innerJoin('s.annee', 'a')
+            ->innerJoin('a.diplome', 'd')
+            ->innerJoin('d.departement', 'dep')
+            ->where('dep.id = :departement')
+            ->setParameter('departement', $departement)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Etudiant[] Returns an array of Etudiant objects
 //     */

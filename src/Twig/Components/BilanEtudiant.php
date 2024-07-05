@@ -23,9 +23,9 @@ final class BilanEtudiant
     /** @var Etudiant[] */
     public array $allEtudiants = [];
 
-    #[LiveProp(writable: true)]
-    /** @var Etudiant[] */
-    public array $filteredEtudiants = [];
+//    #[LiveProp(writable: true)]
+//    /** @var Etudiant[] */
+//    public array $filteredEtudiants = [];
 
     public array $allSemestres = [];
 
@@ -53,31 +53,33 @@ final class BilanEtudiant
     }
 
     #[LiveAction]
-    public function changeSemestre(#[LiveArg] ?int $semestreId): void
+    public function changeSemestre(#[LiveArg] Semestre $semestre): void
     {
-        $this->selectedSemestre = $this->semestreRepository->find($semestreId);
-        $this->allEtudiants = $this->etudiantRepository->findBySemestre($this->selectedSemestre);
+        $this->selectedSemestre = $semestre;
+        $this->getEtudiants();
+
     }
 
     #[LiveAction]
     public function updateSearch(#[LiveArg] string $search): void
     {
         $this->search = $search;
-        $this->filteredEtudiants = $this->getFilteredEtudiants();
+        $this->getFilteredEtudiants();
     }
 
     #[LiveAction]
     public function getFilteredEtudiants(): array
     {
-
-//        $this->allEtudiants = $this->getEtudiants();
+        $departement = $this->departementRepository->findDepartementEnseignantDefaut($this->security->getUser()->getEnseignant());
+        $etudiants = $this->etudiantRepository->findByDepartement($departement);
 
         if (empty($this->search)) {
             return $this->allEtudiants;
         } else {
-            return array_filter($this->getEtudiants(), function (Etudiant $etudiant) {
-                return str_contains(strtolower($etudiant->getNom()), strtolower($this->search))
-                    || str_contains(strtolower($etudiant->getPrenom()), strtolower($this->search));
+            return array_filter($etudiants, function (Etudiant $etudiant) {
+                $searchLower = strtolower($this->search);
+                return strpos(strtolower($etudiant->getNom()), $searchLower) !== false
+                    || strpos(strtolower($etudiant->getPrenom()), $searchLower) !== false;
             });
         }
     }
@@ -92,6 +94,8 @@ final class BilanEtudiant
                     $this->allEtudiants[] = $etudiant;
                 }
             }
+        } else {
+            $this->allEtudiants = $this->etudiantRepository->findBySemestre($this->selectedSemestre);
         }
 
         return $this->allEtudiants;

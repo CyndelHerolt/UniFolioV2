@@ -2,10 +2,10 @@
     <form class="m-5" role="search">
         <label for="search" class="visually-hidden">Rechercher un étudiant</label>
         <input class="form-control me-2" type="search" placeholder="Rechercher un étudiant" aria-label="Search"
-               data-model="search" data-action="live#update">
+               data-model="search">
         <ul id="searchResults" class="list-group">
             {% for etudiant in this.filteredEtudiants %}
-                <li class="list-group-item" data-action="live#click selectEtudiant" data-id="{{ etudiant.id }}">
+                <li class="list-group-item">
                     {{ etudiant.nom }} {{ etudiant.prenom }}
                 </li>
             {% endfor %}
@@ -16,12 +16,16 @@
         <ul class="nav nav-underline">
             {% for semestre in this.semestres %}
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">{{ semestre.libelle }}</a>
+                    <button class="nav-link {% if semestre == this.selectedSemestre %}active{% endif %}"
+                            aria-current="page" data-model="selectedSemestre">
+                        {{ semestre.libelle }}
+                    </button>
                 </li>
             {% endfor %}
         </ul>
     </div>
 
+    {{ this.selectedSemestre.libelle ?? null }}
     <ul>
         {% for etudiant in this.etudiants %}
             <li>

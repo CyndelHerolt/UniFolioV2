@@ -30,6 +30,7 @@
 
                 <div class="card-body p-5 m-5 border">
 
+                    <turbo-frame id="critere_eval_form" action="replace">
                     {% for page in pages.currentPageResults %}
                         <h2 class="pill-competence m-auto mb-5 {{ page.apcNiveau.apcCompetence.couleur ?? page.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">{{ page.libelle }}</h2>
 
@@ -45,7 +46,6 @@
                         <div>
                             <h4>Validation de la compétence {{ page.libelle }}</h4>
 
-                            <turbo-frame id="critere_eval_form" action="replace">
                                 <table>
                                     <thead>
                                     <tr>
@@ -91,6 +91,7 @@
                                                     </div>
                                                     <input type="hidden" name="critereCompetenceId"
                                                            value="{{ critereCompetence.id }}">
+                                                    <input type="hidden" name="page" value="{{ pages.currentPage }}">
                                                 </form>
                                             </td>
                                         </tr>
@@ -105,9 +106,9 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                            </turbo-frame>
                         </div>
                     {% endfor %}
+                    </turbo-frame>
 
                     <div class=" navigation text-end">
                         {% if pages.hasPreviousPage %}

@@ -83,8 +83,12 @@ class PortfolioUnivEvalController extends AbstractController
             }
 
             return $this->render('partials/_critere_eval_form.html.twig', [
-                'critereCompetence' => $critereCompetence,
                 'portfolio' => $portfolio,
+                'pages' => $pagerfanta,
+                'tracesPage' => $tracesPage,
+                'apcNiveaux' => $competences['apcNiveaux'] ?? null,
+                'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
+                'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
                 'criteresCompetences' => $criteresCompetences,
                 'total' => $sum,
             ]);
@@ -106,7 +110,6 @@ class PortfolioUnivEvalController extends AbstractController
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
             'criteresCompetences' => $criteresCompetences,
-            'editCritereId' => $editCritereId ?? null,
         ]);
     }
 }

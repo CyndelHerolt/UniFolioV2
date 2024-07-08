@@ -55,18 +55,6 @@ class PortfolioUnivEvalController extends AbstractController
             $criteresCompetences = $this->critereApprentissageCritiqueRepository->findByPage($currentPage->getId());
         }
 
-        $edit = $request->query->get('edit', false);
-
-        if ($edit) {
-            $critereCompetence = $request->query->get('critereCompetence');
-            return $this->render('partials/_critere_eval_form.html.twig', [
-                'editCritereId' => $critereCompetence,
-                'critereCompetence' => $this->critereNiveauRepository->findOneBy(['id' => $critereCompetence]),
-                'portfolio' => $portfolio,
-                'criteresCompetences' => $criteresCompetences,
-            ]);
-        }
-
         // si la requête contient un paramètre "valeur" et un paramètre "critereCompetenceId"
         if ($request->query->get('valeur') && $request->query->get('critereCompetenceId')) {
             $datas = $request->query->get('valeur');
@@ -88,11 +76,29 @@ class PortfolioUnivEvalController extends AbstractController
                 $this->critereApprentissageCritiqueRepository->save($critereCompetence, true);
             }
 
-            return $this->redirectToRoute('app_portfolio_univ_eval_show', ['id' => $portfolio->getId()]);
+            // faire la somme des valeurs des critères de compétences
+            $sum = 0;
+            foreach ($criteresCompetences as $critereCompetence) {
+                $sum += $critereCompetence->getValeur();
+            }
+
+            return $this->render('partials/_critere_eval_form.html.twig', [
+                'critereCompetence' => $critereCompetence,
+                'portfolio' => $portfolio,
+                'criteresCompetences' => $criteresCompetences,
+                'total' => $sum,
+            ]);
+        }
+
+        // faire la somme des valeurs des critères de compétences
+        $sum = 0;
+        foreach ($criteresCompetences as $critereCompetence) {
+            $sum += $critereCompetence->getValeur();
         }
 
 
         return $this->render('portfolio_univ_eval/show_eval.html.twig', [
+            'total' => $sum,
             'portfolio' => $portfolio,
             'pages' => $pagerfanta,
             'tracesPage' => $tracesPage,
@@ -100,7 +106,6 @@ class PortfolioUnivEvalController extends AbstractController
             'apcApprentissageCritiques' => $competences['apcApprentissagesCritiques'] ?? null,
             'groupedApprentissageCritiques' => $competences['groupedApprentissagesCritiques'] ?? null,
             'criteresCompetences' => $criteresCompetences,
-            'edit' => $edit,
             'editCritereId' => $editCritereId ?? null,
         ]);
     }

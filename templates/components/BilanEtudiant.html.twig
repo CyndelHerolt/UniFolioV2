@@ -1,22 +1,31 @@
 <div{{ attributes }}>
-    <form class="m-5" role="search">
-        <label for="search" class="visually-hidden">Rechercher un étudiant</label>
-        <input class="form-control me-2" type="search" placeholder="Rechercher un étudiant" aria-label="Search"
-               data-model="search">
-        <ul id="searchResults" class="list-group">
-            {% for etudiant in this.filteredEtudiants %}
-                <li class="list-group-item">
-                    {{ etudiant.nom }} {{ etudiant.prenom }}
-                </li>
-            {% endfor %}
-        </ul>
-    </form>
 
-    <ul>
-        {% for etudiant in this.etudiants %}
-            <li>
-                {{ etudiant.nom }} {{ etudiant.prenom }}
-            </li>
-        {% endfor %}
-    </ul>
+    <tr>
+        <td>
+            {{ this.etudiant.nom }} {{ this.etudiant.prenom }}
+        </td>
+        <td>
+            {% for g in this.etudiant.groupe %}
+                {% if 'TP' in g.typeGroupe.libelle %}
+                    TP {{ g.libelle }}
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {{ this.etudiant.semestre.libelle }}
+        </td>
+        <td>
+            {{ this.nbTraces }}
+        </td>
+        <td>
+            ??
+        </td>
+        <td>
+            <a href="">
+                <button class="btn-info d-flex justify-content-center align-items-center">
+                    <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
+                </button>
+            </a>
+    </tr>
+
 </div>

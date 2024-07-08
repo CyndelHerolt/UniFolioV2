@@ -2,89 +2,46 @@
 
 namespace App\Twig\Components;
 
-use App\Entity\Etudiant;
-use App\Entity\Semestre;
-use App\Repository\DepartementRepository;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\EtudiantRepository;
-use App\Repository\SemestreRepository;
-use Symfony\Bundle\SecurityBundle\Security;
+use App\Repository\PortfolioUnivRepository;
+use App\Repository\TraceRepository;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
-use Symfony\UX\LiveComponent\Attribute\LiveAction;
-use Symfony\UX\LiveComponent\Attribute\LiveArg;
-use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
-use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 #[AsLiveComponent('BilanEtudiant')]
 final class BilanEtudiant
 {
     use DefaultActionTrait;
 
-    #[LiveProp(writable: true)]
-    /** @var Etudiant[] */
-    public array $allEtudiants = [];
-
-    #[LiveProp(writable: true)]
-    /** @var Etudiant[] */
-    public array $filteredEtudiants = [];
-
-    public array $allSemestres = [];
-
-    #[LiveProp(writable: true)]
-    public ?string $search = '';
+    public int $id;
 
     public function __construct(
-        private readonly SemestreRepository    $semestreRepository,
-        private readonly EtudiantRepository    $etudiantRepository,
-        private readonly DepartementRepository $departementRepository,
-        private readonly Security              $security,
+        private readonly EtudiantRepository $etudiantRepository,
+        private readonly PortfolioUnivRepository $portfolioUnivRepository,
+        private readonly TraceRepository $traceRepository,
+        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
     )
     {
+
     }
 
-    public function getSemestres(): array
+    public function getNbTraces()
     {
-        $departement = $this->departementRepository->findDepartementEnseignantDefaut($this->security->getUser()->getEnseignant());
-        $this->allSemestres = $this->semestreRepository->findByDepartementActif($departement);
+        $annee = $this->anneeUniversitaireRepository->findOneBy(['active' => true]);
+        $portfolio = $this->portfolioUnivRepository->findBy(['etudiant' => $this->id, 'anneeUniv' => $annee]);
+        $traces = $this->traceRepository->findByPortfolio($portfolio);
 
-        return $this->allSemestres;
+        return count($traces);
     }
 
-    #[LiveAction]
-    public function updateSearch(#[LiveArg] string $search): void
+    public function getValidation()
     {
-        $this->search = $search;
-        $this->filteredEtudiants = $this->getFilteredEtudiants(); // Mettez à jour filteredEtudiants directement ici.
+
     }
 
-    public function getFilteredEtudiants(): array
+    public function getEtudiant()
     {
-        $departement = $this->departementRepository->findDepartementEnseignantDefaut($this->security->getUser()->getEnseignant());
-        $etudiants = $this->etudiantRepository->findByDepartement($departement);
-
-        if (empty($this->search)) {
-            $this->filteredEtudiants = $this->allEtudiants;
-        } else {
-            $this->filteredEtudiants = array_filter($etudiants, function (Etudiant $etudiant) {
-                $searchLower = strtolower($this->search);
-                return strpos(strtolower($etudiant->getNom()), $searchLower) !== false
-                    || strpos(strtolower($etudiant->getPrenom()), $searchLower) !== false;
-            });
-        }
-        return $this->filteredEtudiants; // Retourne filteredEtudiants pour une utilisation immédiate si nécessaire.
-    }
-
-    public function getEtudiants(): array
-    {
-
-        $semestres = $this->getSemestres();
-        foreach ($semestres as $semestre) {
-            $etudiants = $this->etudiantRepository->findBySemestre($semestre);
-            foreach ($etudiants as $etudiant) {
-                $this->allEtudiants[] = $etudiant;
-            }
-        }
-
-        return $this->allEtudiants;
+        return $this->etudiantRepository->find($this->id);
     }
 }

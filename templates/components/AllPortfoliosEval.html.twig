@@ -6,34 +6,34 @@
 
             <div class="header-actions">
                 <div class="filtres d-flex gap-3 align-items-baseline">
-                    <div class="accordion accordion-flush filter-drop" id="accordionCompetences">
+                    <div class="accordion accordion-flush filter-drop" id="portfolioFiltreSemestres">
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingTri">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#flush-collapseCompetences" aria-expanded="false"
-                                        aria-controls="flush-collapseCompetences">
+                                        data-bs-target="#flush-collapsePortfolioFiltreSemestres" aria-expanded="false"
+                                        aria-controls="flush-collapsePortfolioFiltreSemestres">
                                     Filtrer par semestres
                                     <twig:ux:icon name="bi:caret-down-fill" width="15" height="15"/>
                                 </button>
                             </h2>
-                            <div id="flush-collapseCompetences" class="accordion-collapse collapse"
+                            <div id="flush-collapsePortfolioFiltreSemestres" class="accordion-collapse collapse"
                                  aria-labelledby="flush-headingCompetences"
-                                 data-bs-parent="#accordionCompetences">
+                                 data-bs-parent="#portfolioFiltreSemestres">
                                 <div class="accordion-body row">
                                     <div>
                                         <h6>Semestres</h6>
                                         <fieldset>
                                             {% for semestre in this.allSemestres %}
                                                 <div style="display: flex" class="form-check">
-                                                    <input type="checkbox" id="{{ semestre.id }}"
-                                                           name="{{ semestre.id }}"
+                                                    <input type="checkbox" id="portfolioSemestre{{ semestre.id }}"
+                                                           name="portfolioSemestre{{ semestre.id }}"
                                                            data-model="selectedSemestre"
                                                            data-action="live#action"
                                                            data-action-name="changeSemestre"
                                                            data-live-action-param=changeSemestre
                                                            value="{{ semestre.id }}"
                                                            class="form-check-input">
-                                                    <label for="{{ semestre.id }}" style="margin-left: 10px"
+                                                    <label for="portfolioSemestre{{ semestre.id }}" style="margin-left: 10px"
                                                            class="form-check-label">{{ semestre.libelle }}</label><br>
                                                 </div>
                                             {% endfor %}

@@ -81,7 +81,7 @@ class TraceRepository extends ServiceEntityRepository
     public function findByPortfolio($portfolio)
     {
         return $this->createQueryBuilder('t')
-            ->join('t.t.traceCompetences', 'tc')
+            ->join('t.traceCompetences', 'tc')
             ->join('tc.portfolio', 'p')
             ->where('p = :portfolio')
             ->setParameter('portfolio', $portfolio)

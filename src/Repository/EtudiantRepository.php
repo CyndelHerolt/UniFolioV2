@@ -36,6 +36,7 @@ class EtudiantRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->where('e.semestre = :semestre')
             ->setParameter('semestre', $semestre)
+            ->orderBy('e.nom', Criteria::ASC)
             ->getQuery()
             ->getResult();
     }

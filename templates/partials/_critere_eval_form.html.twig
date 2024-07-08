@@ -23,53 +23,39 @@
                     {% if critereCompetence.valeur is null %}
                         <span class="text-muted">En attente</span>
                     {% else %}
-                        {{ critereCompetence.libelle }} <span class="pill">{{ critereCompetence.valeur }}/5</span>
+                        {{ critereCompetence.libelle }} <span
+                            class="pill">{{ critereCompetence.valeur }}/5</span>
                     {% endif %}
                 </td>
                 <td>
-                    {% if critereCompetence.id == editCritereId %}
-                        <form class="d-flex align-items-center justify-content-between gap-4">
-                            <div>
-                                {% for key, valeurs in critereCompetence.critere.valeurs %}
-                                    <input type="radio"
-                                           id="{{ key }}"
-                                           name="valeur"
-                                           value="{{ key }} : {{ valeurs }}">
-                                    <label for="{{ key }}">{{ valeurs }}
-                                        : {{ key }}</label>
-                                    <br>
-                                {% endfor %}
-                            </div>
-                            <div>
-                                <button type="submit" class="primary-btn">
-                                    Valider
-                                </button>
-                                <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': 0, 'editCritereId': critereCompetence.id}) }}">
-                                    <button type="submit" class="primary-btn">
-                                        Annuler
-                                    </button>
-                                </a>
-                            </div>
-                            <input type="hidden" name="critereCompetenceId" value="{{ critereCompetence.id }}">
-                        </form>
-                    {% else %}
-                        {% if critereCompetence.valeur is null %}
-                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': true, 'critereCompetence': critereCompetence.id}) }}">
-                                <button class="secondary-btn">
-                                    Evaluer
-                                </button>
-                            </a>
-                        {% else %}
-                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'edit': true, 'critereCompetence': critereCompetence.id}) }}">
-                                <button class="secondary-btn">
-                                    Modifier
-                                </button>
-                            </a>
-                        {% endif %}
-                    {% endif %}
+                    <form class="d-flex align-items-center justify-content-between gap-4">
+                        <div class="form-check">
+                            {% for key, valeurs in critereCompetence.critere.valeurs %}
+                                <input type="submit"
+                                       style="color: transparent"
+                                       class="form-check-input"
+                                       id="{{ key }}{{ critereCompetence.critere.id }}"
+                                       name="valeur"
+                                       value="{{ key }} : {{ valeurs }}">
+                                <label for="{{ key }}{{ critereCompetence.critere.id }}">{{ valeurs }}
+                                    : {{ key }}</label>
+                                <br>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="critereCompetenceId"
+                               value="{{ critereCompetence.id }}">
+                    </form>
                 </td>
             </tr>
         {% endfor %}
+        <tr>
+            <td colspan="2">
+                <strong>Total</strong>
+            </td>
+            <td>
+                <span class="{% if total <= 5 %}pill-danger{% elseif total <= 10 %}pill-warning{% else %}pill-success{% endif %}">{{ total }}</span>
+            </td>
+        </tr>
         </tbody>
     </table>
 </turbo-frame>

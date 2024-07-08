@@ -152,6 +152,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/babdev/pagerfanta-bundle" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/pagerfanta/pagerfanta" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-icons" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/ux-chartjs" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

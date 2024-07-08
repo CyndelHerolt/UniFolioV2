@@ -8,6 +8,7 @@
 namespace App\Controller\SynchroIntranet;
 
 use App\Entity\Annee;
+use App\Entity\AnneeUniversitaire;
 use App\Entity\ApcParcours;
 use App\Entity\Departement;
 use App\Entity\Diplome;
@@ -16,6 +17,7 @@ use App\Entity\Groupe;
 use App\Entity\Semestre;
 use App\Entity\TypeGroupe;
 use App\Repository\AnneeRepository;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\ApcParcoursRepository;
@@ -43,6 +45,7 @@ class StructureSynchro extends AbstractController
         DepartementRepository $departementRepository,
         DiplomeRepository $diplomeRepository,
         AnneeRepository $anneeRepository,
+        AnneeUniversitaireRepository $anneeUniversitaireRepository,
         SemestreRepository $semestreRepository,
         TypeGroupeRepository $typeGroupeRepository,
         GroupeRepository $groupeRepository,
@@ -395,12 +398,46 @@ class StructureSynchro extends AbstractController
             }
         }
 
+        //-------------------------------------------------------------------------------------------------------
+        //-------------------------------------------ANNEES UNIV-------------------------------------------------
+        //-------------------------------------------------------------------------------------------------------
+
+        $anneesUniv = $client->request(
+            'GET',
+            $_ENV['API_URL'] . 'unifolio/anneeUniversitaire/liste',
+            [
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'x-api-key' => $_ENV['API_KEY']
+                ]
+            ]
+        );
+
+        $anneesUniv = $anneesUniv->toArray();
+
+        foreach ($anneesUniv as $anneeUniv) {
+            $existingAnneeUniv = $anneeUniversitaireRepository->findOneBy(['id' => $anneeUniv['id']]);
+            if ($existingAnneeUniv) {
+                $existingAnneeUniv->setId($anneeUniv['id']);
+                $existingAnneeUniv->setLibelle($anneeUniv['libelle']);
+                $existingAnneeUniv->setAnnee($anneeUniv['annee']);
+                $existingAnneeUniv->setActive($anneeUniv['active']);
+                $anneeUniversitaireRepository->save($existingAnneeUniv, true);
+            } else {
+                $newAnneeUniv = new AnneeUniversitaire();
+                $newAnneeUniv->setId($anneeUniv['id']);
+                $newAnneeUniv->setLibelle($anneeUniv['libelle']);
+                $newAnneeUniv->setAnnee($anneeUniv['annee']);
+                $newAnneeUniv->setActive($anneeUniv['active']);
+                $anneeUniversitaireRepository->save($newAnneeUniv, true);
+            }
+        }
+
 
         $this->addFlash('success', 'Les données ont bien été importées.');
 
-//        return $this->redirectToRoute('app_dashboard', [
-//            'departements' => $departements
-//        ]);
+
         return $this->redirectToRoute('admin');
     }
 }

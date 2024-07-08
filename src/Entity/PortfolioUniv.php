@@ -27,17 +27,11 @@ class PortfolioUniv
     #[ORM\Column(length: 255)]
     private ?string $libelle = null;
 
-    #[ORM\Column]
-    private ?bool $visibilite = null;
-
     #[ORM\Column(length: 255)]
     private ?string $banniere = '/files_directory/banniere.jpg';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
-
-    #[ORM\Column]
-    private ?bool $opt_search = null;
 
     #[ORM\ManyToOne(inversedBy: 'portfolioUnivs')]
     #[ORM\JoinColumn(nullable: false)]
@@ -53,10 +47,25 @@ class PortfolioUniv
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'portfolio')]
     private Collection $commentaires;
 
+    /**
+     * @var Collection<int, TraceCompetence>
+     */
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'portfolio', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $traceCompetences;
+
+    #[ORM\ManyToOne(inversedBy: 'portfolioUnivs')]
+    private ?AnneeUniversitaire $anneeUniv = null;
+
     public function __construct()
     {
         $this->pages = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        $this->traceCompetences = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->libelle;
     }
 
     public function getId(): ?int
@@ -100,18 +109,6 @@ class PortfolioUniv
         return $this;
     }
 
-    public function isVisibilite(): ?bool
-    {
-        return $this->visibilite;
-    }
-
-    public function setVisibilite(bool $visibilite): static
-    {
-        $this->visibilite = $visibilite;
-
-        return $this;
-    }
-
     public function getBanniere(): ?string
     {
         return $this->banniere;
@@ -132,18 +129,6 @@ class PortfolioUniv
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function isOptSearch(): ?bool
-    {
-        return $this->opt_search;
-    }
-
-    public function setOptSearch(bool $opt_search): static
-    {
-        $this->opt_search = $opt_search;
 
         return $this;
     }
@@ -228,6 +213,48 @@ class PortfolioUniv
                 $commentaire->setPortfolio(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TraceCompetence>
+     */
+    public function getTraceCompetences(): Collection
+    {
+        return $this->traceCompetences;
+    }
+
+    public function addTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if (!$this->traceCompetences->contains($traceCompetence)) {
+            $this->traceCompetences->add($traceCompetence);
+            $traceCompetence->setPortfolio($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTraceCompetence(TraceCompetence $traceCompetence): static
+    {
+        if ($this->traceCompetences->removeElement($traceCompetence)) {
+            // set the owning side to null (unless already changed)
+            if ($traceCompetence->getPortfolio() === $this) {
+                $traceCompetence->setPortfolio(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAnneeUniv(): ?AnneeUniversitaire
+    {
+        return $this->anneeUniv;
+    }
+
+    public function setAnneeUniv(?AnneeUniversitaire $anneeUniv): static
+    {
+        $this->anneeUniv = $anneeUniv;
 
         return $this;
     }

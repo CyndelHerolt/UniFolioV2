@@ -5,7 +5,17 @@
                    name="traces[]" value="{{ this.trace.id }}" autocomplete="off">
         </td>
         <td>
-            <p class="table-primary-text">{{ this.trace.libelle }}</p>
+            <div class="d-flex flex-column gap-1">
+                <div class="pill">
+                    {% if this.type is null %}
+                        Type non défini
+                    {% else %}
+                        {{ this.trace.contenu|length }}
+                        {{ this.type }}{% if this.trace.contenu|length > 1 %}s{% endif %}
+                    {% endif %}
+                </div>
+                <p class="table-primary-text">{{ this.trace.libelle }}</p>
+            </div>
         </td>
         <td>
             {{ this.trace.dateModification|date('d/m/Y') }}
@@ -18,13 +28,8 @@
             </div>
             {% else %}
             {% for traceCompetences in this.trace.traceCompetences %}
-            {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
-            <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
-                {% else %}
-                <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                    {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
-                    {% endif %}
+                <div class="pill-competence w-100 {{ traceCompetences.apcNiveau.apcCompetence.couleur ?? traceCompetences.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">
+                    {{ traceCompetences.apcNiveau.apcCompetence.nomCourt ?? traceCompetences.apcApprentissageCritique.libelle }}
                 </div>
                 {% endfor %}
                 {% endif %}

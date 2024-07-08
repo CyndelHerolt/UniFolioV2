@@ -1,17 +1,17 @@
 <div{{ attributes }}>
-    {% set totalValidations = this.trace.validations|length %}
-    {% set validated = 0 %}
+{#    {% set totalValidations = this.trace.validations|length %}#}
+{#    {% set validated = 0 %}#}
 
-    {% for validation in this.trace.validations %}
-        {% if validation.etat == 3 %}
-            {% set validated = validated + 1 %}
-        {% endif %}
-    {% endfor %}
+{#    {% for validation in this.trace.validations %}#}
+{#        {% if validation.etat == 3 %}#}
+{#            {% set validated = validated + 1 %}#}
+{#        {% endif %}#}
+{#    {% endfor %}#}
 
-    {% set percentage = 0 %}
-    {% if totalValidations != 0 %}
-        {% set percentage = (validated/totalValidations)*100 %}
-    {% endif %}
+{#    {% set percentage = 0 %}#}
+{#    {% if totalValidations != 0 %}#}
+{#        {% set percentage = (validated/totalValidations)*100 %}#}
+{#    {% endif %}#}
 
     <tr>
         <td>
@@ -35,7 +35,7 @@
         <td>
             {{ this.trace.dateModification|date('d/m/Y') }}
         </td>
-        <td class="d-flex flex-column gap-1">
+        <td class="d-flex flex-column gap-1 h-100">
             {% if this.trace.traceCompetences is empty %}
                 <div class="pill-danger d-flex align-items-center gap-1">
                     <twig:ux:icon name="bi:exclamation-octagon" width="15" height="15"/>
@@ -43,34 +43,28 @@
                 </div>
             {% else %}
                 {% for traceCompetences in this.trace.traceCompetences %}
-                    {% if traceCompetences.apcNiveau and traceCompetences.apcNiveau.actif == true %}
-                        <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                            {{ traceCompetences.apcNiveau.apcCompetence.nomCourt }}
-                        </div>
-                    {% else %}
-                        <div class="pill-competence d-flex gap-1 align-items-center {{ traceCompetences.apcNiveau.apcCompetence.couleur }}">
-                            {{ traceCompetences.apcApprentissageCritique.apcCompetence.nomCourt }}
-                        </div>
-                    {% endif %}
+                    <div class="pill-competence w-100 {{ traceCompetences.apcNiveau.apcCompetence.couleur ?? traceCompetences.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">
+                        {{ traceCompetences.apcNiveau.apcCompetence.nomCourt ?? traceCompetences.apcApprentissageCritique.libelle }}
+                    </div>
                 {% endfor %}
             {% endif %}
         </td>
         <td>
             <div class="circle-progress">
-                <svg viewBox="0 0 36 36" class="circular-chart">
-                    <path class="circle-bg"
-                          d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path class="circle"
-                          stroke-dasharray="{{ percentage == 100 ? '99.9, 100' : percentage ~ ', 100' }}"
-                          d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <text x="18" y="20.35" class="percentage">{{ percentage|round }}%</text>
-                </svg>
+{#                <svg viewBox="0 0 36 36" class="circular-chart">#}
+{#                    <path class="circle-bg"#}
+{#                          d="M18 2.0845#}
+{#                a 15.9155 15.9155 0 0 1 0 31.831#}
+{#                a 15.9155 15.9155 0 0 1 0 -31.831"#}
+{#                    />#}
+{#                    <path class="circle"#}
+{#                          stroke-dasharray="{{ percentage == 100 ? '99.9, 100' : percentage ~ ', 100' }}"#}
+{#                          d="M18 2.0845#}
+{#                a 15.9155 15.9155 0 0 1 0 31.831#}
+{#                a 15.9155 15.9155 0 0 1 0 -31.831"#}
+{#                    />#}
+{#                    <text x="18" y="20.35" class="percentage">{{ percentage|round }}%</text>#}
+{#                </svg>#}
             </div>
         </td>
         <td>

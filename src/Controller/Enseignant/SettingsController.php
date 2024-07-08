@@ -10,6 +10,12 @@ use App\Repository\CriteresRepository;
 use App\Repository\DepartementEnseignantRepository;
 use App\Repository\DepartementRepository;
 use App\Repository\EnseignantRepository;
+use App\Repository\EtudiantRepository;
+use App\Repository\PageRepository;
+use App\Repository\PortfolioUnivRepository;
+use App\Repository\TraceCompetenceRepository;
+use App\Repository\TracePageRepository;
+use App\Service\PortfolioCreateService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,10 +24,15 @@ use Symfony\Component\Routing\Attribute\Route;
 class SettingsController extends BaseController
 {
     public function __construct(
-        private CriteresRepository    $criteresRepository,
-        protected DepartementRepository $departementRepository,
-        protected EnseignantRepository  $enseignantRepository,
-        protected DepartementEnseignantRepository $departementEnseignantRepository,
+        private readonly CriteresRepository              $criteresRepository,
+        private readonly DepartementRepository           $departementRepository,
+        private readonly EnseignantRepository            $enseignantRepository,
+        private readonly DepartementEnseignantRepository $departementEnseignantRepository,
+        private readonly PortfolioUnivRepository         $portfolioUnivRepository,
+        private readonly PageRepository                  $pageRepository,
+        private readonly TraceCompetenceRepository       $traceCompetenceRepository,
+        private readonly PortfolioCreateService          $portfolioCreateService,
+        private readonly TracePageRepository             $tracePageRepository, private readonly EtudiantRepository $etudiantRepository,
     )
     {
     }
@@ -56,43 +67,38 @@ class SettingsController extends BaseController
         ]);
     }
 
-    #[Route('/settings/criteres/defaut', name: 'app_settings_criteres_defaut')]
-    public function criteres(): Response
-    {
-        $enseignant = $this->getUser()->getEnseignant();
-        $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
+#[Route('/settings/criteres/defaut', name: 'app_settings_criteres_defaut')]
+public function criteres(): Response
+{
+    $enseignant = $this->getUser()->getEnseignant();
+    $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
 
-        // si il existe déjà des critères qui ont pour département le département par défaut de l'enseignant on les supprime
-        $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
-        if ($criteres) {
-            foreach ($criteres as $critere) {
-                $this->criteresRepository->remove($critere, true);
-            }
-        }
+    // Récupérer les critères existants
+    $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
 
-        // on crée les critères par défaut pour le département de l'enseignant
-        for ($i = 0; $i < 4; $i++) {
-            $critere = new Criteres();
-            if ($i === 0) {
-                $critere->setLibelle('Pertinence du ou des media.s');
-                $critere->setValeurs([4 => 'Adaptée', 2 => 'Adéquate', 1 => 'A améliorer', 0 => 'Non pertinente']);
-            } elseif ($i === 1) {
-                $critere->setLibelle('Pertinence de l\'argumentaire');
-                $critere->setValeurs([4 => 'Solide', 2 => 'Clair', 1 => 'Confus', 0 => 'Inapproprié']);
-            } elseif ($i === 2) {
-                $critere->setLibelle('Cohérence avec la compétence visée');
-                $critere->setValeurs([4 => 'En accord total', 2 => 'En accord partiel', 1 => 'En désaccord partiel', 0 => 'En désaccord total']);
-            } elseif ($i === 3) {
-                $critere->setLibelle('Qualité de la rédaction');
-                $critere->setValeurs([4 => 'Précise', 2 => 'Soignée', 1 => 'Approximative', 0 => 'Brouillone']);
-            }
-            $critere->setDepartement($departementDefaut);
+    // Définir les libellés et valeurs par défaut
+    $defaultLibelles = [
+        'Pertinence des medias',
+        'Pertinence des argumentaires',
+        'Cohérence avec la compétence visée',
+        'Diversité des traces'
+    ];
+    $defaultValeurs = [
+        [5 => 'Adapté', 4 => 'Adéquat', 3 => 'Acceptable', 2 => 'A améliorer', 1 => 'Non pertinent', 0 => 'Non applicable'],
+        [5 => 'Solide', 4 => 'Convaincant' , 3 => 'Clair', 2 => 'Confus', 1 => 'Inapproprié', 0 => 'Non applicable'],
+        [5 => 'En accord total', 4 => 'En accord partiel', 3 => 'Peu en accord', 2 => 'Pas en accord', 1 => 'Non cohérent', 0 => 'Non applicable'],
+        [5 => 'Très diversifiées', 4 => 'Diversifiées', 3 => 'Peu diversifiées', 2 => 'Répétitives', 1 => 'Pas diversifiées', 0 => 'Non applicable']
+    ];
 
-            $this->criteresRepository->save($critere, true);
-        }
-
-        return $this->redirectToRoute('app_settings');
+    // Parcourir les critères existants et les mettre à jour
+    foreach ($criteres as $critere) {
+        $critere->setLibelle(array_shift($defaultLibelles));
+        $critere->setValeurs(array_shift($defaultValeurs));
+        $this->criteresRepository->save($critere, true);
     }
+
+    return $this->redirectToRoute('app_settings');
+}
 
     #[Route('/settings/criteres/edit/{id}', name: 'app_settings_criteres_edit')]
     public function editCriteres(Request $request, ?int $id): Response
@@ -130,6 +136,46 @@ class SettingsController extends BaseController
         } else {
             return $this->redirectToRoute('app_settings', ['edit' => true, 'critereId' => $id]);
         }
+        return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/settings/competences/opt', name: 'app_settings_competences_opt')]
+    public function changeCompetencesOpt(Request $request): Response
+    {
+        $enseignant = $this->getUser()->getEnseignant();
+        $departement = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
+
+        $selectedOption = $request->request->get('competence');
+
+        $departement->setOptCompetence($selectedOption);
+        $this->departementRepository->save($departement, true);
+
+//        $etudiant = $this->etudiantRepository->findOneBy(['username' => 'hero0005']);
+//        $this->portfolioCreateService->create($etudiant);
+
+        $portfolios = $this->portfolioUnivRepository->findByDepartement($departement);
+
+        foreach($portfolios as $portfolio) {
+            $this->portfolioCreateService->create($portfolio->getEtudiant());
+
+            $this->portfolioUnivRepository->remove($portfolio, true);
+
+            $pages = $portfolio->getPages();
+            foreach($pages as $page) {
+                $tracesPages = $page->getTracePages();
+                    dump($tracesPages);
+                foreach($tracesPages as $tracePage) {
+                    $tracesCompetences = $tracePage->getTrace()->getTraceCompetences();
+
+                    foreach($tracesCompetences as $traceCompetence) {
+                        $this->traceCompetenceRepository->remove($traceCompetence, true);
+                    }
+                }
+                $this->pageRepository->delete($page, true);
+
+            }
+        }
+
         return $this->redirectToRoute('app_settings');
     }
 

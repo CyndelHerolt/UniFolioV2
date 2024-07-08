@@ -11,20 +11,23 @@ use App\Repository\ApcApprentissageCritiqueRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class CompetencesService {
+class CompetencesService
+{
     private $security;
     private $apcNiveauRepository;
     private $apcApprentissageCritiqueRepository;
     private $competenceRepository;
 
-    public function __construct(Security $security, ApcNiveauRepository $apcNiveauRepository, ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository, ApcCompetenceRepository $competenceRepository) {
+    public function __construct(Security $security, ApcNiveauRepository $apcNiveauRepository, ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository, ApcCompetenceRepository $competenceRepository)
+    {
         $this->security = $security;
         $this->apcNiveauRepository = $apcNiveauRepository;
         $this->apcApprentissageCritiqueRepository = $apcApprentissageCritiqueRepository;
         $this->competenceRepository = $competenceRepository;
     }
 
-    public function getCompetences(UserInterface $user) {
+    public function getCompetencesEtudiant(UserInterface $user)
+    {
 
         $user = $user->getEtudiant();
         $semestre = $user->getSemestre();
@@ -50,9 +53,8 @@ class CompetencesService {
             foreach ($competences as $competence) {
                 $niveaux = array_merge($niveaux, $this->apcNiveauRepository->findByAnnee($competence, $annee->getOrdre()));
             }
-            // si les apcNiveaux dans niveaux ont pour actif = true
             foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
+                if ($dept->getOptCompetence() === 1) {
                     $apcNiveaux[] = $niveau;
                 } else {
                     // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
@@ -65,7 +67,7 @@ class CompetencesService {
             // ------------récupère tous les apcNiveau de l'année -------------------------
             $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
             foreach ($niveaux as $niveau) {
-                if ($niveau->isActif() === true) {
+                if ($dept->getOptCompetence() === 1) {
                     $apcNiveaux[] = $niveau;
                 } else {
                     // on stocke tous les apcNiveaux.apcApprentissageCritiques dans un tableau
@@ -92,6 +94,43 @@ class CompetencesService {
             'apcApprentissagesCritiques' => $apcApprentissageCritiques,
             'apcNiveaux' => $apcNiveaux,
             'groupedApprentissagesCritiques' => $groupedApprentissageCritiques,
+        ];
+    }
+
+    public function getCompetencesDepartement($departement)
+    {
+
+        $niveaux = $this->apcNiveauRepository->findByDepartement($departement);
+
+        $apcNiveaux = [];
+        $apcApprentissagesCritiques = [];
+        foreach ($niveaux as $niveau) {
+            $apcNiveaux[] = $niveau;
+            foreach ($niveau->getApcApprentissageCritiques() as $apcApprentissageCritique) {
+                $apcApprentissagesCritiques[] = $apcApprentissageCritique;
+            }
+        }
+        if ($departement->getOptCompetence() === 1) {
+            return $apcNiveaux;
+        } else {
+            return $apcApprentissagesCritiques;
+        }
+    }
+
+    public function getCompetencesPortfolio($portfolio)
+    {
+        $pages = $portfolio->getPages();
+        foreach ($pages as $page) {
+            if ($page->getApcNiveau()) {
+                $apcNiveaux[] = $page->getApcNiveau();
+            } else {
+                $apcApprentissagesCritiques[] = $page->getApcApprentissageCritique();
+            }
+        }
+
+        return [
+            'apcApprentissagesCritiques' => $apcApprentissagesCritiques ?? null,
+            'apcNiveaux' => $apcNiveaux ?? null,
         ];
     }
 }

@@ -8,18 +8,29 @@
 
 namespace App\Controller\SynchroIntranet;
 
+use App\Entity\ApcNiveau;
 use App\Entity\Bibliotheque;
+use App\Entity\CritereApprentissageCritique;
+use App\Entity\CritereNiveau;
 use App\Entity\DepartementEnseignant;
 use App\Entity\Etudiant;
 use App\Entity\Enseignant;
-use App\Entity\User;
+use App\Entity\Page;
+use App\Entity\PortfolioUniv;
+use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\BibliothequeRepository;
+use App\Repository\CritereApprentissageCritiqueRepository;
+use App\Repository\CritereNiveauRepository;
+use App\Repository\CriteresRepository;
 use App\Repository\DepartementRepository;
 use App\Repository\EnseignantRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\GroupeRepository;
+use App\Repository\PageRepository;
+use App\Repository\PortfolioUnivRepository;
 use App\Repository\SemestreRepository;
-use App\Repository\UserRepository;
+use App\Service\CompetencesService;
+use App\Service\PortfolioCreateService;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\MailerInterface;
@@ -31,7 +42,8 @@ use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 class UserSynchro extends AbstractController
 {
     public function __construct(
-//        private UserRepository $usersRepository,
+        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
+        private readonly PortfolioCreateService $portfolioCreateService,
     )
     {
     }
@@ -182,6 +194,7 @@ class UserSynchro extends AbstractController
                     $biblio = new Bibliotheque();
                     $biblio->setEtudiant($newEtudiant);
                     $biblio->setAnnee($semestre->getAnnee());
+                    $biblio->setAnneeUniversitaire($this->anneeUniversitaireRepository->findOneBy(['active' => true]));
                     $biblio->setActif(true);
                     $newEtudiant->setNom($data['nom']);
                     $newEtudiant->setPrenom($data['prenom']);
@@ -193,6 +206,9 @@ class UserSynchro extends AbstractController
                         $groupe = $groupeRepository->findOneBy(['id' => $groupe]);
                         $newEtudiant->addGroupe($groupe);
                     }
+
+                    $this->portfolioCreateService->create($newEtudiant);
+
                     $etudiantRepository->save($newEtudiant, true);
                     $bibliothequeRepository->save($biblio, true);
                 }

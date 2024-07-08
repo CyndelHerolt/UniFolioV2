@@ -41,6 +41,7 @@
         "symfony/string": "7.0.*",
         "symfony/translation": "7.0.*",
         "symfony/twig-bundle": "7.0.*",
+        "symfony/ux-chartjs": "^2.18",
         "symfony/ux-dropzone": "^2.15",
         "symfony/ux-icons": "^2.18",
         "symfony/ux-live-component": "^2.15",

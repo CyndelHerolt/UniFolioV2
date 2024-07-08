@@ -1,0 +1,80 @@
+<turbo-frame id="critere_eval_form">
+    {% for page in pages.currentPageResults %}
+        <h2 class="pill-competence m-auto mb-5 {{ page.apcNiveau.apcCompetence.couleur ?? page.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">{{ page.libelle }}</h2>
+
+        {% if tracesPage is empty %}
+            <div class="alert alert-warning w-100">Aucune trace pour le moment</div>
+        {% else %}
+
+            {% for trace in tracesPage %}
+                <twig:TraceContent id="{{ trace.id }}"/>
+            {% endfor %}
+        {% endif %}
+
+        <div>
+            <h4>Validation de la compétence {{ page.libelle }}</h4>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>
+                        Critère
+                    </th>
+                    <th>
+                        Resultat
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for critereCompetence in criteresCompetences %}
+                    <tr>
+                        <td>
+                            {{ critereCompetence.critere.libelle }}
+                        </td>
+                        <td>
+                            {% if critereCompetence.valeur is null %}
+                                <span class="text-muted">En attente</span>
+                            {% else %}
+                                {{ critereCompetence.libelle }} <span
+                                    class="pill">{{ critereCompetence.valeur }}/5</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form class="d-flex align-items-center justify-content-between gap-4">
+                                <div>
+                                    {% for key, valeurs in critereCompetence.critere.valeurs %}
+                                        <input type="submit"
+                                               style="color: transparent"
+                                               class="form-check-input"
+                                               id="{{ key }}{{ critereCompetence.critere.id }}"
+                                               name="valeur"
+                                               value="{{ key }} : {{ valeurs }}">
+                                        <label for="{{ key }}{{ critereCompetence.critere.id }}">{{ valeurs }}
+                                            : {{ key }}</label>
+                                        <br>
+                                    {% endfor %}
+                                </div>
+                                <input type="hidden" name="critereCompetenceId"
+                                       value="{{ critereCompetence.id }}">
+                                <input type="hidden" name="page" value="{{ pages.currentPage }}">
+
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="2">
+                        <strong>Total</strong>
+                    </td>
+                    <td>
+                        <span class="{% if total <= 5 %}pill-danger{% elseif total <= 10 %}pill-warning{% else %}pill-success{% endif %}">{{ total }}</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    {% endfor %}
+</turbo-frame>

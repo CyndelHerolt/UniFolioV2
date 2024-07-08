@@ -43,22 +43,20 @@ class TraceRepository extends ServiceEntityRepository
 
     public function findByCompetence(array $competences): array
     {
-        $qb = $this->createQueryBuilder('t')
-            ->join('t.validations', 'v')
-            ->leftJoin('v.apcNiveau', 'n')
-            ->leftJoin('v.apc_apprentissage_critique', 'a')
+        return $this->createQueryBuilder('t')
+            ->join('t.traceCompetences', 'tc')
+            ->leftJoin('tc.apcNiveau', 'n')
+            ->leftJoin('tc.apcApprentissageCritique', 'a')
             ->where('n.id IN (:competences)')
             ->orWhere('a.id IN (:competences)')
             ->setParameter('competences', $competences)
             ->getQuery()
             ->getResult();
-
-        return $qb;
     }
 
     public function findNotInPage(Page $page, Collection $biblio)
     {
-        $qb = $this->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->leftJoin('t.tracePages', 'tp', 'WITH', 'tp.page = :page')
             ->where('t.bibliotheque IN (:biblio)')
             ->andWhere('tp.page IS NULL')
@@ -66,21 +64,29 @@ class TraceRepository extends ServiceEntityRepository
             ->setParameter('page', $page)
             ->getQuery()
             ->getResult();
-        return $qb;
     }
 
     public function findInPage(Page $page)
     {
         // écrire une requête qui récupère les traces qui ont pour tracePage.page = page par ordre croissant
-        $qb = $this->createQueryBuilder('t')
+        return $this->createQueryBuilder('t')
             ->leftJoin('t.tracePages', 'tp')
             ->where('tp.page = :page')
             ->setParameter('page', $page)
             ->orderBy('tp.ordre', 'ASC')
             ->getQuery()
             ->getResult();
-        return $qb;
+    }
 
+    public function findByPortfolio($portfolio)
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.traceCompetences', 'tc')
+            ->join('tc.portfolio', 'p')
+            ->where('p = :portfolio')
+            ->setParameter('portfolio', $portfolio)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

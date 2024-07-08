@@ -1,6 +1,15 @@
-<div class="d-flex flex-row flex-wrap justify-content-center g-3">
+<div class="row d-flex">
     {% for image in this.trace.contenu %}
-        <img src="{{ asset(image) }}" class="card-img-top" alt="{{ this.trace.legende }}"
-             style="max-height: 500px; width: auto; margin: 0 25px">
+        <div class="col-lg-6 col-12">
+            <a href="{{ asset(image) }}" target="_blank">
+                <img src="{{ asset(image) }}" alt="{{ this.trace.legende }}" class="w-100">
+            </a>
+        </div>
     {% endfor %}
 </div>
+
+
+{# <div class="row d-flex"> #}
+{#    <article class="col-lg-8 col-12"> #}
+
+{#        <aside class="col-lg-4 col-12"> #}

@@ -1,0 +1,135 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}UniFolio - Dashboard{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+{% block main %}
+    {% import 'macros/breadcrumbs.twig' as breadcrumb_macros %}
+    {{ breadcrumb_macros.breadcrumbs([
+        {'name': 'Accueil', 'url': '/'},
+        {'name': 'Dashboard', 'url': '/enseignant/dashboard'},
+        {'name': 'Portfolio', 'url': null}
+    ]) }}
+
+    <section class="container-custom min-vh-100 section-pt">
+        <article>
+            <div class="card p-0 h-100">
+                <div class="portfolio-banner" style="background-image: url({{ portfolio.banniere }})"></div>
+                <div class="card-header p-5 m-5 mt-0 mb-0 text-center">
+                    <h2 class="text-center">{{ portfolio.libelle }}</h2>
+                    <p class="text-muted">{{ portfolio.annee.libelleLong }}</p>
+                    <p>{{ portfolio.etudiant.prenom }} {{ portfolio.etudiant.nom }}
+                        - {{ portfolio.etudiant.semestre.libelle }} - {% for g in portfolio.etudiant.groupe %}
+                            {% if 'TP' in g.typeGroupe.libelle %}
+                                Groupe {{ g.libelle }}
+                            {% endif %}
+                        {% endfor %}</p>
+                </div>
+
+                <div class="card-body p-5 m-5 border">
+
+                    <turbo-frame id="critere_eval_form" action="replace">
+                    {% for page in pages.currentPageResults %}
+                        <h2 class="pill-competence m-auto mb-5 {{ page.apcNiveau.apcCompetence.couleur ?? page.apcApprentissageCritique.apcNiveau.apcCompetence.couleur }}">{{ page.libelle }}</h2>
+
+                        {% if tracesPage is empty %}
+                            <div class="alert alert-warning w-100">Aucune trace pour le moment</div>
+                        {% else %}
+
+                            {% for trace in tracesPage %}
+                                <twig:TraceContent id="{{ trace.id }}"/>
+                            {% endfor %}
+                        {% endif %}
+
+                        <div>
+                            <h4>Validation de la compétence {{ page.libelle }}</h4>
+
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            Critère
+                                        </th>
+                                        <th>
+                                            Resultat
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for critereCompetence in criteresCompetences %}
+                                        <tr>
+                                            <td>
+                                                {{ critereCompetence.critere.libelle }}
+                                            </td>
+                                            <td>
+                                                {% if critereCompetence.valeur is null %}
+                                                    <span class="text-muted">En attente</span>
+                                                {% else %}
+                                                    {{ critereCompetence.libelle }} <span
+                                                        class="pill">{{ critereCompetence.valeur }}/5</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <form class="d-flex align-items-center justify-content-between gap-4">
+                                                    <div>
+                                                        {% for key, valeurs in critereCompetence.critere.valeurs %}
+                                                            <input type="submit"
+                                                                   style="color: transparent"
+                                                                   class="form-check-input"
+                                                                   id="{{ key }}{{ critereCompetence.critere.id }}"
+                                                                   name="valeur"
+                                                                   value="{{ key }} : {{ valeurs }}">
+                                                            <label for="{{ key }}{{ critereCompetence.critere.id }}">{{ valeurs }}
+                                                                : {{ key }}</label>
+                                                            <br>
+                                                        {% endfor %}
+                                                    </div>
+                                                    <input type="hidden" name="critereCompetenceId"
+                                                           value="{{ critereCompetence.id }}">
+                                                    <input type="hidden" name="page" value="{{ pages.currentPage }}">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    <tr>
+                                        <td colspan="2">
+                                            <strong>Total</strong>
+                                        </td>
+                                        <td>
+                                            <span class="{% if total <= 5 %}pill-danger{% elseif total <= 10 %}pill-warning{% else %}pill-success{% endif %}">{{ total }}</span>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        </div>
+                    {% endfor %}
+                    </turbo-frame>
+
+                    <div class=" navigation text-end">
+                        {% if pages.hasPreviousPage %}
+                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'page': pages.previousPage}) }}"
+                               class="m-2">Page précédente</a>
+                        {% endif %}
+
+                        <span class="m-2">{{ pages.currentPage }}</span>
+                        {% if pages.nbPages > 1 %}
+                            <span class="m-2">/</span>
+                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'page': pages.nbPages}) }}"
+                               class="m-2">{{ pages.nbPages }}</a>
+                        {% endif %}
+
+                        {% if pages.hasNextPage %}
+                            <a href="{{ path('app_portfolio_univ_eval_show', {'id': portfolio.id, 'page': pages.nextPage}) }}"
+                               class="m-2">Page suivante</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+{% endblock %}

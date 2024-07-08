@@ -33,10 +33,6 @@ class CritereType extends AbstractType
                 'by_reference' => false,
                 'attr' => ['class' => 'col-9']
             ])
-            ->add('submit', SubmitType::class, [
-                'label' => 'Enregistrer',
-                'attr' => ['class' => 'btn btn-primary-color'],
-            ])
             ;
     }
 

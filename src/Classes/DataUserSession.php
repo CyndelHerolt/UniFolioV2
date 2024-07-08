@@ -13,16 +13,13 @@ class DataUserSession
 {
     private $departement;
     private $departements;
-    private $enseignant;
-    private $etudiant;
 
     public function __construct(
-        private DepartementRepository           $departementRepository,
-        private DepartementEnseignantRepository $departementEnseignantRepository,
-        private EnseignantRepository            $enseignantRepository,
-        private EtudiantRepository              $etudiantRepository,
-        private RequestStack                    $requestStack,
-        private Security                        $security,
+        private readonly DepartementEnseignantRepository $departementEnseignantRepository,
+        private readonly EnseignantRepository            $enseignantRepository,
+        private readonly EtudiantRepository              $etudiantRepository,
+        private readonly RequestStack                    $requestStack,
+        private readonly Security                        $security,
     )
     {
     }
@@ -34,16 +31,16 @@ class DataUserSession
 
     public function getEnseignant()
     {
-        $this->enseignant = $this->enseignantRepository->findOneBy(['username' => $this->security->getUser()->getUsername()]);
+        $enseignant = $this->enseignantRepository->findOneBy(['username' => $this->security->getUser()->getUsername()]);
 
-        return $this->enseignant;
+        return $enseignant;
     }
 
     public function getEtudiant()
     {
-        $this->etudiant = $this->etudiantRepository->findOneBy(['username' => $this->security->getUser()->getUsername()]);
+        $etudiant = $this->etudiantRepository->findOneBy(['username' => $this->security->getUser()->getUsername()]);
 
-        return $this->etudiant;
+        return $etudiant;
     }
 
     public function setDepartement($departement)

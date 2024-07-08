@@ -1,16 +1,18 @@
 <div{{ attributes }}>
     <tr>
-        <td>
-            <input type="checkbox" class="form-check-input"
-                   data-model="selectedPortfoliosUniv[]"
-                   value="{{ this.portfolioUniv.id }}"/>
-        </td>
+        {% if 'dashboard' not in app.request.uri %}
+            <td>
+                <input type="checkbox" class="form-check-input"
+                       data-model="selectedPortfoliosUniv[]"
+                       value="{{ this.portfolioUniv.id }}"/>
+            </td>
+        {% endif %}
         <td>
             <p class="table-primary-text">{{ this.portfolioUniv.libelle }}</p>
         </td>
         <td>
             {% if this.portfolioUniv.annee is not null %}
-                {{ this.portfolioUniv.annee.libelle }}
+                {{ this.portfolioUniv.anneeUniv.libelle }} | {{ this.portfolioUniv.annee.libelle }}
             {% else %}
                 **
             {% endif %}
@@ -18,25 +20,14 @@
         <td>
             {{ this.portfolioUniv.dateModification|date('d/m/Y') }}
         </td>
-        <td class="d-flex flex-column gap-1">
-            {% for competence in this.competences %}
-                <div class="pill-competence d-flex gap-1 align-items-center {{ competence.apcCompetence.couleur }}">
-                    {{ competence.apcCompetence.nomCourt }}
-                </div>
-            {% endfor %}
+{#        <td class="d-flex flex-row flex-wrap gap-1">#}
+{#            {% for competence in this.competences %}#}
+{#                <div class="pill-competence {{ competence.apcCompetence.couleur ?? competence.apcNiveau.apcCompetence.couleur }}">#}
+{#                    {{ competence.apcCompetence.nomCourt ?? competence.libelle }}#}
+{#                </div>#}
+{#            {% endfor %}#}
 
-        </td>
-        <td>
-            {% if this.portfolioUniv.visibilite == 1 %}
-                <div class="pill-success">
-                    Public
-                </div>
-            {% else %}
-                <div class="pill-warning">
-                    Privé
-                </div>
-            {% endif %}
-        </td>
+{#        </td>#}
         <td>
             <div class="d-flex gap-2">
                 <a href="{{ path('app_portfolio_univ_show', {'id': this.portfolioUniv.id}) }}">
@@ -62,7 +53,8 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="delete{{ this.portfolioUniv.id }}ModalLabel">Supprimer un
+                            <h1 class="modal-title fs-5" id="delete{{ this.portfolioUniv.id }}ModalLabel">Réinitialiser
+                                un
                                 portfolio</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
@@ -71,13 +63,14 @@
                             <p class="text-danger">Attention, cette action est irréversible !</p>
 
                             <p>
-                                La portfolio "{{ this.portfolioUniv.libelle }}" va être supprimé. Êtes-vous sûr de vouloir
+                                La portfolio "{{ this.portfolioUniv.libelle }}" va être Réinitialiser. Êtes-vous sûr de
+                                vouloir
                                 continuer ?
                             </p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <a href="{{ path('app_portfolio_univ_delete', {'id': this.portfolioUniv.id}) }}">
+                            <a href="{{ path('app_portfolio_univ_reset', {'id': this.portfolioUniv.id}) }}">
                                 <button type="button" class="btn btn-primary">Confirmer</button>
                             </a>
                         </div>

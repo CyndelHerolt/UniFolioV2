@@ -39,6 +39,15 @@ class CriteresRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByDepartement(int $departementId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.departement = :departementId')
+            ->setParameter('departementId', $departementId)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Criteres[] Returns an array of Criteres objects
     //     */

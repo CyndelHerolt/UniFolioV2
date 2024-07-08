@@ -1,0 +1,31 @@
+<div{{ attributes }}>
+
+    <tr>
+        <td>
+            {{ this.etudiant.nom }} {{ this.etudiant.prenom }}
+        </td>
+        <td>
+            {% for g in this.etudiant.groupe %}
+                {% if 'TP' in g.typeGroupe.libelle %}
+                    TP {{ g.libelle }}
+                {% endif %}
+            {% endfor %}
+        </td>
+        <td>
+            {{ this.etudiant.semestre.libelle }}
+        </td>
+        <td>
+            {{ this.nbTraces }}
+        </td>
+        <td>
+            ??
+        </td>
+        <td>
+            <a href="">
+                <button class="btn-info d-flex justify-content-center align-items-center">
+                    <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
+                </button>
+            </a>
+    </tr>
+
+</div>

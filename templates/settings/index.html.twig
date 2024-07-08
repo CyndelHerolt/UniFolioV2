@@ -28,30 +28,36 @@
                         </span>
                     </div>
                     <turbo-frame id="bareme">
-                        <h4>Barème portfolio</h4>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4>Barème portfolio</h4>
+                            <button class="secondary-btn" data-bs-toggle="modal"
+                                    data-bs-target="#staticBackdropDefaut">
+                                Revenir au barème par défaut
+                            </button>
+                        </div>
 
-                        <button class="btn btn-secondary-color text-uppercase m-4" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdropDefaut">
-                            Revenir au barème par défaut
-                        </button>
                         <!-- Modal Defaut -->
                         <div class="modal modal-lg fade" id="staticBackdropDefaut" data-bs-backdrop="static"
-                             data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                             data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                             aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment rétablir le barème par défaut ?</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <h5 class="modal-title" id="staticBackdropLabel">Voulez-vous vraiment rétablir
+                                            le barème par défaut ?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <p>Le barème actuellement actif sera supprimé.</p>
                                         <p style="color: red">Attention, cette action est irréversible !</p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary-color" data-bs-dismiss="modal">Annuler
+                                        <button type="button" class="secondary-btn" data-bs-dismiss="modal">
+                                            Annuler
                                         </button>
                                         <a href="{{ path('app_settings_criteres_defaut') }}">
-                                            <button class="btn btn-primary-color"  data-bs-dismiss="modal">Confirmer</button>
+                                            <button class="primary-btn" data-bs-dismiss="modal">Confirmer</button>
                                         </a>
                                     </div>
                                 </div>
@@ -71,6 +77,8 @@
                                     <tr>
                                         <th scope="col">Critère</th>
                                         <th scope="row">Valeurs</th>
+                                        <th scope="row"></th>
+                                        <th scope="row"></th>
                                         <th scope="row"></th>
                                         <th scope="row"></th>
                                         <th scope="row"></th>
@@ -96,14 +104,10 @@
                                                 </select>
                                             </td>
                                         {% endfor %}
-                                        <td>
-                                            {{ form_row(formCriteres[critere.id].submit) }}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{ path('app_settings', {'edit': false}) }}">
-                                                <button class="btn btn-secondary-color">Retour</button>
+                                        <td class="d-flex flex-column w-100 gap-2">
+                                            <button type="submit" class="primary-btn">Enregistrer</button>
+                                            <a href="{{ path('app_settings', {'edit': false}) }}" class="w-100">
+                                                <button class="secondary-btn w-100">Retour</button>
                                             </a>
                                         </td>
                                     </tr>
@@ -117,6 +121,8 @@
                             <tr>
                                 <th scope="col">Critère</th>
                                 <th scope="row">Valeurs</th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
                                 <th scope="row"></th>
                                 <th scope="row"></th>
                                 <th scope="row"></th>
@@ -136,7 +142,7 @@
                                     {% else %}
                                         <td>
                                             <a href="{{ path('app_settings', {'edit': true, 'critereId' : critere.id}) }}">
-                                                <button class="btn btn-primary-color">Modifier</button>
+                                                <button class="primary-btn">Modifier</button>
                                             </a>
                                         </td>
                                     {% endif %}
@@ -155,26 +161,15 @@
                     <div class="alert alert-warning">
                         <span>Le changement d'approche ne supprimera pas pour autant les liens traces-compétences initialisés par les étudiants.</span>
                     </div>
-                    <turbo-frame>
-                        <h4>Approche par compétences</h4>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckChecked" checked>
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
-                        </div>
-                        <hr>
-                        <h4>Approche par apprentissages critiques</h4>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckDefault">
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
-                        </div>
+                    <h4>Approche par compétences</h4>
+                    <form action="{{ path('app_settings_competences_opt') }}" method="POST">
+                        <select class="form-select" aria-label="competence" name="competence">
+                            <option selected value="1">UE</option>
+                            <option value="0">AC</option>
+                        </select>
+                        <button type="submit" class="primary-btn mt-4">Enregistrer</button>
+                    </form>
 
-                    </turbo-frame>
                 </div>
             </div>
             <div class="col-lg-4 col-12 d-flex justify-content-center">
@@ -185,13 +180,11 @@
                     <div class="alert alert-warning">
                         <span>Le changement de semestre se fait en récupérant les données depuis l'intranet. <strong>La bascule fonctionnera uniquement si elle a déjà été effectuée sur l'Intranet</strong></span>
                     </div>
-                    <turbo-frame>
-                        <h4>Semestre actuel : pair</h4>
-                        <p>S2 - S4 - S6</p>
-                        <a href="">
-                            <button class="btn btn-primary-color">Basculer</button>
-                        </a>
-                    </turbo-frame>
+                    <h4>Semestre actuel : pair</h4>
+                    <p>S2 - S4 - S6</p>
+                    <a href="">
+                        <button class="primary-btn">Basculer</button>
+                    </a>
                 </div>
             </div>
             <div class="col-lg-4 col-12 d-flex justify-content-center">
@@ -199,51 +192,49 @@
                     <h2>Options</h2>
                     <em>Activer ou désactiver certaines fonctionnalités</em>
                     <hr>
-                    <turbo-frame>
-                        <h4>Option stage/alternance</h4>
-                        <p>Permet aux étudiants de créer leur rapport de stage ou d'alternance et de le soumettre à
-                            évaluation.</p>
-                        <div class="form-check form-switch">
-                            <a href="" type="checkbox">
-                                <input class="form-check-input" type="checkbox" role="switch"
-                                       id="flexSwitchCheckDefault">
-                            </a>
-                            <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
-                        </div>
-                        {#                        <hr> #}
-                        {#                        <h4>Consignes</h4> #}
-                        {#                        <h5>Etudiants</h5> #}
-                        {#                        <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p> #}
-                        {#                        <div class="form-check form-switch"> #}
-                        {#                            <a href="" type="checkbox"> #}
-                        {#                                <input class="form-check-input" type="checkbox" role="switch" #}
-                        {#                                       id="flexSwitchCheckChecked" checked> #}
-                        {#                            </a> #}
-                        {#                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label> #}
-                        {#                        </div> #}
+                    <h4>Option stage/alternance</h4>
+                    <p>Permet aux étudiants de créer leur rapport de stage ou d'alternance et de le soumettre à
+                        évaluation.</p>
+                    <div class="form-check form-switch">
+                        <a href="" type="checkbox">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="flexSwitchCheckDefault">
+                        </a>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Desactivé</label>
+                    </div>
+                    <hr>
+                    <h4>Consignes</h4>
+                    <h5>Etudiants</h5>
+                    <p>Permet d'afficher un message aux étudiants quand ils créent leur portfolio.</p>
+                    <div class="form-check form-switch">
+                        <a href="" type="checkbox">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="flexSwitchCheckChecked" checked>
+                        </a>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
+                    </div>
 
-                        {#                        <form action=""> #}
-                        {#                            <label for="consignes">Message</label> #}
-                        {#                            <textarea class="form-control" id="consignes" rows="3"></textarea> #}
-                        {#                            <button class="btn btn-primary-color">Enregistrer</button> #}
-                        {#                        </form> #}
-                        {#                        <hr> #}
-                        {#                        <h5>Enseignants</h5> #}
-                        {#                        <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p> #}
-                        {#                        <div class="form-check form-switch"> #}
-                        {#                            <a href="" type="checkbox"> #}
-                        {#                                <input class="form-check-input" type="checkbox" role="switch" #}
-                        {#                                       id="flexSwitchCheckChecked" checked> #}
-                        {#                            </a> #}
-                        {#                            <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label> #}
-                        {#                        </div> #}
+                    <form action="">
+                        <label for="consignes">Message</label>
+                        <textarea class="form-control" id="consignes" rows="3"></textarea>
+                        <button class="primary-btn mt-4">Enregistrer</button>
+                    </form>
+                    <hr>
+                    <h5>Enseignants</h5>
+                    <p>Permet d'afficher un message aux enseignants sur leur dashboard.</p>
+                    <div class="form-check form-switch">
+                        <a href="" type="checkbox">
+                            <input class="form-check-input" type="checkbox" role="switch"
+                                   id="flexSwitchCheckChecked" checked>
+                        </a>
+                        <label class="form-check-label" for="flexSwitchCheckChecked">Activé</label>
+                    </div>
 
-                        {#                        <form action=""> #}
-                        {#                            <label for="consignes">Message</label> #}
-                        {#                            <textarea class="form-control" id="consignes" rows="3"></textarea> #}
-                        {#                            <button class="btn btn-primary-color">Enregistrer</button> #}
-                        {#                        </form> #}
-                    </turbo-frame>
+                    <form action="">
+                        <label for="consignes">Message</label>
+                        <textarea class="form-control" id="consignes" rows="3"></textarea>
+                        <button class="primary-btn mt-4">Enregistrer</button>
+                    </form>
                 </div>
             </div>
         </article>

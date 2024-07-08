@@ -66,33 +66,6 @@ class PortfolioUnivType extends AbstractType
                 'help' => 'Un court paragraphe d\'introduction à votre portfolio',
                 'mapped' => true,
                 'required' => false,
-            ])
-            ->add('visibilite', ChoiceType::class, [
-                'choices' => [
-                    'Public' => true,
-                    'Privé' => false,
-                ],
-                'label' => 'Visibilité',
-                'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => "form-control"],
-                'help' => 'Un portfolio public sera visible des enseignants alors qu\'un portfolio privé ne sera visible que par vous-même',
-                'required' => true,
-                'mapped' => true,
-                'expanded' => true,
-                'multiple' => false,
-            ])
-            ->add('optSearch', ChoiceType::class, [
-                'choices' => [
-                    'Afficher' => true,
-                    'Masquer' => false,
-                ],
-                'label' => 'Option alternance ou stage',
-                'label_attr' => ['class' => 'form-label'],
-                'attr' => ['class' => "form-control"],
-                'mapped' => true,
-                'help' => 'Signaler sur votre portfolio que vous êtes à la recherche d\'une alternance ou d\'un stage',
-                'expanded' => true,
-                'multiple' => false,
             ]);
     }
 

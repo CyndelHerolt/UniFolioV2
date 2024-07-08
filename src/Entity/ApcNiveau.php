@@ -35,9 +35,6 @@ class ApcNiveau
     #[ORM\OneToMany(targetEntity: ApcApprentissageCritique::class, mappedBy: 'apcNiveau')]
     private Collection $apcApprentissageCritiques;
 
-    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'apcNiveau', orphanRemoval: true)]
-    private Collection $validations;
-
     #[ORM\Column(nullable: true)]
     private ?bool $actif = null;
 
@@ -50,13 +47,26 @@ class ApcNiveau
     #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'apcNiveau')]
     private Collection $traceCompetences;
 
+    /**
+     * @var Collection<int, Page>
+     */
+    #[ORM\OneToMany(targetEntity: Page::class, mappedBy: 'apc_niveau')]
+    private Collection $pages;
+
+    /**
+     * @var Collection<int, CritereNiveau>
+     */
+    #[ORM\OneToMany(targetEntity: CritereNiveau::class, mappedBy: 'apcNiveau')]
+    private Collection $critereNiveaux;
+
     public function __construct()
     {
         $this->apcParcours = new ArrayCollection();
         $this->apcApprentissageCritiques = new ArrayCollection();
-        $this->validations = new ArrayCollection();
         $this->criteres = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
+        $this->pages = new ArrayCollection();
+        $this->critereNiveaux = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -181,36 +191,6 @@ class ApcNiveau
         return $this;
     }
 
-    /**
-     * @return Collection<int, Validation>
-     */
-    public function getValidations(): Collection
-    {
-        return $this->validations;
-    }
-
-    public function addValidation(Validation $validation): static
-    {
-        if (!$this->validations->contains($validation)) {
-            $this->validations->add($validation);
-            $validation->setApcNiveau($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidation(Validation $validation): static
-    {
-        if ($this->validations->removeElement($validation)) {
-            // set the owning side to null (unless already changed)
-            if ($validation->getApcNiveau() === $this) {
-                $validation->setApcNiveau(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isActif(): ?bool
     {
         return $this->actif;
@@ -274,6 +254,66 @@ class ApcNiveau
             // set the owning side to null (unless already changed)
             if ($traceCompetence->getApcNiveau() === $this) {
                 $traceCompetence->setApcNiveau(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Page>
+     */
+    public function getPages(): Collection
+    {
+        return $this->pages;
+    }
+
+    public function addPage(Page $page): static
+    {
+        if (!$this->pages->contains($page)) {
+            $this->pages->add($page);
+            $page->setApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    public function removePage(Page $page): static
+    {
+        if ($this->pages->removeElement($page)) {
+            // set the owning side to null (unless already changed)
+            if ($page->getApcNiveau() === $this) {
+                $page->setApcNiveau(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, CritereNiveau>
+     */
+    public function getCritereNiveaux(): Collection
+    {
+        return $this->critereNiveaux;
+    }
+
+    public function addCritereNiveau(CritereNiveau $critereNiveau): static
+    {
+        if (!$this->critereNiveaux->contains($critereNiveau)) {
+            $this->critereNiveaux->add($critereNiveau);
+            $critereNiveau->setApcNiveau($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCritereNiveau(CritereNiveau $critereNiveau): static
+    {
+        if ($this->critereNiveaux->removeElement($critereNiveau)) {
+            // set the owning side to null (unless already changed)
+            if ($critereNiveau->getApcNiveau() === $this) {
+                $critereNiveau->setApcNiveau(null);
             }
         }
 

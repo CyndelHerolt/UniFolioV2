@@ -28,7 +28,7 @@ class TraceAbstractType extends AbstractType
         protected TraceRepository     $traceRepository,
         public BibliothequeRepository $bibliothequeRepository,
         #[Required] public Security   $security,
-        private RequestStack          $requestStack,
+        private readonly RequestStack $requestStack,
     )
     {
     }
@@ -42,7 +42,7 @@ class TraceAbstractType extends AbstractType
             if ($validation->getApcNiveau() !== null) {
                 $traceCompetence[] = $validation->getApcNiveau()->getId();
             } else {
-                $traceCompetence[] = $validation->getApcApprentissagesCritiques()->getId();
+                $traceCompetence[] = $validation->getApcApprentissageCritique()->getId();
             }
         }
 

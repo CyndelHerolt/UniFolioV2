@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\PortfolioUniv;
+use App\Entity\Semestre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,6 +38,57 @@ class PortfolioUnivRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findByFilters($dept, Semestre $semestre = null, array $groupes = [], array $etudiants = [], array $competences = []): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->innerJoin('p.pages', 'pa')
+            ->innerJoin('pa.tracePages', 'tp')
+            ->innerJoin('tp.trace', 't')
+//            ->innerJoin('t.traceCompetences', 'tc')
+//            ->innerJoin('tc.apcNiveau', 'c')
+            ->innerJoin('p.etudiant', 'e')
+            ->innerJoin('e.groupe', 'g')
+            ->innerJoin('e.semestre', 's')
+            ->innerJoin('s.annee', 'a')
+            ->innerJoin('a.diplome', 'd')
+            ->innerJoin('d.departement', 'dep')
+            ->where('dep.id = :departement')
+            ->setParameter('departement', $dept);
+        if (!empty($semestre)) {
+            $qb->andWhere('s.id IN (:semestre)')
+                ->setParameter('semestre', $semestre->getId());
+        }
+        if (!empty($groupes)) {
+            $qb->andWhere('g.id IN (:groupes)')
+                ->setParameter('groupes', $groupes);
+        }
+        if (!empty($competences)) {
+            $qb->andWhere('c.id IN (:competences)')
+                ->setParameter('competences', $competences);
+        }
+        if (!empty($etudiants)) {
+            $qb->andWhere('e.id IN (:etudiants)')
+                ->setParameter('etudiants', $etudiants);
+        }
+        $qb->distinct('p.id');
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findByDepartement($dept): array
+    {
+        return $this->createQueryBuilder('p')
+            ->innerJoin('p.etudiant', 'e')
+            ->innerJoin('e.semestre', 's')
+            ->innerJoin('s.annee', 'a')
+            ->innerJoin('a.diplome', 'd')
+            ->innerJoin('d.departement', 'dep')
+            ->where('dep.id = :departement')
+            ->setParameter('departement', $dept)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

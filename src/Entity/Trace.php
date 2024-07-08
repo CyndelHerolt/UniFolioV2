@@ -34,7 +34,7 @@ class Trace
     #[ORM\Column(length: 100)]
     private ?string $libelle = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private array $contenu = [];
 
     #[ORM\Column(type: Types::TEXT)]
@@ -52,22 +52,18 @@ class Trace
     #[ORM\OneToMany(targetEntity: TracePage::class, mappedBy: 'trace', orphanRemoval: true)]
     private Collection $tracePages;
 
-    #[ORM\OneToMany(targetEntity: Validation::class, mappedBy: 'trace', orphanRemoval: true, cascade: ['persist', 'remove'])]
-    private Collection $validations;
-
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'trace')]
     private Collection $commentaires;
 
     /**
      * @var Collection<int, TraceCompetence>
      */
-    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace', orphanRemoval: true, cascade: ['persist'])]
+    #[ORM\OneToMany(targetEntity: TraceCompetence::class, mappedBy: 'trace', cascade: ['persist'], orphanRemoval: true)]
     private Collection $traceCompetences;
 
     public function __construct()
     {
         $this->tracePages = new ArrayCollection();
-        $this->validations = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->traceCompetences = new ArrayCollection();
     }
@@ -118,7 +114,7 @@ class Trace
         return $this->type;
     }
 
-    public function setType(string $type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
 
@@ -142,7 +138,7 @@ class Trace
         return $this->contenu;
     }
 
-    public function setContenu(array $contenu): static
+    public function setContenu(?array $contenu): static
     {
         $this->contenu = $contenu;
 
@@ -154,7 +150,7 @@ class Trace
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -190,7 +186,7 @@ class Trace
         return $this->contexte;
     }
 
-    public function setContexte(string $contexte): static
+    public function setContexte(?string $contexte): static
     {
         $this->contexte = $contexte;
 
@@ -221,36 +217,6 @@ class Trace
             // set the owning side to null (unless already changed)
             if ($tracePage->getTrace() === $this) {
                 $tracePage->setTrace(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Validation>
-     */
-    public function getValidations(): Collection
-    {
-        return $this->validations;
-    }
-
-    public function addValidation(Validation $validation): static
-    {
-        if (!$this->validations->contains($validation)) {
-            $this->validations->add($validation);
-            $validation->setTrace($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidation(Validation $validation): static
-    {
-        if ($this->validations->removeElement($validation)) {
-            // set the owning side to null (unless already changed)
-            if ($validation->getTrace() === $this) {
-                $validation->setTrace(null);
             }
         }
 

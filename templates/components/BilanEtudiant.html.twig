@@ -12,20 +12,6 @@
         </ul>
     </form>
 
-    <div class="filtres">
-        <ul class="nav nav-underline">
-            {% for semestre in this.semestres %}
-                <li class="nav-item">
-                    <button class="nav-link {% if semestre == this.selectedSemestre %}active{% endif %}"
-                            aria-current="page" data-model="selectedSemestre">
-                        {{ semestre.libelle }}
-                    </button>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
-    {{ this.selectedSemestre.libelle ?? null }}
     <ul>
         {% for etudiant in this.etudiants %}
             <li>

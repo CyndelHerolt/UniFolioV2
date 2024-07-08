@@ -13,6 +13,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveAction;
 use Symfony\UX\LiveComponent\Attribute\LiveArg;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
+use Symfony\UX\TwigComponent\Attribute\PostMount;
 
 #[AsLiveComponent('BilanEtudiant')]
 final class BilanEtudiant
@@ -23,14 +24,11 @@ final class BilanEtudiant
     /** @var Etudiant[] */
     public array $allEtudiants = [];
 
-//    #[LiveProp(writable: true)]
-//    /** @var Etudiant[] */
-//    public array $filteredEtudiants = [];
+    #[LiveProp(writable: true)]
+    /** @var Etudiant[] */
+    public array $filteredEtudiants = [];
 
     public array $allSemestres = [];
-
-    #[LiveProp(writable: true)]
-    public ?Semestre $selectedSemestre = null;
 
     #[LiveProp(writable: true)]
     public ?string $search = '';
@@ -53,49 +51,38 @@ final class BilanEtudiant
     }
 
     #[LiveAction]
-    public function changeSemestre(#[LiveArg] Semestre $semestre): void
-    {
-        $this->selectedSemestre = $semestre;
-        $this->getEtudiants();
-
-    }
-
-    #[LiveAction]
     public function updateSearch(#[LiveArg] string $search): void
     {
         $this->search = $search;
-        $this->getFilteredEtudiants();
+        $this->filteredEtudiants = $this->getFilteredEtudiants(); // Mettez à jour filteredEtudiants directement ici.
     }
 
-    #[LiveAction]
     public function getFilteredEtudiants(): array
     {
         $departement = $this->departementRepository->findDepartementEnseignantDefaut($this->security->getUser()->getEnseignant());
         $etudiants = $this->etudiantRepository->findByDepartement($departement);
 
         if (empty($this->search)) {
-            return $this->allEtudiants;
+            $this->filteredEtudiants = $this->allEtudiants;
         } else {
-            return array_filter($etudiants, function (Etudiant $etudiant) {
+            $this->filteredEtudiants = array_filter($etudiants, function (Etudiant $etudiant) {
                 $searchLower = strtolower($this->search);
                 return strpos(strtolower($etudiant->getNom()), $searchLower) !== false
                     || strpos(strtolower($etudiant->getPrenom()), $searchLower) !== false;
             });
         }
+        return $this->filteredEtudiants; // Retourne filteredEtudiants pour une utilisation immédiate si nécessaire.
     }
 
     public function getEtudiants(): array
     {
-        if ($this->selectedSemestre === null) {
-            $semestres = $this->getSemestres();
-            foreach ($semestres as $semestre) {
-                $etudiants = $this->etudiantRepository->findBySemestre($semestre);
-                foreach ($etudiants as $etudiant) {
-                    $this->allEtudiants[] = $etudiant;
-                }
+
+        $semestres = $this->getSemestres();
+        foreach ($semestres as $semestre) {
+            $etudiants = $this->etudiantRepository->findBySemestre($semestre);
+            foreach ($etudiants as $etudiant) {
+                $this->allEtudiants[] = $etudiant;
             }
-        } else {
-            $this->allEtudiants = $this->etudiantRepository->findBySemestre($this->selectedSemestre);
         }
 
         return $this->allEtudiants;

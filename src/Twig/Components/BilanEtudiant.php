@@ -6,6 +6,7 @@ use App\Repository\AnneeUniversitaireRepository;
 use App\Repository\EtudiantRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceRepository;
+use App\Service\ValidationCalculService;
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 
@@ -21,6 +22,7 @@ final class BilanEtudiant
         private readonly PortfolioUnivRepository $portfolioUnivRepository,
         private readonly TraceRepository $traceRepository,
         private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
+        private readonly ValidationCalculService $validationCalculService,
     )
     {
 
@@ -35,9 +37,11 @@ final class BilanEtudiant
         return count($traces);
     }
 
-    public function getValidation()
+    public function getValidationGlobal()
     {
-
+        $validation = $this->validationCalculService->calcParEtudiant($this->getEtudiant());
+//        dd($validation);
+        return $validation;
     }
 
     public function getEtudiant()

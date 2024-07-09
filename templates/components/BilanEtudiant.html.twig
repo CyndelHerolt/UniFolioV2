@@ -18,11 +18,14 @@
             {{ this.nbTraces }}
         </td>
         <td>
-            ??
+            <span class="{% if this.validationGlobal <= 5 %}pill-danger{% elseif this.validationGlobal <= 10 %}pill-warning{% else %}pill-success{% endif %}">
+            {{ this.validationGlobal }}/20
+            </span>
         </td>
         <td>
             <a href="">
-                <button class="btn-info d-flex justify-content-center align-items-center">
+                <button class="btn-info d-flex justify-content-center align-items-center" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-title="Voir le détail de la validation des compétences">
                     <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
                 </button>
             </a>

@@ -121,7 +121,6 @@ final class BilanEtudiant
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Validation des compétences',
                     'backgroundColor' => $backgroundColor,
                     'borderColor' => 'rgb(255, 255, 255)',
                     'data' => $data,
@@ -144,10 +143,17 @@ final class BilanEtudiant
                 ]
             ],
             'indexAxis' => 'y',
-            // masquer la légende
             'plugins' => [
                 'legend' => [
                     'display' => false,
+                ],
+                'title' => [
+                    'display' => true,
+                    'text' => 'Moyennes des resultats par compétence',
+                    'font' => [
+                        'size' => 20,
+                        'weight' => 'bold',
+                    ],
                 ],
             ],
         ]);

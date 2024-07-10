@@ -96,6 +96,7 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->join('r.departement', 'dep')
             ->where('dep = :departement')
             ->setParameter('departement', $departement)
+            ->addOrderBy('n.ordre', 'ASC')
             ->getQuery()
             ->getResult();
     }

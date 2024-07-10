@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ApcNiveau;
 use App\Entity\Enseignant;
 use App\Entity\Etudiant;
 use App\Entity\Page;
@@ -16,12 +17,12 @@ class ValidationCalculService
 {
 
     public function __construct(
-        private readonly AnneeUniversitaireRepository $anneeUniversitaireRepository,
-        private readonly PortfolioUnivRepository      $portfolioUnivRepository,
-        private readonly DepartementRepository        $departementRepository,
-        private readonly CritereNiveauRepository      $critereNiveauRepository,
+        private readonly AnneeUniversitaireRepository           $anneeUniversitaireRepository,
+        private readonly PortfolioUnivRepository                $portfolioUnivRepository,
+        private readonly DepartementRepository                  $departementRepository,
+        private readonly CritereNiveauRepository                $critereNiveauRepository,
         private readonly CritereApprentissageCritiqueRepository $critereApprentissageCritiqueRepository,
-        private readonly Security                     $security
+        private readonly Security                               $security
     )
     {
     }
@@ -62,10 +63,21 @@ class ValidationCalculService
         return $sum;
     }
 
-//    public function calcParCompetence()
-//    {
-//
-//    }
+    public function calcParCompetence($competence)
+    {
+        if ($competence instanceof ApcNiveau) {
+            $validations = $this->critereNiveauRepository->findBy(['apcNiveau' => $competence]);
+        } else {
+            $validations = $this->critereApprentissageCritiqueRepository->findBy(['apprentissageCritique' => $competence]);
+        }
+        $sum = 0;
+        foreach ($validations as $validation) {
+            $sum += $validation->getValeur();
+        }
+
+
+        return $sum;
+    }
 
     public function calcGlobal()
     {

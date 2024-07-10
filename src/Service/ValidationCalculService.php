@@ -62,10 +62,10 @@ class ValidationCalculService
         return $sum;
     }
 
-    public function calcParCompetence()
-    {
-
-    }
+//    public function calcParCompetence()
+//    {
+//
+//    }
 
     public function calcGlobal()
     {

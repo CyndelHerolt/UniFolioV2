@@ -18,14 +18,75 @@
             {{ this.nbTraces }}
         </td>
         <td>
-            ??
+            <span class="{% if this.validationGlobal <= 5 %}pill-danger{% elseif this.validationGlobal <= 10 %}pill-warning{% else %}pill-success{% endif %}">
+            {{ this.validationGlobal }}/20
+            </span>
         </td>
         <td>
-            <a href="">
-                <button class="btn-info d-flex justify-content-center align-items-center">
+            <span data-bs-toggle="modal" data-bs-target="#bilanEtudiantModal{{ this.etudiant.id }}">
+                <button class="btn-info d-flex justify-content-center align-items-center" data-bs-toggle="tooltip"
+                        data-bs-placement="top" data-bs-title="Voir le détail de la validation des compétences">
                     <twig:ux:icon name="bi:eye-fill" width="15" height="15"/>
                 </button>
-            </a>
+            </span>
     </tr>
+
+    <!-- Modal -->
+    <div class="modal fade p-5" id="bilanEtudiantModal{{ this.etudiant.id }}" tabindex="-1"
+         aria-labelledby="bilanEtudiantModal{{ this.etudiant.id }}Label" aria-hidden="true">
+        <div class="modal-dialog w-100" style="max-width: 100% !important;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="d-flex flex-column align-items-start ms-5">
+                        <h1 class="modal-title fs-5" id="bilanEtudiantModal{{ this.etudiant.id }}Label">Bilan de
+                            compétences de {{ this.etudiant.prenom }} {{ this.etudiant.nom }}</h1>
+                        <em>{{ this.etudiant.semestre.libelle }}</em>
+                    </div>
+                    <button type="button" class="btn-close me-5" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-5 d-flex flex-column gap-5">
+
+                    <div>
+                        <h3>Bilan global</h3>
+                        <div class="row">
+                            <p>Nombre de traces total dans le portfolio : {{ this.nbTraces }} trace(s)</p>
+                            <p>Moyenne de toutes les compétences : <span
+                                        class="{% if this.validationGlobal <= 5 %}pill-danger{% elseif this.validationGlobal <= 10 %}pill-warning{% else %}pill-success{% endif %}">{{ this.validationGlobal }}/20</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3>Bilan par compétence</h3>
+                        <div class="row d-flex flex-column gap-5 align-items-center">
+                            <div class="col-lg-10 col-12">
+                                {{ render_chart(this.chartCompetence) }}
+                            </div>
+                            <div class="col-12 d-flex flex-column gap-3">
+                                <ul class="p-0">
+                                    {% for key, validation in this.validationCompetence %}
+                                        <li class="p-2 m-2 d-flex flex-row justify-content-between">
+                                            <span class="pill-competence {% for key, valeur in validation %}{{ key }}{% endfor %}">{{ key }}</span>
+                                            <div class="d-flex gap-5 align-items-center">
+                                                <span>{{ this.nbTraces }} trace(s)</span>
+                                                {% for valeur in validation %}
+                                                    <span class="{% if valeur <= 5 %}pill-danger{% elseif valeur <= 10 %}pill-warning{% else %}pill-success{% endif %}">
+                                                {{ valeur }}/20
+                                            </span>
+                                                {% endfor %}
+                                            </div>
+                                        </li>
+                                        <hr>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="primary-btn" data-bs-dismiss="modal">Retour</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>

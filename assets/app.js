@@ -1,10 +1,15 @@
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
+window.bootstrap = bootstrap; // Attacher bootstrap à window
 import './bootstrap.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/app.css';
 import './js/a11y.js';
 import './js/tinymce.js';
 import './js/theme.js';
+
+
+// Le reste de votre code...
 
 // une fois que tout est chargé
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -16,6 +21,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
             altFormat: "F Y",
         })],
         locale: "fr",
+    });
+
+    // Importation dynamique de _tooltip.js
+    import('./js/_tooltip.js').then(module => {
+        // Le module _tooltip.js est maintenant chargé et exécuté.
+        console.log('Tooltip module loaded successfully');
+    }).catch(error => {
+        console.error('Error loading the tooltip module:', error);
     });
 });
 
@@ -31,3 +44,4 @@ document.addEventListener('turbo:load', (event) => {
         locale: "fr",
     });
 });
+

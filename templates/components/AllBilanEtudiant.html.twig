@@ -36,7 +36,6 @@
                                                name="etudiantSemestre{{ semestre.id }}"
                                                data-model="selectedSemestre"
                                                data-action="live#action"
-                                               data-action-name="changeSemestre"
                                                data-live-action-param=changeSemestre
                                                value="{{ semestre.id }}"
                                                class="form-check-input">
@@ -69,7 +68,7 @@
                     Nb de traces
                 </th>
                 <th>
-                    % Validation
+                    Moyenne <twig:ux:icon name="bi:question-circle-fill" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Moyenne des resultats sur l'ensemble des compétences" width="15" height="15"/>
                 </th>
                 <th>
                     Actions

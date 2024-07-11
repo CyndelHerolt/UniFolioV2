@@ -125,17 +125,9 @@ final class AllTraces
             if (!empty($ordreDate)) {
                 usort($traces, function (Trace $a, Trace $b) use ($ordreDate) {
                     if ($ordreDate === "ASC") {
-                        if ($a->getDateModification() === null) {
-                            return $a->getDateCreation() <=> $b->getDateCreation();
-                        } else {
-                            return $b->getDateCreation() <=> $a->getDateCreation();
-                        }
+                        return $a->getDateModification() <=> $b->getDateModification();
                     } else {
-                        if ($a->getDateModification() === null) {
-                            return $b->getDateCreation() <=> $a->getDateCreation();
-                        } else {
-                            return $a->getDateCreation() <=> $b->getDateCreation();
-                        }
+                        return $b->getDateModification() <=> $a->getDateModification();
                     }
                 });
             }

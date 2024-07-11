@@ -83,7 +83,10 @@ class TraceSaveService extends BaseController
 
         $trace->setContenu($content ?? []);
         $trace->setBibliotheque($bibliotheque);
+        if ($trace->getDateCreation() === null) {
         $trace->setDateCreation(new \DateTime());
+        }
+        $trace->setDateModification(new \DateTime());
         $trace->setLibelle($formDatas['libelle']);
         $trace->setContexte($formDatas['contexte']);
         if (!empty($formDatas['dateRealisation'])) {

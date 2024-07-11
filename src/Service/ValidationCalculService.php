@@ -37,8 +37,14 @@ class ValidationCalculService
         foreach ($pages as $page) {
             $validation[] = $this->calcParPage($page);
         }
+
+        $moy = array_sum($validation) / count($validation);
+
+        // arrondir le resultat
+        $moy = round($moy, 2);
+
         // faire une moyenne des validations par page
-        return array_sum($validation) / count($validation);
+        return $moy;
     }
 
     public function calcParPage(?Page $page)
@@ -74,6 +80,9 @@ class ValidationCalculService
         foreach ($validations as $validation) {
             $sum += $validation->getValeur();
         }
+
+        // arrondir le resultat
+//        $sum = round($sum / count($validations), 2);
 
 
         return $sum;

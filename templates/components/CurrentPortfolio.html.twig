@@ -5,7 +5,7 @@
             <th>Nom/Type</th>
             <th>Année</th>
             <th>Modifié le</th>
-{#            <th>Compétences</th>#}
+            {#            <th>Compétences</th> #}
             <th>Actions</th>
         </thead>
         <tbody>
@@ -15,10 +15,10 @@
 
     <div class="row mt-5 g-5 justify-content-between align-items-center">
         <div>
-        <h3>Validation des compétences</h3>
-        <small>
-            Ces données sont des moyennes des resultats obtenus
-        </small>
+            <h3>Validation des compétences</h3>
+            <small>
+                Ces données sont des moyennes des resultats obtenus
+            </small>
         </div>
 
         <div class="col-lg-6 col-12">
@@ -52,6 +52,14 @@
                         </tr>
                         </tbody>
                     {% endfor %}
+                    <tr class="table-primary-text">
+                        <td>Total</td>
+                        <td>
+                            <div class="{% if this.moyenneCompetence(competence) <= 5 %}pill-danger{% elseif this.moyenneCompetence(competence) <= 10 %}pill-warning{% else %}pill-success{% endif %}">
+                                {{ this.moyenneCompetence(competence) }}/20
+                            </div>
+                        </td>
+                    </tr>
                 </table>
             {% endfor %}
         </div>

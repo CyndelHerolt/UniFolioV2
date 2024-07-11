@@ -77,13 +77,16 @@ final class AllCompetences
 
     public function getChart()
     {
-        $competences = $this->getAllCompetences(); // Étape 1
+        $competences = $this->getAllCompetences();
         $labels = [];
         $data = [];
+        $backgroundColor = [];
 
-        foreach ($competences as $competence) { // Étape 2
+        foreach ($competences as $competence) {
             $labels[] = $competence->getLibelle();
             $data[] = $competence->validation;
+            $couleurs = [];
+
             if ($competence instanceof ApcApprentissageCritique) {
                 $couleurs[] = $competence->getApcNiveau()->getApcCompetence()->getCouleur();
             } else {

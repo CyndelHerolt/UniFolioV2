@@ -1,25 +1,18 @@
-{% macro table(items) %}
-    <table>
+{# todo: à exploiter ??? #}
+{% macro table(headers, rows) %}
+    <table class="table">
         <thead>
         <tr>
-            {% for key, value in items[0] %}
-                <th>{{ key }}</th>
+            {% for header in headers %}
+                <th>{{ header }}</th>
             {% endfor %}
         </tr>
         </thead>
         <tbody>
-        {% for item in items %}
+        {% for row in rows %}
             <tr>
-                {% for key, value in item %}
-                    {% if key == 'Visibilité' %}
-                        <td>
-                            <div class="{{ value == 'Public' ? 'pill-success' : 'pill-warning' }} {{ loop.first ? 'table-primary-text' : '' }}">{{ value }}</div>
-                        </td>
-                    {% elseif key == 'Année' %}
-                        <td>{{ value != null ? value : '**' }}</td>
-                    {% else %}
-                        <td class="{{ loop.first ? 'table-primary-text' : '' }}">{{ value }}</td>
-                    {% endif %}
+                {% for cell in row %}
+                    <td>{{ cell }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

@@ -3,11 +3,13 @@
 
 namespace App\Service;
 
+use App\Entity\Departement;
 use App\Entity\Etudiant;
 use App\Entity\User;
 use App\Repository\ApcCompetenceRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
+use App\Repository\GroupeRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -17,18 +19,25 @@ class CompetencesService
     private $apcNiveauRepository;
     private $apcApprentissageCritiqueRepository;
     private $competenceRepository;
+    private $groupeRepository;
 
-    public function __construct(Security $security, ApcNiveauRepository $apcNiveauRepository, ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository, ApcCompetenceRepository $competenceRepository)
+    public function __construct(
+        Security                           $security,
+        ApcNiveauRepository                $apcNiveauRepository,
+        ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
+        ApcCompetenceRepository            $competenceRepository,
+        GroupeRepository                   $groupeRepository
+    )
     {
         $this->security = $security;
         $this->apcNiveauRepository = $apcNiveauRepository;
         $this->apcApprentissageCritiqueRepository = $apcApprentissageCritiqueRepository;
         $this->competenceRepository = $competenceRepository;
+        $this->groupeRepository = $groupeRepository;
     }
 
     public function getCompetencesEtudiant(UserInterface $user)
     {
-
         $user = $user->getEtudiant();
         $semestre = $user->getSemestre();
         $annee = $semestre->getAnnee();
@@ -115,6 +124,37 @@ class CompetencesService
         } else {
             return $apcApprentissagesCritiques;
         }
+    }
+
+    public function getCompetencesSemestre($semestre)
+    {
+        $departement = $semestre->getAnnee()->getDiplome()->getDepartement();
+        $referentiel = $departement->getApcReferentiels()->first();
+        $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel]);
+
+        $groupes = $this->groupeRepository->findBySemestre($semestre);
+        $niveaux = [];
+        $competencesNiveau = [];
+        foreach ($groupes as $groupe) {
+            if ($groupe->getApcParcours() !== null) {
+                if ($groupe->getApcParcours() === $semestre->getAnnee()->getDiplome()->getApcParcours()) {
+                    $parcours = $groupe->getApcParcours();
+                    $annee = $semestre->getAnnee();
+                    $niveaux = $this->apcNiveauRepository->findByAnneeParcours($annee, $parcours);
+                    $competencesNiveau = $niveaux;
+                }
+            } elseif($groupe->getApcParcours() === null) {
+                foreach ($competences as $competence) {
+                    $niveaux = $this->apcNiveauRepository->findByAnnee($competence, $semestre->getAnnee()->getOrdre());
+                    $competencesNiveau = array_merge($competencesNiveau, $niveaux);
+                    //supprimer les doublons du tableau
+                    $competencesNiveau = array_unique($competencesNiveau, SORT_REGULAR);
+                }
+            }
+            $niveaux = $competencesNiveau;
+        }
+
+        return $niveaux;
     }
 
     public function getCompetencesPortfolio($portfolio)

@@ -5,9 +5,12 @@ namespace App\Twig\Components;
 use App\Entity\ApcApprentissageCritique;
 use App\Entity\ApcNiveau;
 use App\Entity\Departement;
+use App\Repository\AnneeRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\DepartementRepository;
+use App\Repository\SemestreRepository;
+use App\Service\CompetencesService;
 use App\Service\ValidationCalculService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -23,8 +26,12 @@ final class AllCompetences
     use DefaultActionTrait;
 
     #[LiveProp(writable: true, hydrateWith: 'getAllCompetences', dehydrateWith: 'getAllCompetences')]
-//    /** @var ApcNiveau[] */
     public array $allCompetences = [];
+
+    #[LiveProp(writable: true, hydrateWith: 'getAllCompetencesSemestre', dehydrateWith: 'getAllCompetencesSemestre')]
+    public array $allCompetencesSemestre = [];
+
+    public array $semestres = [];
 
     public ?Departement $departement = null;
 
@@ -34,6 +41,9 @@ final class AllCompetences
         private readonly ApcNiveauRepository                $apcNiveauRepository,
         private readonly ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
         private readonly ValidationCalculService            $validationCalculService,
+        private readonly CompetencesService                 $competencesService,
+        private readonly SemestreRepository                 $semestreRepository,
+        private readonly AnneeRepository                    $anneeRepository,
         private readonly ChartBuilderInterface              $chartBuilder
     )
     {
@@ -61,11 +71,7 @@ final class AllCompetences
 
     public function getAllCompetences(): array
     {
-        if ($this->departement->getOptCompetence() === 1) {
-            $this->allCompetences = $this->apcNiveauRepository->findByDepartement($this->departement);
-        } elseif ($this->departement->getOptCompetence() === 0) {
-            $this->allCompetences = $this->apcApprentissageCritiqueRepository->findByDepartement($this->departement);
-        }
+        $this->allCompetences = $this->competencesService->getCompetencesDepartement($this->departement);
 
         // ajouter la validation en key du tableau pour chaque compétence
         foreach ($this->allCompetences as $competence) {
@@ -73,6 +79,108 @@ final class AllCompetences
         }
 
         return $this->allCompetences;
+    }
+
+    // todo: limiter le calcul à la competences pour els etudiants du semestre sélectionné
+    public function getAllCompetencesSemestre()
+    {
+        $this->semestres = $this->semestreRepository->findByDepartementActif($this->departement);
+
+        foreach ($this->semestres as $semestre) {
+            $this->allCompetencesSemestre[$semestre->getLibelle()] = $this->competencesService->getCompetencesSemestre($semestre);
+        }
+
+        return $this->allCompetencesSemestre;
+    }
+
+    public function getColorForCompetence($competence) {
+        $couleurs = [];
+
+        if ($competence instanceof ApcApprentissageCritique) {
+            $couleurs[] = $competence->getApcNiveau()->getApcCompetence()->getCouleur();
+        } else {
+            $couleurs[] = $competence->getApcCompetence()->getCouleur();
+        }
+        foreach ($couleurs as $color) {
+            switch ($color) {
+                case 'c1':
+                    return 'rgba(156, 43, 38, 0.6)';
+                case 'c2':
+                    return 'rgba(208, 119, 64, 0.6)';
+                case 'c3':
+                    return 'rgba(229, 185, 77, 0.6)';
+                case 'c4':
+                    return 'rgba(65, 108, 63, 0.6)';
+                case 'c5':
+                    return 'rgba(43, 76, 118, 0.6)';
+                case 'c6':
+                    return 'rgba(127, 31, 83, 0.6)';
+                default:
+                    return 'rgb(255, 255, 255)';
+            }
+        }
+    }
+
+    public function getChartsBySemestre()
+    {
+        $charts = [];
+        foreach ($this->allCompetencesSemestre as $semestre => $competences) {
+            $labels = [];
+            $data = [];
+            $backgroundColor = [];
+            foreach ($competences as $competence) {
+                $labels[] = $competence->getLibelle();
+                $data[] = $competence->validation;
+                $backgroundColor[] = $this->getColorForCompetence($competence); // Suppose que vous avez une méthode pour obtenir la couleur
+            }
+
+            $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
+            $chart->setData([
+                'labels' => $labels,
+                'datasets' => [
+                    [
+                        'data' => $data,
+                        'backgroundColor' => $backgroundColor,
+                        'borderWidth' => 1,
+                    ],
+                ],
+            ]);
+
+            // Configurez les options du graphique comme nécessaire
+            $chart->setOptions([
+                'scales' => [
+                    'x' => [
+                        'suggestedMin' => 0,
+                        'suggestedMax' => 20,
+                    ],
+                    'y' => [
+                        'ticks' => [
+                            'font' => [
+                                'weight' => 'bold',
+                            ],
+                        ],
+                    ]
+                ],
+                'indexAxis' => 'y',
+                'plugins' => [
+                    'legend' => [
+                        'display' => false,
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Moyennes des resultats par compétence',
+                        'font' => [
+                            'size' => 20,
+                            'weight' => 'bold',
+                        ],
+                    ],
+                ],
+            ]);
+
+            $charts[$semestre] = $chart;
+        }
+
+        return $charts;
     }
 
     public function getChart()

@@ -1,25 +1,47 @@
 <div{{ attributes }}>
 
-    <div class="row d-flex flex-column gap-5 align-items-center">
-        <div class="col-10">
-            {{ render_chart(this.chart) }}
-        </div>
+    {#    <div class="row d-flex flex-column gap-5 align-items-center"> #}
+    {#        <div class="col-10"> #}
+    {#            {{ render_chart(this.chart) }} #}
+    {#        </div> #}
 
-        <div class="col-12 d-flex flex-column gap-3">
-            <ul class="p-0">
-                {% for competence in this.allCompetences %}
-                    <li class="p-2 m-2 d-flex flex-row justify-content-between">
-                        <span class="pill-competence {{ competence.apcNiveau.apcCompetence.couleur ?? competence.apcCompetence.couleur }}">{{ competence.code ?? null }} {{ competence.libelle }}</span>
-                        <div class="d-flex gap-5 align-items-center">
+    <!-- Onglets de navigation -->
+    <ul class="nav nav-tabs" id="semestreTabs" role="tablist">
+        {% for key, competences in this.allCompetencesSemestre %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if loop.first %}active{% endif %}" id="semestre-tab-{{ loop.index }}"
+                        data-bs-toggle="tab" data-bs-target="#semestre{{ loop.index }}" type="button" role="tab"
+                        aria-controls="semestre{{ loop.index }}"
+                        aria-selected="{% if loop.first %}true{% else %}false{% endif %}">
+                    {{ key }}
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
 
+    <!-- Contenu des onglets -->
+    <div class="tab-content" id="semestreTabsContent">
+        {% for key, competences in this.allCompetencesSemestre %}
+            <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="semestre{{ loop.index }}"
+                 role="tabpanel" aria-labelledby="semestre-tab-{{ loop.index }}">
+                <div class="card card-body row d-flex flex-column gap-2">
+                    <div class="col-10">
+                        {{ render_chart(this.chartsBySemestre[key]) }}
+                    </div>
+                    {% for competence in competences %}
+                        <li class="p-2 m-2 d-flex flex-row justify-content-between">
+                            <span class="pill-competence {{ competence.apcNiveau.apcCompetence.couleur ?? competence.apcCompetence.couleur }}">{{ competence.code ?? null }} {{ competence.libelle }}</span>
+                            <div class="d-flex gap-5 align-items-center">
                             <span class="{% if competence.validation <= 5 %}pill-danger{% elseif competence.validation <= 10 %}pill-warning{% else %}pill-success{% endif %}">
-                                                {{ competence.validation }}/20
-                                            </span>
-                        </div>
-                    </li>
-                    <hr>
-                {% endfor %}
-            </ul>
-        </div>
+                                {{ competence.validation }}/20
+                            </span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
     </div>
+
+    {#    </div> #}
 </div>

@@ -21,6 +21,17 @@ class AnneeRepository extends ServiceEntityRepository
         parent::__construct($registry, Annee::class);
     }
 
+    public function findActifByDepartement($departement)
+    {
+        return $this->createQueryBuilder('a')
+            ->join('a.diplome', 'd')
+            ->where('d.departement = :departement')
+            ->andWhere('a.actif = 1')
+            ->setParameter('departement', $departement)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function save(Annee $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

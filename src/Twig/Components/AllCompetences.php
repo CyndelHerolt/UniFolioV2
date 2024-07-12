@@ -5,9 +5,12 @@ namespace App\Twig\Components;
 use App\Entity\ApcApprentissageCritique;
 use App\Entity\ApcNiveau;
 use App\Entity\Departement;
+use App\Repository\AnneeRepository;
 use App\Repository\ApcApprentissageCritiqueRepository;
 use App\Repository\ApcNiveauRepository;
 use App\Repository\DepartementRepository;
+use App\Repository\SemestreRepository;
+use App\Service\CompetencesService;
 use App\Service\ValidationCalculService;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -23,8 +26,12 @@ final class AllCompetences
     use DefaultActionTrait;
 
     #[LiveProp(writable: true, hydrateWith: 'getAllCompetences', dehydrateWith: 'getAllCompetences')]
-//    /** @var ApcNiveau[] */
     public array $allCompetences = [];
+
+    #[LiveProp(writable: true, hydrateWith: 'getAllCompetencesSemestre', dehydrateWith: 'getAllCompetencesSemestre')]
+    public array $allCompetencesSemestre = [];
+
+    public array $semestres = [];
 
     public ?Departement $departement = null;
 
@@ -34,6 +41,9 @@ final class AllCompetences
         private readonly ApcNiveauRepository                $apcNiveauRepository,
         private readonly ApcApprentissageCritiqueRepository $apcApprentissageCritiqueRepository,
         private readonly ValidationCalculService            $validationCalculService,
+        private readonly CompetencesService                 $competencesService,
+        private readonly SemestreRepository                 $semestreRepository,
+        private readonly AnneeRepository                    $anneeRepository,
         private readonly ChartBuilderInterface              $chartBuilder
     )
     {
@@ -61,11 +71,7 @@ final class AllCompetences
 
     public function getAllCompetences(): array
     {
-        if ($this->departement->getOptCompetence() === 1) {
-            $this->allCompetences = $this->apcNiveauRepository->findByDepartement($this->departement);
-        } elseif ($this->departement->getOptCompetence() === 0) {
-            $this->allCompetences = $this->apcApprentissageCritiqueRepository->findByDepartement($this->departement);
-        }
+        $this->allCompetences = $this->competencesService->getCompetencesDepartement($this->departement);
 
         // ajouter la validation en key du tableau pour chaque compétence
         foreach ($this->allCompetences as $competence) {
@@ -73,6 +79,17 @@ final class AllCompetences
         }
 
         return $this->allCompetences;
+    }
+
+    public function getAllCompetencesSemestre()
+    {
+        $this->semestres = $this->semestreRepository->findByDepartementActif($this->departement);
+
+        foreach ($this->semestres as $semestre) {
+            $this->allCompetencesSemestre[$semestre->getLibelle()] = $this->competencesService->getCompetencesSemestre($semestre);
+        }
+
+        return $this->allCompetencesSemestre;
     }
 
     public function getChart()

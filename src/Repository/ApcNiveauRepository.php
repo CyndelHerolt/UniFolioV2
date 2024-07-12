@@ -46,11 +46,11 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->join('n.apcCompetence', 'c')
             ->where('c.id = :competence')
             ->andWhere('n.ordre = :ordre')
-//            ->andWhere('n.actif = true')
             ->setParameter('competence', $competence)
             ->setParameter('ordre', $annee)
             ->getQuery()
-            ->getResult();
+            ->getResult()
+            ;
     }
 
     public function findByAnneeParcours($annee, $parcours)
@@ -58,7 +58,6 @@ class ApcNiveauRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('n')
             ->innerJoin('n.apcParcours', 'p')
             ->where('n.ordre = :ordre')
-//            ->andWhere('n.actif = true')
             ->andWhere('p.id = :parcours')
             ->setParameter('ordre', $annee->getOrdre())
             ->setParameter('parcours', $parcours->getId())
@@ -99,6 +98,17 @@ class ApcNiveauRepository extends ServiceEntityRepository
             ->addOrderBy('n.ordre', 'ASC')
             ->getQuery()
             ->getResult();
+    }
+
+    public function createQueryBuilderForDepartement(Departement $departement)
+    {
+        return $this->createQueryBuilder('n')
+            ->join('n.apcParcours', 'p')
+            ->join('p.apcReferentiel', 'r')
+            ->join('r.departement', 'dep')
+            ->where('dep = :departement')
+            ->setParameter('departement', $departement)
+            ->addOrderBy('n.ordre', 'ASC');
     }
 //    /**
 //     * @return ApcNiveau[] Returns an array of ApcNiveau objects

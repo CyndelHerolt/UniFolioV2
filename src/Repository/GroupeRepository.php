@@ -62,10 +62,12 @@ class GroupeRepository extends ServiceEntityRepository
     public function findBySemestreBuilder(Semestre $semestre): QueryBuilder
     {
         return $this->createQueryBuilder('g')
-            ->innerJoin(TypeGroupe::class, 't', 'WITH', 'g.type_groupe = t.id')
+            ->innerJoin(TypeGroupe::class, 't', 'WITH', 'g.typeGroupe = t.id')
             ->innerJoin('t.semestre', 's')
             ->where('s.id = :semestre')
+            ->andWhere('t.type = :type')
             ->setParameter('semestre', $semestre->getId())
+            ->setParameter('type', 'TD')
             ;
     }
 

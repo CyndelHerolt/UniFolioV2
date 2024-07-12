@@ -5,9 +5,28 @@
             {{ render_chart(this.chart) }}
         </div>
 
+{#        <div class="col-12 d-flex flex-column gap-3">#}
+{#            <ul class="p-0">#}
+{#                {% for competence in this.allCompetences %}#}
+{#                    <li class="p-2 m-2 d-flex flex-row justify-content-between">#}
+{#                        <span class="pill-competence {{ competence.apcNiveau.apcCompetence.couleur ?? competence.apcCompetence.couleur }}">{{ competence.code ?? null }} {{ competence.libelle }}</span>#}
+{#                        <div class="d-flex gap-5 align-items-center">#}
+
+{#                            <span class="{% if competence.validation <= 5 %}pill-danger{% elseif competence.validation <= 10 %}pill-warning{% else %}pill-success{% endif %}">#}
+{#                                                {{ competence.validation }}/20#}
+{#                                            </span>#}
+{#                        </div>#}
+{#                    </li>#}
+{#                    <hr>#}
+{#                {% endfor %}#}
+{#            </ul>#}
+{#        </div>#}
+
         <div class="col-12 d-flex flex-column gap-3">
             <ul class="p-0">
-                {% for competence in this.allCompetences %}
+                {% for key, competences in this.allCompetencesSemestre %}
+                    <h2>{{ key }}</h2>
+                    {% for competence in competences %}
                     <li class="p-2 m-2 d-flex flex-row justify-content-between">
                         <span class="pill-competence {{ competence.apcNiveau.apcCompetence.couleur ?? competence.apcCompetence.couleur }}">{{ competence.code ?? null }} {{ competence.libelle }}</span>
                         <div class="d-flex gap-5 align-items-center">
@@ -17,9 +36,12 @@
                                             </span>
                         </div>
                     </li>
+                    {% endfor %}
                     <hr>
                 {% endfor %}
             </ul>
         </div>
+
+
     </div>
 </div>

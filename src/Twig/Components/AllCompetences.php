@@ -81,6 +81,7 @@ final class AllCompetences
         return $this->allCompetences;
     }
 
+    // todo: limiter le calcul à la competences pour els etudiants du semestre sélectionné
     public function getAllCompetencesSemestre()
     {
         $this->semestres = $this->semestreRepository->findByDepartementActif($this->departement);
@@ -90,6 +91,96 @@ final class AllCompetences
         }
 
         return $this->allCompetencesSemestre;
+    }
+
+    public function getColorForCompetence($competence) {
+        $couleurs = [];
+
+        if ($competence instanceof ApcApprentissageCritique) {
+            $couleurs[] = $competence->getApcNiveau()->getApcCompetence()->getCouleur();
+        } else {
+            $couleurs[] = $competence->getApcCompetence()->getCouleur();
+        }
+        foreach ($couleurs as $color) {
+            switch ($color) {
+                case 'c1':
+                    return 'rgba(156, 43, 38, 0.6)';
+                case 'c2':
+                    return 'rgba(208, 119, 64, 0.6)';
+                case 'c3':
+                    return 'rgba(229, 185, 77, 0.6)';
+                case 'c4':
+                    return 'rgba(65, 108, 63, 0.6)';
+                case 'c5':
+                    return 'rgba(43, 76, 118, 0.6)';
+                case 'c6':
+                    return 'rgba(127, 31, 83, 0.6)';
+                default:
+                    return 'rgb(255, 255, 255)';
+            }
+        }
+    }
+
+    public function getChartsBySemestre()
+    {
+        $charts = [];
+        foreach ($this->allCompetencesSemestre as $semestre => $competences) {
+            $labels = [];
+            $data = [];
+            $backgroundColor = [];
+            foreach ($competences as $competence) {
+                $labels[] = $competence->getLibelle();
+                $data[] = $competence->validation;
+                $backgroundColor[] = $this->getColorForCompetence($competence); // Suppose que vous avez une méthode pour obtenir la couleur
+            }
+
+            $chart = $this->chartBuilder->createChart(Chart::TYPE_BAR);
+            $chart->setData([
+                'labels' => $labels,
+                'datasets' => [
+                    [
+                        'data' => $data,
+                        'backgroundColor' => $backgroundColor,
+                        'borderWidth' => 1,
+                    ],
+                ],
+            ]);
+
+            // Configurez les options du graphique comme nécessaire
+            $chart->setOptions([
+                'scales' => [
+                    'x' => [
+                        'suggestedMin' => 0,
+                        'suggestedMax' => 20,
+                    ],
+                    'y' => [
+                        'ticks' => [
+                            'font' => [
+                                'weight' => 'bold',
+                            ],
+                        ],
+                    ]
+                ],
+                'indexAxis' => 'y',
+                'plugins' => [
+                    'legend' => [
+                        'display' => false,
+                    ],
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Moyennes des resultats par compétence',
+                        'font' => [
+                            'size' => 20,
+                            'weight' => 'bold',
+                        ],
+                    ],
+                ],
+            ]);
+
+            $charts[$semestre] = $chart;
+        }
+
+        return $charts;
     }
 
     public function getChart()

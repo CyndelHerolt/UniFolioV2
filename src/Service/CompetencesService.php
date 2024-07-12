@@ -133,9 +133,6 @@ class CompetencesService
         $competences = $this->competenceRepository->findBy(['apcReferentiel' => $referentiel]);
 
         $groupes = $this->groupeRepository->findBySemestre($semestre);
-//        if ($semestre->getAnnee()->getOrdre() === 3) {
-//            dd($groupes);
-//        }
         $niveaux = [];
         $competencesNiveau = [];
         foreach ($groupes as $groupe) {

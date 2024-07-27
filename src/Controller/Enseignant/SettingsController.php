@@ -15,6 +15,7 @@ use App\Repository\PageRepository;
 use App\Repository\PortfolioUnivRepository;
 use App\Repository\TraceCompetenceRepository;
 use App\Repository\TracePageRepository;
+use App\Service\DataUserSessionService;
 use App\Service\PortfolioCreateService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,15 +27,15 @@ class SettingsController extends BaseController
     public function __construct(
         private readonly CriteresRepository              $criteresRepository,
         private readonly DepartementRepository           $departementRepository,
-        private readonly EnseignantRepository            $enseignantRepository,
         private readonly DepartementEnseignantRepository $departementEnseignantRepository,
         private readonly PortfolioUnivRepository         $portfolioUnivRepository,
         private readonly PageRepository                  $pageRepository,
         private readonly TraceCompetenceRepository       $traceCompetenceRepository,
         private readonly PortfolioCreateService          $portfolioCreateService,
-        private readonly TracePageRepository             $tracePageRepository, private readonly EtudiantRepository $etudiantRepository,
+        private readonly DataUserSessionService          $dataUserSessionService,
     )
     {
+        parent::__construct($this->dataUserSessionService);
     }
 
     #[Route('/settings', name: 'app_settings')]
@@ -58,47 +59,50 @@ class SettingsController extends BaseController
 
         $request->query->get('edit') ? $edit = true : $edit = false;
 
+        $optCompetence = $departementDefaut->getOptCompetence();
+
         return $this->render('settings/index.html.twig', [
             'error' => $error ?? null,
             'formCriteres' => $formCriteres ?? null,
             'editCritereId' => $editCritereId,
             'criteres' => $criteres ?? null,
             'edit' => $edit,
+            'optCompetence' => $optCompetence,
         ]);
     }
 
-#[Route('/settings/criteres/defaut', name: 'app_settings_criteres_defaut')]
-public function criteres(): Response
-{
-    $enseignant = $this->getUser()->getEnseignant();
-    $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
+    #[Route('/settings/criteres/defaut', name: 'app_settings_criteres_defaut')]
+    public function criteres(): Response
+    {
+        $enseignant = $this->getUser()->getEnseignant();
+        $departementDefaut = $this->departementRepository->findDepartementEnseignantDefaut($enseignant);
 
-    // Récupérer les critères existants
-    $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
+        // Récupérer les critères existants
+        $criteres = $this->criteresRepository->findBy(['departement' => $departementDefaut]);
 
-    // Définir les libellés et valeurs par défaut
-    $defaultLibelles = [
-        'Pertinence des medias',
-        'Pertinence des argumentaires',
-        'Cohérence avec la compétence visée',
-        'Diversité des traces'
-    ];
-    $defaultValeurs = [
-        [5 => 'Adapté', 4 => 'Adéquat', 3 => 'Acceptable', 2 => 'A améliorer', 1 => 'Non pertinent', 0 => 'Non applicable'],
-        [5 => 'Solide', 4 => 'Convaincant' , 3 => 'Clair', 2 => 'Confus', 1 => 'Inapproprié', 0 => 'Non applicable'],
-        [5 => 'En accord total', 4 => 'En accord partiel', 3 => 'Peu en accord', 2 => 'Pas en accord', 1 => 'Non cohérent', 0 => 'Non applicable'],
-        [5 => 'Très diversifiées', 4 => 'Diversifiées', 3 => 'Peu diversifiées', 2 => 'Répétitives', 1 => 'Pas diversifiées', 0 => 'Non applicable']
-    ];
+        // Définir les libellés et valeurs par défaut
+        $defaultLibelles = [
+            'Pertinence des medias',
+            'Pertinence des argumentaires',
+            'Cohérence avec la compétence visée',
+            'Diversité des traces'
+        ];
+        $defaultValeurs = [
+            [5 => 'Adapté', 4 => 'Adéquat', 3 => 'Acceptable', 2 => 'A améliorer', 1 => 'Non pertinent', 0 => 'Non applicable'],
+            [5 => 'Solide', 4 => 'Convaincant', 3 => 'Clair', 2 => 'Confus', 1 => 'Inapproprié', 0 => 'Non applicable'],
+            [5 => 'En accord total', 4 => 'En accord partiel', 3 => 'Peu en accord', 2 => 'Pas en accord', 1 => 'Non cohérent', 0 => 'Non applicable'],
+            [5 => 'Très diversifiées', 4 => 'Diversifiées', 3 => 'Peu diversifiées', 2 => 'Répétitives', 1 => 'Pas diversifiées', 0 => 'Non applicable']
+        ];
 
-    // Parcourir les critères existants et les mettre à jour
-    foreach ($criteres as $critere) {
-        $critere->setLibelle(array_shift($defaultLibelles));
-        $critere->setValeurs(array_shift($defaultValeurs));
-        $this->criteresRepository->save($critere, true);
+        // Parcourir les critères existants et les mettre à jour
+        foreach ($criteres as $critere) {
+            $critere->setLibelle(array_shift($defaultLibelles));
+            $critere->setValeurs(array_shift($defaultValeurs));
+            $this->criteresRepository->save($critere, true);
+        }
+
+        return $this->redirectToRoute('app_settings');
     }
-
-    return $this->redirectToRoute('app_settings');
-}
 
     #[Route('/settings/criteres/edit/{id}', name: 'app_settings_criteres_edit')]
     public function editCriteres(Request $request, ?int $id): Response
@@ -150,24 +154,21 @@ public function criteres(): Response
         $departement->setOptCompetence($selectedOption);
         $this->departementRepository->save($departement, true);
 
-//        $etudiant = $this->etudiantRepository->findOneBy(['username' => 'hero0005']);
-//        $this->portfolioCreateService->create($etudiant);
-
         $portfolios = $this->portfolioUnivRepository->findByDepartement($departement);
 
-        foreach($portfolios as $portfolio) {
+        foreach ($portfolios as $portfolio) {
             $this->portfolioCreateService->create($portfolio->getEtudiant());
 
             $this->portfolioUnivRepository->remove($portfolio, true);
 
             $pages = $portfolio->getPages();
-            foreach($pages as $page) {
+            foreach ($pages as $page) {
                 $tracesPages = $page->getTracePages();
-                    dump($tracesPages);
-                foreach($tracesPages as $tracePage) {
+                dump($tracesPages);
+                foreach ($tracesPages as $tracePage) {
                     $tracesCompetences = $tracePage->getTrace()->getTraceCompetences();
 
-                    foreach($tracesCompetences as $traceCompetence) {
+                    foreach ($tracesCompetences as $traceCompetence) {
                         $this->traceCompetenceRepository->remove($traceCompetence, true);
                     }
                 }
@@ -175,6 +176,10 @@ public function criteres(): Response
 
             }
         }
+
+        // add flash message
+        $this->addFlash('success', 'Opération réussie');
+
 
         return $this->redirectToRoute('app_settings');
     }
@@ -196,7 +201,7 @@ public function criteres(): Response
         ]);
     }
 
-#[Route('/settings/choix_departement/save/{id}', name: 'app_settings_choix_departement_save')]
+    #[Route('/settings/choix_departement/save/{id}', name: 'app_settings_choix_departement_save')]
     public function choixDepartementSave(?int $id): Response
     {
         $enseignant = $this->getUser()->getEnseignant();

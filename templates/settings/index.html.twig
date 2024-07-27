@@ -24,7 +24,7 @@
                     <div class="alert alert-warning">
                         <span>
                             Chacun de ces critères est appliqué à l'ensemble des compétences.
-                            <strong>Attention</strong>, la modification du barème peut impacter les évaluations déjà effectuées.
+                            La modification du barème n'impactera pas les évaluations déjà effectuées.
                         </span>
                     </div>
                     <turbo-frame id="bareme">
@@ -159,14 +159,27 @@
                     <em>Choisissez entre l'approche par UE ou par AC</em>
                     <hr>
                     <div class="alert alert-warning">
-                        <span>Le changement d'approche ne supprimera pas pour autant les liens traces-compétences initialisés par les étudiants.</span>
+                        <span><strong>Attention</strong>, le changement d'approche supprimera les liens traces/compétences initialisés par les étudiants qui devront réattribuer les compétences à leurs traces.
+                        </span>
                     </div>
                     <h4>Approche par compétences</h4>
                     <form action="{{ path('app_settings_competences_opt') }}" method="POST">
-                        <select class="form-select" aria-label="competence" name="competence">
-                            <option selected value="1">UE</option>
-                            <option value="0">AC</option>
-                        </select>
+{#                        <select class="form-select" aria-label="competence" name="competence">#}
+{#                            <option value="1">UE</option>#}
+{#                            <option value="0">AC</option>#}
+{#                        </select>#}
+
+                        <fieldset>
+                            <div style="display: flex" class="form-check">
+                                <input type="radio" id="ue" name="competence" value="1" class="form-check-input" {% if optCompetence == 1 %}checked{% endif %}>
+                                <label for="ue" style="margin-left: 10px" class="form-check-label">UE</label><br>
+                            </div>
+                            <div style="display: flex" class="form-check">
+                                <input type="radio" id="ac" name="competence" value="0" class="form-check-input" {% if optCompetence == 0 %}checked{% endif %}>
+                                <label for="ac" style="margin-left: 10px" class="form-check-label">AC</label><br>
+                            </div>
+                        </fieldset>
+
                         <button type="submit" class="primary-btn mt-4">Enregistrer</button>
                     </form>
 
